@@ -1,0 +1,60 @@
+{
+  "additionalProperties": true,
+  "properties": {
+    "contract_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "job_id": {
+      "minLength": 1,
+      "title": "Job Id",
+      "type": "string"
+    },
+    "incident_types": {
+      "items": {
+        "enum": [
+          "fire",
+          "flood",
+          "intrusion_false_alarm",
+          "sensor_failure"
+        ],
+        "type": "string"
+      },
+      "title": "Incident Types",
+      "type": "array"
+    },
+    "horizons_h": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Horizons H",
+      "type": "array"
+    },
+    "data": {
+      "additionalProperties": true,
+      "title": "Data",
+      "type": "object"
+    },
+    "params": {
+      "additionalProperties": true,
+      "title": "Params",
+      "type": "object"
+    },
+    "activate_on_success": {
+      "default": false,
+      "title": "Activate On Success",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "job_id",
+    "incident_types",
+    "horizons_h",
+    "data"
+  ],
+  "title": "TrainJob",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

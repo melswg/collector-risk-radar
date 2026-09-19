@@ -1,0 +1,242 @@
+{
+  "$defs": {
+    "ChannelContext": {
+      "additionalProperties": true,
+      "properties": {
+        "channel_id": {
+          "title": "Channel Id",
+          "type": "integer"
+        },
+        "type_id": {
+          "title": "Type Id",
+          "type": "integer"
+        },
+        "type_code": {
+          "title": "Type Code",
+          "type": "string"
+        },
+        "series": {
+          "$ref": "#/$defs/Series"
+        },
+        "health": {
+          "additionalProperties": true,
+          "title": "Health",
+          "type": "object"
+        }
+      },
+      "required": [
+        "channel_id",
+        "type_id",
+        "type_code",
+        "series"
+      ],
+      "title": "ChannelContext",
+      "type": "object"
+    },
+    "ObjectContext": {
+      "additionalProperties": true,
+      "properties": {
+        "object_id": {
+          "minLength": 1,
+          "title": "Object Id",
+          "type": "string"
+        },
+        "tag": {
+          "title": "Tag",
+          "type": "string"
+        },
+        "hierarchy": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Hierarchy",
+          "type": "array"
+        },
+        "geo": {
+          "additionalProperties": true,
+          "title": "Geo",
+          "type": "object"
+        },
+        "meta": {
+          "additionalProperties": true,
+          "title": "Meta",
+          "type": "object"
+        },
+        "channels": {
+          "items": {
+            "$ref": "#/$defs/ChannelContext"
+          },
+          "title": "Channels",
+          "type": "array"
+        },
+        "recent_alarms": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Recent Alarms",
+          "type": "array"
+        },
+        "planned_works": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Planned Works",
+          "type": "array"
+        },
+        "maintenance": {
+          "additionalProperties": true,
+          "title": "Maintenance",
+          "type": "object"
+        },
+        "weather": {
+          "additionalProperties": true,
+          "title": "Weather",
+          "type": "object"
+        }
+      },
+      "required": [
+        "object_id",
+        "tag",
+        "channels"
+      ],
+      "title": "ObjectContext",
+      "type": "object"
+    },
+    "Options": {
+      "additionalProperties": true,
+      "properties": {
+        "return_explanations": {
+          "default": true,
+          "title": "Return Explanations",
+          "type": "boolean"
+        },
+        "return_analogs": {
+          "default": false,
+          "title": "Return Analogs",
+          "type": "boolean"
+        },
+        "what_if": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "number"
+              },
+              "propertyNames": {
+                "const": "weather.forecast.precip_mm_delta"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "What If"
+        }
+      },
+      "title": "Options",
+      "type": "object"
+    },
+    "Series": {
+      "additionalProperties": true,
+      "properties": {
+        "granularity": {
+          "default": "PT5M",
+          "title": "Granularity",
+          "type": "string"
+        },
+        "points": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Points",
+          "type": "array"
+        }
+      },
+      "title": "Series",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "contract_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "request_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Request Id",
+      "type": "string"
+    },
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "horizons_h": {
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "title": "Horizons H",
+      "type": "array"
+    },
+    "incident_types": {
+      "items": {
+        "enum": [
+          "fire",
+          "flood",
+          "intrusion_false_alarm",
+          "sensor_failure"
+        ],
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Incident Types",
+      "type": "array"
+    },
+    "objects": {
+      "items": {
+        "$ref": "#/$defs/ObjectContext"
+      },
+      "maxItems": 50,
+      "title": "Objects",
+      "type": "array"
+    },
+    "options": {
+      "$ref": "#/$defs/Options"
+    }
+  },
+  "required": [
+    "request_id",
+    "as_of",
+    "objects"
+  ],
+  "title": "PredictRequest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

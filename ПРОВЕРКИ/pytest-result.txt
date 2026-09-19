@@ -1,0 +1,5 @@
+Команда: python -m pytest -q --disable-warnings --maxfail=4
+Результат: 4 failed, 8 passed, 2 warnings in 126.50s. Остановлено после 4 ошибок.
+Все четыре ошибки: sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) database is locked при INSERT INTO audit.
+Не прошли: test_fire_flood_decisions, test_import_export_settings, test_xml_pii, test_shadow_work_suppression.
+Оставшиеся тесты этим прогоном не выполнены.

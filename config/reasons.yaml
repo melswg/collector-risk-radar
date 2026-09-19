@@ -1,0 +1,9 @@
+version: '1.0'
+reasons:
+  confirmed_signals: 'Подтверждено сопутствующими сигналами'
+  planned_work: 'Плановые работы'
+  sensor_fault: 'Неисправность датчика'
+  weather: 'Метеоусловия'
+  visual_check: 'Визуальная проверка'
+  insufficient_data: 'Недостаточно данных'
+  animal: 'Животные / помехи'

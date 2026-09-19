@@ -1,0 +1,188 @@
+{
+  "$defs": {
+    "ModelInfo": {
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "rules",
+            "ml",
+            "stub"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "kind"
+      ],
+      "title": "ModelInfo",
+      "type": "object"
+    },
+    "ObjectError": {
+      "additionalProperties": true,
+      "properties": {
+        "object_id": {
+          "title": "Object Id",
+          "type": "string"
+        },
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "object_id",
+        "code",
+        "message"
+      ],
+      "title": "ObjectError",
+      "type": "object"
+    },
+    "PredictionItem": {
+      "additionalProperties": true,
+      "properties": {
+        "object_id": {
+          "title": "Object Id",
+          "type": "string"
+        },
+        "incident_type": {
+          "enum": [
+            "fire",
+            "flood",
+            "intrusion_false_alarm",
+            "sensor_failure"
+          ],
+          "title": "Incident Type",
+          "type": "string"
+        },
+        "horizon_h": {
+          "maximum": 720,
+          "minimum": 1,
+          "title": "Horizon H",
+          "type": "integer"
+        },
+        "probability": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Probability"
+        },
+        "data_sufficiency": {
+          "enum": [
+            "ok",
+            "insufficient"
+          ],
+          "title": "Data Sufficiency",
+          "type": "string"
+        },
+        "explanation": {
+          "additionalProperties": true,
+          "title": "Explanation",
+          "type": "object"
+        },
+        "analogs": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Analogs",
+          "type": "array"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "alarm_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Alarm Ref"
+        }
+      },
+      "required": [
+        "object_id",
+        "incident_type",
+        "horizon_h",
+        "data_sufficiency"
+      ],
+      "title": "PredictionItem",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "contract_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "model": {
+      "$ref": "#/$defs/ModelInfo"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "predictions": {
+      "items": {
+        "$ref": "#/$defs/PredictionItem"
+      },
+      "title": "Predictions",
+      "type": "array"
+    },
+    "errors": {
+      "items": {
+        "$ref": "#/$defs/ObjectError"
+      },
+      "title": "Errors",
+      "type": "array"
+    }
+  },
+  "required": [
+    "request_id",
+    "model",
+    "generated_at",
+    "predictions"
+  ],
+  "title": "PredictResponse",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

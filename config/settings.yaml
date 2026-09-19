@@ -1,0 +1,14 @@
+horizons_h: [24]
+context_hours: 72
+schedule_seconds: 300
+risk_thresholds: {low: 0.25, medium: 0.5, high: 0.75}
+notification_threshold: 0.75
+notification_cooldown_minutes: 60
+planned_work_tolerance_minutes: 15
+weather_enabled: true
+timezone: Europe/Moscow
+auto_refresh_seconds: 30
+maintenance_days: 180
+maintenance_note: 'Условные сроки, требуют сверки с РТЭК'
+criticality_weight: 0.1
+hierarchy_separator: '.'

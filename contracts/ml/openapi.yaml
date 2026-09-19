@@ -1,0 +1,128 @@
+openapi: 3.1.0
+info:
+  title: ML Integration Contract
+  version: '1.0'
+paths:
+  /v1/health:
+    get:
+      summary: /health
+      security:
+      - serviceToken: []
+      responses:
+        '200':
+          description: Успешный ответ
+  /v1/models:
+    get:
+      summary: /models
+      security:
+      - serviceToken: []
+      responses:
+        '200':
+          description: Успешный ответ
+  /v1/predict:
+    post:
+      summary: /predict
+      security:
+      - serviceToken: []
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: predict_response.schema.json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: predict_request.schema.json
+  /v1/predict/jobs:
+    post:
+      summary: /predict/jobs
+      security:
+      - serviceToken: []
+      responses:
+        '200':
+          description: Успешный ответ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: predict_request.schema.json
+  /v1/predict/jobs/{id}:
+    get:
+      summary: /predict/jobs/{id}
+      security:
+      - serviceToken: []
+      responses:
+        '200':
+          description: Успешный ответ
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /v1/train/jobs:
+    post:
+      summary: /train/jobs
+      security:
+      - serviceToken: []
+      responses:
+        '200':
+          description: Успешный ответ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: train_job.schema.json
+  /v1/train/jobs/{id}:
+    get:
+      summary: /train/jobs/{id}
+      security:
+      - serviceToken: []
+      responses:
+        '200':
+          description: Успешный ответ
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /v1/models/{id}/activate:
+    post:
+      summary: /models/{id}/activate
+      security:
+      - serviceToken: []
+      responses:
+        '200':
+          description: Успешный ответ
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /v1/models/{id}/shadow:
+    post:
+      summary: /models/{id}/shadow
+      security:
+      - serviceToken: []
+      responses:
+        '200':
+          description: Успешный ответ
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+components:
+  securitySchemes:
+    serviceToken:
+      type: http
+      scheme: bearer
