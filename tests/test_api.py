@@ -11,6 +11,17 @@ def test_auth_rbac(client):
     assert client.put('/api/v1/settings',json={'ml_mode':'http'}).status_code==403
     assert client.get('/api/v1/predictions?role=shadow').status_code==403
 
+def test_audit_after_writing_request(client):
+    from sqlalchemy import select
+    from backend.db import Audit, Session
+
+    response = client.post('/api/v1/demo/fire', json={})
+    assert response.status_code == 200, response.text
+    with Session() as session:
+        entry = session.scalars(select(Audit).where(Audit.path == '/api/v1/demo/fire')).one()
+        assert entry.username == 'admin'
+        assert entry.status == 200
+
 def test_fire_flood_decisions(client):
     for scenario in ['fire','flood']:
         response=client.post('/api/v1/demo/'+scenario,json={})

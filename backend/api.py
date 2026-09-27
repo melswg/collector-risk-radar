@@ -127,33 +127,33 @@ def prometheus(user=Depends(require('admin'))):
 
 @app.get(api+'/objects')
 @app.get(api+'/equipment')
-def objects(limit: int=100, offset: int=0, session=Depends(db), user=Depends(current_user)):
+def objects(limit: int=100, offset: int=0, session=Depends(db, scope='function'), user=Depends(current_user)):
     return page(session, select(Object).order_by(Object.name), limit, offset)
 
 @app.get(api+'/objects/geojson')
-def geojson(session=Depends(db), user=Depends(current_user)):
+def geojson(session=Depends(db, scope='function'), user=Depends(current_user)):
     return {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'id': o.id, 'geometry': {'type': 'Point', 'coordinates': [o.lon, o.lat]}, 'properties': {'id': o.id, 'name': o.name, 'tag': o.tag, 'wkt': f'POINT({o.lon} {o.lat})'}} for o in session.scalars(select(Object))]}
 
 @app.get(api+'/objects/{identity}')
-def object_detail(identity: str, session=Depends(db), user=Depends(current_user)):
+def object_detail(identity: str, session=Depends(db, scope='function'), user=Depends(current_user)):
     obj = get_or_404(session, Object, identity)
     context = ContextBuilder(session).build([identity], now()).objects[0]
     return {**serialize(obj), 'context': context.model_dump(mode='json')}
 
 @app.get(api+'/sensors/{identity}/series')
-def sensor_series(identity: int, start: datetime | None=None, end: datetime | None=None, session=Depends(db), user=Depends(current_user)):
+def sensor_series(identity: int, start: datetime | None=None, end: datetime | None=None, session=Depends(db, scope='function'), user=Depends(current_user)):
     get_or_404(session, Channel, identity)
     query = select(Event).where(Event.channel_id == identity, Event.ts >= (start or now()-timedelta(hours=72)), Event.ts <= (end or now())).order_by(Event.ts)
     return page(session, query, 1000)
 
 @app.get(api+'/sensors/{identity}/health')
-def sensor_status(identity: int, session=Depends(db), user=Depends(current_user)):
+def sensor_status(identity: int, session=Depends(db, scope='function'), user=Depends(current_user)):
     channel = get_or_404(session, Channel, identity)
     context = ContextBuilder(session).build([channel.object_id], now()).objects[0]
     return next(c.health for c in context.channels if c.channel_id == identity)
 
 @app.post(api+'/ingest/events')
-async def events_ingest(request: Request, session=Depends(db), user=Depends(require('analyst'))):
+async def events_ingest(request: Request, session=Depends(db, scope='function'), user=Depends(require('analyst'))):
     raw = await request.body()
     if len(raw) > 10_000_000:
         raise HTTPException(413, 'Пакет слишком большой')
@@ -167,11 +167,11 @@ async def events_ingest(request: Request, session=Depends(db), user=Depends(requ
     return result
 
 @app.post(api+'/registry/equipment/sync')
-def registry_sync(body: dict, session=Depends(db), user=Depends(require('analyst'))):
+def registry_sync(body: dict, session=Depends(db, scope='function'), user=Depends(require('analyst'))):
     return ingest_registry(session, body['rows'], body.get('kind', 'objects'))
 
 @app.post(api+'/ingest/ods-journal')
-def ods(body: list[dict], session=Depends(db), user=Depends(require('analyst'))):
+def ods(body: list[dict], session=Depends(db, scope='function'), user=Depends(require('analyst'))):
     if contains_pii(body):
         raise ValueError('Обнаружены возможные персональные данные')
     for row in body:
@@ -183,7 +183,7 @@ def ods(body: list[dict], session=Depends(db), user=Depends(require('analyst')))
     return {'accepted': len(body)}
 
 @app.post(api+'/import/files')
-async def file_import(kind: Literal['events', 'objects', 'channels', 'ods']='events', file: UploadFile=File(), session=Depends(db), user=Depends(require('analyst'))):
+async def file_import(kind: Literal['events', 'objects', 'channels', 'ods']='events', file: UploadFile=File(), session=Depends(db, scope='function'), user=Depends(require('analyst'))):
     content = await file.read(20_000_001)
     if len(content) > 20_000_000:
         raise HTTPException(413, 'Файл больше 20 МБ')
@@ -199,11 +199,11 @@ async def file_import(kind: Literal['events', 'objects', 'channels', 'ods']='eve
     return serialize(record)
 
 @app.get(api+'/import/jobs/{identity}')
-def import_status(identity: str, session=Depends(db), user=Depends(require('analyst'))):
+def import_status(identity: str, session=Depends(db, scope='function'), user=Depends(require('analyst'))):
     return serialize(get_or_404(session, Record, identity))
 
 @app.get(api+'/events')
-def event_list(start: datetime | None=None, end: datetime | None=None, object_id: str | None=None, type_code: str | None=None, severity: str | None=None, sort: str='desc', limit: int=100, offset: int=0, session=Depends(db), user=Depends(current_user)):
+def event_list(start: datetime | None=None, end: datetime | None=None, object_id: str | None=None, type_code: str | None=None, severity: str | None=None, sort: str='desc', limit: int=100, offset: int=0, session=Depends(db, scope='function'), user=Depends(current_user)):
     query = select(Event)
     if start:
         query = query.where(Event.ts >= start)
@@ -224,11 +224,11 @@ class RunBody(BaseModel):
     request_id: str | None = None
 
 @app.post(api+'/predictions/run')
-def prediction_run(body: RunBody, session=Depends(db), user=Depends(require('dispatcher', 'analyst'))):
+def prediction_run(body: RunBody, session=Depends(db, scope='function'), user=Depends(require('dispatcher', 'analyst'))):
     return {'items': run_predictions(session, provider, body.object_ids, body.as_of, body.horizons_h, request_id=body.request_id)}
 
 @app.get(api+'/predictions')
-def predictions(object_id: str | None=None, incident_type: str | None=None, risk: str | None=None, role: str='active', latest: bool=False, limit: int=100, offset: int=0, session=Depends(db), user=Depends(current_user)):
+def predictions(object_id: str | None=None, incident_type: str | None=None, risk: str | None=None, role: str='active', latest: bool=False, limit: int=100, offset: int=0, session=Depends(db, scope='function'), user=Depends(current_user)):
     if role != 'active' and user['role'] not in ('admin', 'analyst'):
         raise HTTPException(403, 'Теневые прогнозы доступны аналитикам')
     query = select(Prediction).where(Prediction.role == role)
@@ -244,7 +244,7 @@ def predictions(object_id: str | None=None, incident_type: str | None=None, risk
     return result
 
 @app.get(api+'/predictions/{identity}')
-def prediction_detail(identity: str, session=Depends(db), user=Depends(current_user)):
+def prediction_detail(identity: str, session=Depends(db, scope='function'), user=Depends(current_user)):
     p = get_or_404(session, Prediction, identity)
     if p.role != 'active' and user['role'] not in ('admin', 'analyst'):
         raise HTTPException(403, 'Теневой прогноз')
@@ -257,7 +257,7 @@ class DecisionBody(BaseModel):
     outcome: Literal['confirmed', 'false', 'monitoring'] = 'monitoring'
 
 @app.post(api+'/predictions/{identity}/decision')
-def decision(identity: str, body: DecisionBody, session=Depends(db), user=Depends(require('dispatcher', 'analyst'))):
+def decision(identity: str, body: DecisionBody, session=Depends(db, scope='function'), user=Depends(require('dispatcher', 'analyst'))):
     p = get_or_404(session, Prediction, identity)
     if p.role != 'active':
         raise ValueError('Решение для теневого прогноза запрещено')
@@ -271,7 +271,7 @@ def decision(identity: str, body: DecisionBody, session=Depends(db), user=Depend
     return serialize(record)
 
 @app.get(api+'/predictions/{identity}/analogs')
-def analogs(identity: str, session=Depends(db), user=Depends(current_user)):
+def analogs(identity: str, session=Depends(db, scope='function'), user=Depends(current_user)):
     p = get_or_404(session, Prediction, identity)
     prediction_detail(identity, session, user)
     rows = session.scalars(select(Record).where(Record.kind == 'label', Record.ts < p.as_of)).all()
@@ -280,16 +280,16 @@ def analogs(identity: str, session=Depends(db), user=Depends(current_user)):
     return {'items': [serialize(r) for r in rows[:5]], 'method': 'Тот же тип инцидента; приоритет объекта и сезона'}
 
 @app.post(api+'/predictions/what-if')
-def what_if(body: dict, session=Depends(db), user=Depends(require('dispatcher', 'analyst'))):
+def what_if(body: dict, session=Depends(db, scope='function'), user=Depends(require('dispatcher', 'analyst'))):
     request = ContextBuilder(session).build(body['object_ids'], now(), what_if={'weather.forecast.precip_mm_delta': float(body.get('precip_mm_delta', 0))})
     return provider.predict(request).model_dump(mode='json')
 
 @app.get(api+'/recommendations')
-def recommendations(session=Depends(db), user=Depends(current_user)):
+def recommendations(session=Depends(db, scope='function'), user=Depends(current_user)):
     return page(session, select(Record).where(Record.kind == 'recommendation').order_by(Record.ts.desc()), 1000)
 
 @app.patch(api+'/recommendations/{identity}')
-def recommendation_update(identity: str, body: dict, session=Depends(db), user=Depends(require('dispatcher', 'technician'))):
+def recommendation_update(identity: str, body: dict, session=Depends(db, scope='function'), user=Depends(require('dispatcher', 'technician'))):
     row = get_or_404(session, Record, identity)
     if row.kind != 'recommendation' or body.get('status') not in ('accepted', 'rejected', 'completed'):
         raise ValueError('Недопустимый статус рекомендации')
@@ -299,16 +299,16 @@ def recommendation_update(identity: str, body: dict, session=Depends(db), user=D
     return serialize(row)
 
 @app.get(api+'/evaluation/metrics')
-def quality(incident_type: str | None=None, model_id: str | None=None, model_version: str | None=None, role: str | None=None, start: datetime | None=None, end: datetime | None=None, session=Depends(db), user=Depends(require('analyst', 'manager'))):
+def quality(incident_type: str | None=None, model_id: str | None=None, model_version: str | None=None, role: str | None=None, start: datetime | None=None, end: datetime | None=None, session=Depends(db, scope='function'), user=Depends(require('analyst', 'manager'))):
     return evaluate(session, incident_type, model_id, model_version, role, start, end)
 
 @app.get(api+'/evaluation/model-comparison')
-def comparison(session=Depends(db), user=Depends(require('analyst', 'manager'))):
+def comparison(session=Depends(db, scope='function'), user=Depends(require('analyst', 'manager'))):
     groups = session.execute(select(Prediction.model_id, Prediction.model_version, Prediction.role).distinct()).all()
     return [{'model_id': m, 'version': v, 'role': r, 'metrics': evaluate(session, model_id=m, model_version=v, role=r)} for m, v, r in groups]
 
 @app.post(api+'/evaluation/backtest')
-def backtest(body: dict, session=Depends(db), user=Depends(require('analyst'))):
+def backtest(body: dict, session=Depends(db, scope='function'), user=Depends(require('analyst'))):
     start, end = parse_date(body['start']), parse_date(body['end'])
     step = max(1, int(body.get('step_hours', 24)))
     if end <= start or (end-start).total_seconds()/3600/step > 366:
@@ -320,7 +320,7 @@ def backtest(body: dict, session=Depends(db), user=Depends(require('analyst'))):
     return {'predictions': count, 'metrics': evaluate(session, role='backtest', start=start, end=end)}
 
 @app.post(api+'/evaluation/validate-upload')
-def validate_upload(body: dict, session=Depends(db), user=Depends(require('analyst'))):
+def validate_upload(body: dict, session=Depends(db, scope='function'), user=Depends(require('analyst'))):
     ingestion = ingest_events(session, body['events'])
     ods(body['labels'], session, user)
     for coverage in body['coverage']:
@@ -354,11 +354,11 @@ def shadow(identity: str, user=Depends(require('analyst'))):
     return provider.shadow(identity)
 
 @app.get(api+'/settings')
-def read_settings(session=Depends(db), user=Depends(current_user)):
+def read_settings(session=Depends(db, scope='function'), user=Depends(current_user)):
     return {**settings(session), 'reasons': config('reasons'), 'ml_mode': provider.mode}
 
 @app.put(api+'/settings')
-def save_settings(body: dict, session=Depends(db), user=Depends(require('admin'))):
+def save_settings(body: dict, session=Depends(db, scope='function'), user=Depends(require('admin'))):
     allowed = set(config('settings')) | {'ml_mode'}
     if set(body)-allowed:
         raise ValueError('Неизвестные параметры')
@@ -375,19 +375,19 @@ def save_settings(body: dict, session=Depends(db), user=Depends(require('admin')
     return merged
 
 @app.get(api+'/admin/users')
-def users(session=Depends(db), user=Depends(require('admin'))):
+def users(session=Depends(db, scope='function'), user=Depends(require('admin'))):
     return [{'username': u.username, 'role': u.role} for u in session.scalars(select(User))]
 
 @app.get(api+'/admin/audit')
-def audit(limit: int=100, offset: int=0, session=Depends(db), user=Depends(require('admin'))):
+def audit(limit: int=100, offset: int=0, session=Depends(db, scope='function'), user=Depends(require('admin'))):
     return page(session, select(Audit).order_by(Audit.id.desc()), limit, offset)
 
 @app.get(api+'/notifications')
-def notifications(session=Depends(db), user=Depends(current_user)):
+def notifications(session=Depends(db, scope='function'), user=Depends(current_user)):
     return page(session, select(Record).where(Record.kind == 'notification').order_by(Record.ts.desc()), 100)
 
 @app.post(api+'/notifications/{identity}/read')
-def mark_read(identity: str, session=Depends(db), user=Depends(current_user)):
+def mark_read(identity: str, session=Depends(db, scope='function'), user=Depends(current_user)):
     row = get_or_404(session, Record, identity)
     if row.kind != 'notification':
         raise HTTPException(404, 'Уведомление не найдено')
@@ -413,33 +413,33 @@ async def stream(request: Request, user=Depends(current_user)):
 
 @app.get(api+'/analytics/incident-stats')
 @app.get(api+'/analytics/seasonality')
-def stats(session=Depends(db), user=Depends(current_user)):
+def stats(session=Depends(db, scope='function'), user=Depends(current_user)):
     counts = defaultdict(int)
     for r in session.scalars(select(Record).where(Record.kind == 'label')):
         counts[(r.data['incident_type'], utc(r.ts).month)] += 1
     return {'items': [{'incident_type': k[0], 'month': k[1], 'count': v} for k, v in sorted(counts.items())]}
 
 @app.post(api+'/datasets/export')
-def dataset_export(session=Depends(db), user=Depends(require('analyst'))):
+def dataset_export(session=Depends(db, scope='function'), user=Depends(require('analyst'))):
     from backend.exports import export_dataset
     return export_dataset(session)
 
 @app.get(api+'/datasets/{identity}')
-def dataset(identity: str, session=Depends(db), user=Depends(require('analyst'))):
+def dataset(identity: str, session=Depends(db, scope='function'), user=Depends(require('analyst'))):
     return serialize(get_or_404(session, Record, identity))
 
 @app.post(api+'/feedback/export')
-def feedback(session=Depends(db), user=Depends(require('analyst'))):
+def feedback(session=Depends(db, scope='function'), user=Depends(require('analyst'))):
     return {'schema_version': '1.0', 'items': [serialize(d) for d in session.scalars(select(Decision))]}
 
 @app.get(api+'/reports/{kind}')
-def report(kind: str, format: Literal['pdf', 'xlsx']='xlsx', session=Depends(db), user=Depends(require('analyst', 'manager'))):
+def report(kind: str, format: Literal['pdf', 'xlsx']='xlsx', session=Depends(db, scope='function'), user=Depends(require('analyst', 'manager'))):
     from backend.exports import create_report
     path = create_report(session, kind, format)
     return FileResponse(path, filename=path.name)
 
 @app.post(api+'/recommendations/{identity}/draft-order')
-def draft_order(identity: str, format: Literal['json', 'pdf']='json', session=Depends(db), user=Depends(require('dispatcher'))):
+def draft_order(identity: str, format: Literal['json', 'pdf']='json', session=Depends(db, scope='function'), user=Depends(require('dispatcher'))):
     row = get_or_404(session, Record, identity)
     if row.kind != 'recommendation':
         raise ValueError('Не рекомендация')
@@ -452,7 +452,7 @@ def draft_order(identity: str, format: Literal['json', 'pdf']='json', session=De
     return FileResponse(path, filename=path.name)
 
 @app.post(api+'/demo/{scenario}')
-def demo(scenario: Literal['fire', 'flood'], session=Depends(db), user=Depends(require('dispatcher', 'analyst'))):
+def demo(scenario: Literal['fire', 'flood'], session=Depends(db, scope='function'), user=Depends(require('dispatcher', 'analyst'))):
     if os.getenv('AUTH_MODE', 'demo') != 'demo':
         raise HTTPException(403, 'Демо отключено')
     from tools.emulator.scenarios import inject_scenario
