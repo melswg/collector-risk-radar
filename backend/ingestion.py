@@ -13,7 +13,7 @@ from backend.db import Channel, Event, Object, Record, utc
 from backend.settings import config
 
 TYPES = {2: 'contact-unlock-norm', 3: 'switch', 4: 'smoke', 5: 'movement', 6: 'gas', 7: 'pump', 8: 'fan', 9: 'phase', 12: 'temperature'}
-ALIASES = {'ИД записи журнала': 'id', 'ИД канала данных': 'channel_id', 'ИД типа канала': 'type_id', 'ИД типа канала данных': 'type_id', 'Текущее значение': 'value', 'Дата записи': 'ts', 'Тег в дереве объектов': 'tag'}
+ALIASES = {'ИД записи журнала': 'id', 'ИД канала данных': 'channel_id', 'ИД типа канала': 'type_id', 'ИД типа канала данных': 'type_id', 'Текущее значение': 'value', 'Дата записи': 'ts', 'Тег в дереве объектов': 'tag', 'ид_события': 'id', 'ид_канала_данных': 'channel_id', 'значение_датчика': 'value'}
 PII = [r'[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}', r'(?<!\d)(?:\+7|8)[\s(-]*\d{3}[\s)-]*\d{3}[\s-]*\d{2}[\s-]*\d{2}(?!\d)', r'\b\d{4}\s+\d{6}\b', r'\b[А-ЯЁ][а-яё]+\s+[А-ЯЁ][а-яё]+\s+[А-ЯЁ][а-яё]+(?:вич|вна)\b']
 
 
@@ -43,6 +43,14 @@ def number(value) -> float:
     if not math.isfinite(result):
         raise ValueError('Число не конечное')
     return result
+
+
+def source_alarm(value) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str) and value.strip().lower() in ('true', 'false'):
+        return value.strip().lower() == 'true'
+    raise ValueError('Неверное значение тревожное')
 
 
 def read_rows(content: bytes, filename: str) -> list[dict]:
@@ -91,6 +99,10 @@ def ingest_events(session, rows: list[dict]) -> dict:
         work_map.setdefault(w.object_id, []).append(w.data)
     for index, row in enumerate(rows, 1):
         try:
+            source = row
+            row = {ALIASES.get(key, key): value for key, value in source.items()}
+            if 'ts' not in row and 'дата' in row and 'время' in row:
+                row['ts'] = f"{row['дата']} {row['время']}"
             channel_id = int(number(row['channel_id']))
             channel = session.get(Channel, channel_id)
             if channel is None:
@@ -103,9 +115,16 @@ def ingest_events(session, rows: list[dict]) -> dict:
                 result['duplicates'] += 1
                 continue
             expected = is_expected(ts, work_map.get(channel.object_id, []), config('settings')['planned_work_tolerance_minutes'])
-            alarm = value > 45 if channel.type_code == 'temperature' else value < 0.5 if channel.type_code in ('phase', 'fan') else value > 0.5
+            if 'тревожное' in row:
+                alarm = source_alarm(row['тревожное'])
+            elif channel.type_code == 'temperature':
+                alarm = value > 45
+            elif channel.type_code in ('phase', 'fan'):
+                alarm = value < 0.5
+            else:
+                alarm = value > 0.5
             event = 'Обнаружено движение' if alarm and channel.type_code == 'movement' else 'Предупреждение' if alarm else 'Норма'
-            session.add(Event(id=identity, channel_id=channel_id, object_id=channel.object_id, ts=ts, value=value, expected=expected, event=event, severity='warning' if alarm else 'normal', raw={k: str(v) for k, v in row.items()}))
+            session.add(Event(id=identity, channel_id=channel_id, object_id=channel.object_id, ts=ts, value=value, expected=expected, event=event, severity='warning' if alarm else 'normal', raw={k: str(v) for k, v in source.items()}))
             if channel.type_code == 'temperature' and not -50 <= value <= 150:
                 result['warnings'].append({'row': index, 'message': 'Выброс температуры сохранён для проверки'})
             session.flush()

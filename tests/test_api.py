@@ -53,6 +53,19 @@ def test_import_export_settings(client):
     assert client.post('/api/v1/feedback/export',json={}).status_code==200
     assert client.get('/api/v1/admin/audit').json()['total']>0
 
+
+def test_ml_journal_csv_upload(client):
+    from backend.db import Channel, Session
+
+    with Session.begin() as session:
+        session.add(Channel(id=120473, object_id='obj-000001', type_id=5, type_code='movement'))
+    content = ('"ид_события","ид_канала_данных","дата","время","тревожное","значение_датчика"\n'
+               '4524243389,120473,"2026-08-01","03:09:27",false,"28"\n').encode()
+    response = client.post('/api/v1/import/files', files={'file': ('journal.csv', content, 'text/csv')})
+    assert response.status_code == 200, response.text
+    assert response.json()['data']['accepted'] == 1
+    assert response.json()['data']['errors'] == []
+
 def test_xml_pii(client):
     xml='<events><event><id>xml1</id><channel_id>12</channel_id><value>25,00</value><ts>19.09.2026 12:15</ts></event></events>'
     assert client.post('/api/v1/ingest/events',content=xml,headers={'Content-Type':'application/xml'}).json()['accepted']==1

@@ -37,6 +37,31 @@ def test_pii_idempotency(populated):
         ingest_events(populated,[{**rows[0],'comment':'+7 999 123-45-67'}])
     assert ingest_events(populated,[{'channel_id':999,'ts':'bad','value':2}])['errors']
 
+
+def test_ml_journal_rows_keep_source_alarm(populated):
+    from sqlalchemy import select
+    from backend.db import Channel, Event
+
+    content = ('"ид_события","ид_канала_данных","дата","время","тревожное","значение_датчика"\n'
+               '4524243389,120473,"2026-08-01","03:09:27",false,"28"\n'
+               '4524253385,120475,"2026-08-01","03:19:55",false,"29"\n').encode()
+    rows = read_rows(content, 'journal.csv')
+    assert ingest_events(populated, rows)['errors'][0]['message'] == 'Неизвестный канал'
+
+    populated.add(Channel(id=120473, object_id='obj-000001', type_id=5, type_code='movement'))
+    populated.add(Channel(id=120475, object_id='obj-000001', type_id=5, type_code='movement'))
+    populated.flush()
+    result = ingest_events(populated, rows)
+    assert result['accepted'] == 2 and not result['errors']
+    events = populated.scalars(select(Event).where(Event.id.in_(['4524243389', '4524253385'])).order_by(Event.id)).all()
+    assert [event.ts.hour for event in events] == [0, 0]
+    assert [event.value for event in events] == [28, 29]
+    assert all(event.severity == 'normal' for event in events)
+    assert all(event.raw['тревожное'] == 'false' for event in events)
+    text_state = {**rows[0], 'id': 'text-state', 'value': 'Неопределен'}
+    result = ingest_events(populated, [text_state])
+    assert result['accepted'] == 0 and len(result['errors']) == 1
+
 def test_health():
     t=now();points=[(t-timedelta(minutes=5*i),20) for i in range(12)]
     assert sensor_health(points,t)['flatline']
