@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS archive.events (
  channel_id integer NOT NULL,
  object_id text NOT NULL,
  ts timestamptz NOT NULL,
- value double precision NOT NULL,
+ value double precision,
  expected boolean NOT NULL,
  event text NOT NULL,
  severity text NOT NULL,

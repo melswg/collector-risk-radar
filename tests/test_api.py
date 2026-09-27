@@ -60,11 +60,16 @@ def test_ml_journal_csv_upload(client):
     with Session.begin() as session:
         session.add(Channel(id=120473, object_id='obj-000001', type_id=5, type_code='movement'))
     content = ('"ид_события","ид_канала_данных","дата","время","тревожное","значение_датчика"\n'
-               '4524243389,120473,"2026-08-01","03:09:27",false,"28"\n').encode()
+               '4524243389,120473,"2026-08-01","03:09:27",false,"28"\n'
+               '4524243390,120473,"2026-08-01","03:10:27",true,"Неопределен"\n').encode()
     response = client.post('/api/v1/import/files', files={'file': ('journal.csv', content, 'text/csv')})
     assert response.status_code == 200, response.text
-    assert response.json()['data']['accepted'] == 1
+    assert response.json()['data']['accepted'] == 2
     assert response.json()['data']['errors'] == []
+    events = client.get('/api/v1/events?object_id=obj-000001').json()['items']
+    text_state = next(event for event in events if event['id'] == '4524243390')
+    assert text_state['value'] is None
+    assert text_state['raw']['value'] == 'Неопределен'
 
 def test_xml_pii(client):
     xml='<events><event><id>xml1</id><channel_id>12</channel_id><value>25,00</value><ts>19.09.2026 12:15</ts></event></events>'

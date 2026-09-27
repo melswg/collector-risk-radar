@@ -58,9 +58,16 @@ def test_ml_journal_rows_keep_source_alarm(populated):
     assert [event.value for event in events] == [28, 29]
     assert all(event.severity == 'normal' for event in events)
     assert all(event.raw['тревожное'] == 'false' for event in events)
-    text_state = {**rows[0], 'id': 'text-state', 'value': 'Неопределен'}
+    text_state = {**rows[0], 'id': 'text-state', 'value': 'Неопределен', 'тревожное': 'true'}
     result = ingest_events(populated, [text_state])
-    assert result['accepted'] == 0 and len(result['errors']) == 1
+    assert result['accepted'] == 1 and not result['errors']
+    state = populated.get(Event, 'text-state')
+    assert state.value is None
+    assert state.raw['value'] == 'Неопределен'
+    assert state.severity == 'warning'
+    context = ContextBuilder(populated).build(['obj-000001'], parse_date('2026-08-01 03:10:00'))
+    movement = next(c for c in context.objects[0].channels if c.channel_id == 120473)
+    assert any(value is None for _, value in movement.series.points)
 
 def test_health():
     t=now();points=[(t-timedelta(minutes=5*i),20) for i in range(12)]

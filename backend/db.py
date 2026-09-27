@@ -40,7 +40,7 @@ class Event(Base):
     channel_id: Mapped[int] = mapped_column(ForeignKey('channels.id'), index=True)
     object_id: Mapped[str] = mapped_column(ForeignKey('objects.id'), index=True)
     ts: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
-    value: Mapped[float] = mapped_column(Float)
+    value: Mapped[float | None] = mapped_column(Float)
     expected: Mapped[bool] = mapped_column(default=False)
     event: Mapped[str] = mapped_column(String, default='Норма')
     severity: Mapped[str] = mapped_column(String, default='normal')

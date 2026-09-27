@@ -28,7 +28,7 @@ class ContextBuilder:
             channel_contexts = []
             for c in channels:
                 points = [(utc(e.ts), e.value) for e in events if e.channel_id == c.id]
-                neighbors = [e.value for e in events if e.channel_id != c.id and e.channel_id in [n.id for n in channels if n.type_code == c.type_code] and utc(e.ts) >= as_of-timedelta(hours=1)]
+                neighbors = [e.value for e in events if e.value is not None and e.channel_id != c.id and e.channel_id in [n.id for n in channels if n.type_code == c.type_code] and utc(e.ts) >= as_of-timedelta(hours=1)]
                 health = sensor_health(points, as_of, c.type_code, neighbor_mean=sum(neighbors)/len(neighbors) if neighbors else None)
                 channel_contexts.append(dict(channel_id=c.id, type_id=c.type_id, type_code=c.type_code, series={'points': points, 'from': (as_of-timedelta(hours=settings['context_hours'])).isoformat(), 'to': as_of.isoformat()}, health=health))
             observed = [r.data for r in weather if r.data.get('kind') == 'observed' and as_of-timedelta(hours=24) <= utc(r.ts) <= as_of]

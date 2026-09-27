@@ -1,6 +1,10 @@
 import importlib
 from pathlib import Path
 from types import SimpleNamespace
+import pytest
+from alembic.migration import MigrationContext
+from alembic.operations import Operations
+from sqlalchemy import create_engine, inspect, text
 
 
 def test_initial_migration_loads_backend_schema(monkeypatch):
@@ -14,3 +18,16 @@ def test_initial_migration_loads_backend_schema(monkeypatch):
 
     assert len(statements) == 1
     assert str(statements[0]) == Path('backend/schema.sql').read_text()
+
+
+def test_text_value_migration_upgrades_existing_sqlite(monkeypatch):
+    migration = importlib.import_module('backend.migrations.versions.0002_text_sensor_values')
+    engine = create_engine('sqlite://')
+    with engine.begin() as connection:
+        connection.execute(text('CREATE TABLE events (id TEXT PRIMARY KEY, value FLOAT NOT NULL)'))
+        monkeypatch.setattr(migration, 'op', Operations(MigrationContext.configure(connection)))
+        migration.upgrade()
+        assert next(c for c in inspect(connection).get_columns('events') if c['name'] == 'value')['nullable']
+        connection.execute(text("INSERT INTO events (id, value) VALUES ('text-state', NULL)"))
+        with pytest.raises(ValueError, match='текстовые события'):
+            migration.downgrade()

@@ -109,8 +109,15 @@ def ingest_events(session, rows: list[dict]) -> dict:
                 raise ValueError('Неизвестный канал')
             if row.get('type_id') and int(number(row['type_id'])) != channel.type_id:
                 raise ValueError('Тип канала не совпадает с реестром')
-            ts, value = parse_date(row['ts']), number(row['value'])
-            identity = str(row.get('id') or hashlib.sha256(f'{channel_id}:{ts.isoformat()}:{value}'.encode()).hexdigest()).replace(' ', '')
+            ts = parse_date(row['ts'])
+            raw_value = row['value']
+            try:
+                value = number(raw_value)
+            except (ValueError, TypeError):
+                value = None
+            if value is None and 'тревожное' not in row:
+                raise ValueError('Для текстового значения требуется тревожное')
+            identity = str(row.get('id') or hashlib.sha256(f'{channel_id}:{ts.isoformat()}:{raw_value}'.encode()).hexdigest()).replace(' ', '')
             if session.get(Event, identity):
                 result['duplicates'] += 1
                 continue
@@ -123,9 +130,14 @@ def ingest_events(session, rows: list[dict]) -> dict:
                 alarm = value < 0.5
             else:
                 alarm = value > 0.5
-            event = 'Обнаружено движение' if alarm and channel.type_code == 'movement' else 'Предупреждение' if alarm else 'Норма'
+            if value is None:
+                event = str(raw_value)
+            elif alarm and channel.type_code == 'movement':
+                event = 'Обнаружено движение'
+            else:
+                event = 'Предупреждение' if alarm else 'Норма'
             session.add(Event(id=identity, channel_id=channel_id, object_id=channel.object_id, ts=ts, value=value, expected=expected, event=event, severity='warning' if alarm else 'normal', raw={k: str(v) for k, v in source.items()}))
-            if channel.type_code == 'temperature' and not -50 <= value <= 150:
+            if channel.type_code == 'temperature' and value is not None and not -50 <= value <= 150:
                 result['warnings'].append({'row': index, 'message': 'Выброс температуры сохранён для проверки'})
             session.flush()
             result['accepted'] += 1
