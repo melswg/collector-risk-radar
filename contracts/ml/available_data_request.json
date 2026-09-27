@@ -1,19 +1,38 @@
 {
   "contract_version": "1.0",
-  "request_id": "available-data-object-28",
-  "as_of": "2026-09-27T00:00:00Z",
+  "request_id": "available-data-object-20",
+  "as_of": "2026-08-01T06:11:40Z",
   "horizons_h": [24],
   "incident_types": ["fire", "flood", "intrusion_false_alarm", "sensor_failure"],
   "objects": [
     {
-      "object_id": "28",
-      "tag": "28",
+      "object_id": "20",
+      "tag": "20",
       "meta": {
-        "display_name": "объект Вита",
+        "display_name": "объект Фита",
         "object_kind": "guardObject",
-        "parent_object_id": "9"
+        "parent_object_id": "6"
       },
-      "channels": []
+      "channels": [
+        {
+          "channel_id": 120473,
+          "type_id": 12,
+          "type_code": "temperature",
+          "series": {"points": [["2026-08-01T00:09:27Z", 28.0]]}
+        },
+        {
+          "channel_id": 120475,
+          "type_id": 12,
+          "type_code": "temperature",
+          "series": {"points": [["2026-08-01T00:19:55Z", 29.0]]}
+        },
+        {
+          "channel_id": 120466,
+          "type_id": 12,
+          "type_code": "temperature",
+          "series": {"points": [["2026-08-01T06:11:40Z", 25.0]]}
+        }
+      ]
     }
   ]
 }
