@@ -14,7 +14,7 @@ def upgrade():
     if bind.dialect.name != 'postgresql':
         return
     from pathlib import Path
-    sql = (Path(__file__).parents[3]/'schema.sql').read_text()
+    sql = (Path(__file__).parents[2]/'schema.sql').read_text()
     bind.execute(text(sql))
 
 
