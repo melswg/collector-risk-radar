@@ -1,0 +1,19 @@
+{
+  "contract_version": "1.0",
+  "request_id": "available-data-object-28",
+  "as_of": "2026-09-27T00:00:00Z",
+  "horizons_h": [24],
+  "incident_types": ["fire", "flood", "intrusion_false_alarm", "sensor_failure"],
+  "objects": [
+    {
+      "object_id": "28",
+      "tag": "28",
+      "meta": {
+        "display_name": "объект Вита",
+        "object_kind": "guardObject",
+        "parent_object_id": "9"
+      },
+      "channels": []
+    }
+  ]
+}
