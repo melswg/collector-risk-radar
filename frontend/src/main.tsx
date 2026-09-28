@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
 import 'leaflet/dist/leaflet.css';
 import './style.css';
 import './atlas.css';
@@ -11,6 +10,8 @@ import './workplace.css';
 import './control-room.css';
 import './reference-direction.css';
 import './approved-shell.css';
+import './role-workspaces.css';
 import './role-approved.css';
 import './approved-dispatch.css';
+import App from './App';
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);

@@ -17,7 +17,7 @@
 
 /* A civic field notebook: warm paper outside, electric survey drawing inside. */
 .shell--control-room,
-.shell:has(.role-workspace) {
+.shell:not(.approved-shell):has(.role-workspace) {
   --canvas: #f0ede6;
   --surface: #f9f7f1;
   --raised: #e8e3d8;
@@ -32,9 +32,9 @@
   background: var(--canvas);
   font-family: 'Commissioner', sans-serif;
 }
-.shell--control-room *, .shell:has(.role-workspace) * {box-sizing: border-box}
+.shell--control-room *, .shell:not(.approved-shell):has(.role-workspace) * {box-sizing: border-box}
 .shell--control-room .workplace {font-family:'Commissioner',sans-serif}
-.shell--control-room .content, .shell:has(.role-workspace) .content {background: var(--canvas)}
+.shell--control-room .content, .shell:not(.approved-shell):has(.role-workspace) .content {background: var(--canvas)}
 .shell--control-room .sidebar {
   height: 72px;
   background: #f9f7f1;
@@ -238,23 +238,23 @@
 @keyframes deskEnter {from {opacity:0; transform:translateY(13px)} to {opacity:1; transform:translateY(0)}}
 @keyframes surveyFlow {to {stroke-dashoffset:-80}}
 
-.shell:has(.role-workspace) .sidebar {background: #f9f7f1; color: #241f1a; border-color: #cfc8bc}
-.shell:has(.role-workspace) .sidebar .wordmark,.shell:has(.role-workspace) .sidebar .user {color: #241f1a}
-.shell:has(.role-workspace) .sidebar nav button {color: #61584e}
-.shell:has(.role-workspace) .sidebar nav button.active {background: #dce6f8; color: #205bc9; box-shadow: inset 3px 0 #205bc9}
-.shell:has(.role-workspace) main {background: var(--canvas)}
-.shell:has(.role-workspace) header {background: #f9f7f1; color: #241f1a; border-color: #cfc8bc}
-.shell:has(.role-workspace) .page-title h1 {color: #241f1a; font-family: 'Commissioner',sans-serif}
-.shell:has(.role-workspace) .role-workspace.rw {--rw-bg:#f9f7f1; --rw-panel:#eee9df; --rw-panel-alt:#e5dfd3; --rw-line:#c9beae; --rw-text:#2b2520; --rw-muted:#6b6156; --rw-blue:#205bc9; border-color:#c9beae; font-family:'Commissioner',sans-serif}
-.shell:has(.role-workspace) .role-workspace.rw-technician {--rw-blue:#a65b38}
-.shell:has(.role-workspace) .role-workspace.rw-analyst {--rw-blue:#1d668a}
-.shell:has(.role-workspace) .rw .rw-head {background:#e7e0d5}
-.shell:has(.role-workspace) .rw .rw-head h2 {font-family:'Commissioner',sans-serif; font-weight:750}
-.shell:has(.role-workspace) .rw-route {background:#eee9df}
-.shell:has(.role-workspace) .rw-primary {background:#205bc9; border-color:#205bc9}
-.shell:has(.role-workspace) .rw-technician .rw-primary {background:#a65b38; border-color:#a65b38}
-.shell:has(.role-workspace) .rw-route-note {background:#f1e1cc; color:#583b25; border-color:#c29a6d}
-.shell:has(.role-workspace) .rw-route li.current>b {background:#a65b38; border-color:#a65b38}
+.shell:not(.approved-shell):has(.role-workspace) .sidebar {background: #f9f7f1; color: #241f1a; border-color: #cfc8bc}
+.shell:not(.approved-shell):has(.role-workspace) .sidebar .wordmark,.shell:not(.approved-shell):has(.role-workspace) .sidebar .user {color: #241f1a}
+.shell:not(.approved-shell):has(.role-workspace) .sidebar nav button {color: #61584e}
+.shell:not(.approved-shell):has(.role-workspace) .sidebar nav button.active {background: #dce6f8; color: #205bc9; box-shadow: inset 3px 0 #205bc9}
+.shell:not(.approved-shell):has(.role-workspace) main {background: var(--canvas)}
+.shell:not(.approved-shell):has(.role-workspace) header {background: #f9f7f1; color: #241f1a; border-color: #cfc8bc}
+.shell:not(.approved-shell):has(.role-workspace) .page-title h1 {color: #241f1a; font-family: 'Commissioner',sans-serif}
+.shell:not(.approved-shell):has(.role-workspace) .role-workspace.rw {--rw-bg:#f9f7f1; --rw-panel:#eee9df; --rw-panel-alt:#e5dfd3; --rw-line:#c9beae; --rw-text:#2b2520; --rw-muted:#6b6156; --rw-blue:#205bc9; border-color:#c9beae; font-family:'Commissioner',sans-serif}
+.shell:not(.approved-shell):has(.role-workspace) .role-workspace.rw-technician {--rw-blue:#a65b38}
+.shell:not(.approved-shell):has(.role-workspace) .role-workspace.rw-analyst {--rw-blue:#1d668a}
+.shell:not(.approved-shell):has(.role-workspace) .rw .rw-head {background:#e7e0d5}
+.shell:not(.approved-shell):has(.role-workspace) .rw .rw-head h2 {font-family:'Commissioner',sans-serif; font-weight:750}
+.shell:not(.approved-shell):has(.role-workspace) .rw-route {background:#eee9df}
+.shell:not(.approved-shell):has(.role-workspace) .rw-primary {background:#205bc9; border-color:#205bc9}
+.shell:not(.approved-shell):has(.role-workspace) .rw-technician .rw-primary {background:#a65b38; border-color:#a65b38}
+.shell:not(.approved-shell):has(.role-workspace) .rw-route-note {background:#f1e1cc; color:#583b25; border-color:#c29a6d}
+.shell:not(.approved-shell):has(.role-workspace) .rw-route li.current>b {background:#a65b38; border-color:#a65b38}
 
 @media(max-width:1100px) {
   .shell--control-room .sidebar .wordmark {flex-basis:230px; font-size:19px}
