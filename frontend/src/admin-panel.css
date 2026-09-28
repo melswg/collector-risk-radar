@@ -1,0 +1,16 @@
+.approved-shell .admin-console{border:1px solid #c5d1e8;background:#fff;color:#394d8c;margin-bottom:24px}
+.approved-shell .ac-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding:28px}
+.approved-shell .ac-heading span{font-size:11px;letter-spacing:.06em}
+.approved-shell .ac-heading h2{font-size:28px;font-weight:500;margin:10px 0}
+.approved-shell .admin-console p{font-size:14px;line-height:1.6;color:#5d7096;margin:10px 0 18px}
+.approved-shell .ac-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin:0;padding:24px 28px;background:#f1f7fd;border-block:1px solid #c5d1e8}
+.approved-shell .ac-metrics dt{font-size:13px;line-height:1.5}.approved-shell .ac-metrics dd{font-size:22px;margin:12px 0 0}
+.approved-shell .ac-settings{display:grid;grid-template-columns:1fr 1fr}.approved-shell .ac-settings form,.approved-shell .ac-section{padding:28px;min-width:0}
+.approved-shell .ac-settings form+form{border-left:1px solid #c5d1e8}.approved-shell .ac-section{border-top:1px solid #c5d1e8}
+.approved-shell .admin-console h3{font-size:20px;font-weight:500;margin:0 0 18px}.approved-shell .admin-console label{font-size:13px}
+.approved-shell .admin-console :is(input,select){width:100%;background:#fff;color:#394d8c;border-color:#bccbe3;min-height:44px}
+.approved-shell .ac-thresholds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.approved-shell .ac-model{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid #dce5f3;padding:16px 0}.approved-shell .ac-model h4{font-size:16px;font-weight:500;margin:0}.approved-shell .ac-model>div{min-width:0;overflow-wrap:anywhere}.approved-shell .ac-actions{display:flex;flex-wrap:wrap;gap:8px}
+.approved-shell .ac-error,.approved-shell .ac-notice{padding:16px 28px;margin:0!important;background:#fff5ee;color:#924b22!important}.approved-shell .ac-notice{background:#f1f7fd;color:#394d8c!important}
+.approved-shell .admin-console td{overflow-wrap:anywhere}.approved-shell .admin-console button{min-height:44px}
+@media(max-width:800px){.approved-shell .ac-heading{flex-direction:column}.approved-shell .ac-metrics,.approved-shell .ac-settings{grid-template-columns:1fr}.approved-shell .ac-settings form+form{border-left:0;border-top:1px solid #c5d1e8}.approved-shell .ac-heading,.approved-shell .ac-metrics,.approved-shell .ac-settings form,.approved-shell .ac-section{padding:20px}.approved-shell .ac-model{flex-direction:column}.approved-shell .ac-thresholds{grid-template-columns:1fr}}
