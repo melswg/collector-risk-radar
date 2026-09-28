@@ -1,0 +1,53 @@
+.critical-alert {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  overflow: auto;
+  color: #fff9ed;
+  background: #9e1b18;
+  font-family: 'Commissioner', system-ui, sans-serif;
+}
+.critical-alert__frame {position: relative; display: flex; flex-direction: column; min-height: 100vh; padding: 0 clamp(24px,5vw,84px)}
+.critical-alert__header, .critical-alert__footer {display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 72px; border-bottom: 1px solid #ffd6c480}
+.critical-alert__brand, .critical-alert__mode, .critical-alert__footer {font-size: 11px; font-weight: 700; letter-spacing: .11em}
+.critical-alert__brand {display: inline-flex; align-items: center; gap: 13px}
+.critical-alert__brand-mark {display: block; width: 16px; height: 16px; background: #fff8e8}
+.critical-alert__mode {padding: 10px 12px; border: 1px solid #ffe3cfaa}
+.critical-alert__main {display: grid; grid-template-columns: minmax(0,1fr); align-items: center; flex: 1; min-height: 520px}
+.critical-alert__content {max-width: 1120px; padding: 55px 0 65px}
+.critical-alert__eyebrow {display: flex; align-items: center; gap: 10px; font-size: clamp(11px,1.1vw,14px); font-weight: 800; letter-spacing: .11em}
+.critical-alert h2 {margin: 24px 0 0; font-size: clamp(38px,4.8vw,76px); line-height: 1.02; letter-spacing: -.035em; font-weight: 700}
+.critical-alert h2 em {font-style: normal; color: rgba(255,255,255,.86)}
+.critical-alert__lead {margin: 25px 0 42px; font-size: clamp(17px,1.9vw,26px); line-height: 1.12; font-weight: 500; letter-spacing: -.035em}
+.critical-alert__facts {display: grid; grid-template-columns: 1.5fr 1fr .7fr; border-top: 1px solid #ffd6c480; border-bottom: 1px solid #ffd6c480}
+.critical-alert__facts>div {min-width: 0; display: grid; grid-template-columns: 22px 1fr; column-gap: 11px; padding: 18px 16px 20px 0}
+.critical-alert__facts>div+div {padding-left: 18px; border-left: 1px solid #ffd6c480}
+.critical-alert__facts svg, .critical-alert__fact-icon {grid-row: 1 / span 2; margin-top: 2px}
+.critical-alert__fact-icon {font-size: 16px; font-weight: 800}
+.critical-alert__facts span:not(.critical-alert__fact-icon) {font-size: 10px; font-weight: 700; letter-spacing: .09em; color: #ffddca}
+.critical-alert__facts strong {margin-top: 5px; font-size: clamp(14px,1.3vw,18px); font-weight: 650; overflow-wrap: anywhere}
+.critical-alert__qualification {max-width: 680px; margin: 22px 0 30px; font-size: 14px; line-height: 1.5; color: #ffe5d4}
+.critical-alert__actions {display: flex; gap: 14px; flex-wrap: wrap}
+.critical-alert__actions button, .critical-alert__actions a {min-height: 58px; padding: 14px 22px; border-radius: 4px; font: 700 14px 'Commissioner',system-ui,sans-serif; cursor: pointer; text-decoration:none}
+.critical-alert__primary {display: flex; align-items: center; justify-content: space-between; gap: 30px; min-width: 290px; background: #fff8ec; border: 1px solid #fff8ec; color: #8c1717}
+.critical-alert__primary:hover {background: #ffe5ce}
+.critical-alert__secondary {display:flex; align-items:center; justify-content:center; background: transparent; border: 1px solid #ffe0d0a3; color: #fff8ec}
+.critical-alert__secondary:hover {background: #ffffff1c}
+.critical-alert__actions button:focus-visible, .critical-alert__actions a:focus-visible {outline: 3px solid #fff; outline-offset: 3px}
+.critical-alert__footer {min-height: 59px; border-top: 1px solid #ffd6c480; border-bottom: 0; color: #ffe0ce}
+@media(max-width: 760px) {
+  .critical-alert__frame {padding-inline: 20px}
+  .critical-alert__header {min-height: 64px}
+  .critical-alert__brand {max-width: 180px; line-height: 1.35}
+  .critical-alert__mode {font-size: 9px}
+  .critical-alert__main {display: block; min-height: 0}
+  .critical-alert__content {padding: 55px 0 42px}
+  .critical-alert h2 {font-size: clamp(54px,12vw,86px)}
+  .critical-alert__lead {margin-bottom: 28px}
+  .critical-alert__facts {grid-template-columns: 1fr}
+  .critical-alert__facts>div {padding: 12px 0}
+  .critical-alert__facts>div+div {padding-left: 0; border-left: 0; border-top: 1px solid #ffd6c480}
+  .critical-alert__actions button, .critical-alert__actions a {width: 100%; justify-content: center}
+  .critical-alert__footer {font-size: 9px; line-height: 1.4}
+}
+@media(prefers-reduced-motion: reduce) {.critical-alert, .critical-alert * {animation: none!important; transition: none!important}}

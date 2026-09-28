@@ -1,0 +1,129 @@
+.tunnel-scene {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 420px;
+  overflow: hidden;
+  color: #eaf1fb;
+  background: #071321;
+  border: 1px solid #34465c;
+  font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+}
+
+.tunnel-scene__head,
+.tunnel-scene__foot {display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 11px 18px;}
+.tunnel-scene__head {border-bottom: 1px solid #34465c;}
+.tunnel-scene__eyebrow,
+.tunnel-scene__count,
+.tunnel-scene__map-label,
+.tunnel-scene__slot,
+.tunnel-scene__foot,
+.tunnel-scene__focus-readout > span {font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .07em;}
+.tunnel-scene__eyebrow {color: #a9c1df;}
+.tunnel-scene__head h3 {margin: 3px 0 0; font-size: 17px; font-weight: 600; letter-spacing: -.02em;}
+.tunnel-scene__count {color: #ccd9e9; white-space: nowrap;}
+.tunnel-scene__notice {padding: 7px 18px; color: #b9cce2; background: #091a2ab8; border-bottom: 1px solid #49617b; font-size: 10px; font-weight: 400; line-height: 1.4;}
+
+.tunnel-scene__canvas {flex: 1; min-height: 350px; overflow: auto; background: #06152776;}
+.control-scene-layer .tunnel-scene .tunnel-scene__canvas {background-image: none;}
+.tunnel-scene__plan {position: relative; min-width: 560px; min-height: 500px; height: 100%;}
+.tunnel-scene__map-underlay {position: absolute; inset: 0; opacity: .18; filter: grayscale(1) contrast(1.2); pointer-events: none;}
+.tunnel-scene__routes {position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none;}
+.tunnel-scene__route-edge,
+.tunnel-scene__route-floor,
+.tunnel-scene__route-axis {fill: none; stroke-linecap: round; stroke-linejoin: round;}
+.tunnel-scene__route-edge {stroke: #8b7969; opacity: .95;}
+.tunnel-scene__route-floor {stroke: #163b57; opacity: .98;}
+.tunnel-scene__route-edge--main {stroke-width: 24;}
+.tunnel-scene__route-floor--main {stroke-width: 18;}
+.tunnel-scene__route-edge--branch {stroke-width: 14;}
+.tunnel-scene__route-floor--branch {stroke-width: 10;}
+.tunnel-scene__route-brace {fill: none; stroke: #9ab1bf; stroke-width: 2; opacity: .45;}
+.tunnel-scene__range {fill: none; stroke: #7f97b2; stroke-width: 1; stroke-dasharray: 3 9; opacity: .48;}
+.tunnel-scene__range--outer {opacity: .27;}
+.tunnel-scene__junction {fill: #163b57; stroke: #8b7969; stroke-width: 3;}
+.tunnel-scene__map-label {position: absolute; left: 18px; bottom: 14px; color: #afc8e4;}
+
+.tunnel-scene__focus-readout {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: min(238px, 40%);
+  padding: 10px 12px;
+  border: 1px solid #7f9fc4;
+  border-left: 4px solid #3388d1;
+  border-radius: 2px;
+  color: #f5f9ff;
+  background: #09192de8;
+  text-align: left;
+  cursor: pointer;
+}
+.tunnel-scene__focus-readout > span {color: #71bfff;}
+.tunnel-scene__focus-readout strong {overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px;}
+.tunnel-scene__focus-readout small {color: #d3e1f1; font-size: 11px; line-height: 1.35;}
+.tunnel-scene__focus-readout:hover {border-color: #bad9f7; background: #142b47;}
+.tunnel-scene__focus-readout:focus-visible {outline: 3px solid #a7d0ff; outline-offset: 2px;}
+
+.tunnel-scene__nodes {position: absolute; z-index: 3; inset: 0; pointer-events: none;}
+.tunnel-scene__node {
+  position: absolute;
+  display: grid;
+  grid-template-columns: 17px minmax(0, 1fr);
+  gap: 1px 5px;
+  width: 112px;
+  min-height: 49px;
+  padding: 5px 6px;
+  transform: translate(-50%, -50%);
+  border: 1px solid #8499b2;
+  border-left: 3px solid #8499b2;
+  border-radius: 2px;
+  color: #f3f7fd;
+  background: #081a2deb;
+  text-align: left;
+  box-shadow: 0 0 0 3px #071321a8;
+  pointer-events: auto;
+  cursor: default;
+}
+button.tunnel-scene__node {font: inherit; cursor: pointer;}
+button.tunnel-scene__node:hover {background: #173655; border-color: #b9d7f4;}
+button.tunnel-scene__node:focus-visible {outline: 3px solid #a2c9ff; outline-offset: 3px;}
+.tunnel-scene__node.is-focus {width: 168px; min-height: 73px; padding: 9px; border-color: #7db7ef; border-left-width: 5px; background: #0b315c; box-shadow: 0 0 0 4px #091a2a, 0 0 0 5px #5a9fe0;}
+.tunnel-scene__node.is-selected {border-color: #d2e9ff; background: #003882; box-shadow: 0 0 0 4px #071321, 0 0 0 6px #acd3ff;}
+.tunnel-scene__node--high {border-left-color: #ff997e;}
+.tunnel-scene__node--medium {border-left-color: #f4cc77;}
+.tunnel-scene__node--low,
+.tunnel-scene__node--normal {border-left-color: #8fd1d0;}
+.tunnel-scene__slot {color: #c1d4e9;}
+.tunnel-scene__node-copy {min-width: 0; display: flex; flex-direction: column; gap: 1px;}
+.tunnel-scene__node-copy strong {overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 600;}
+.tunnel-scene__node-copy small {overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #c2d4e7; font-size: 9px;}
+.tunnel-scene__node.is-focus .tunnel-scene__node-copy strong {font-size: 13px;}
+.tunnel-scene__node.is-focus .tunnel-scene__node-copy small {font-size: 10px;}
+.tunnel-scene__risk {grid-column: 1 / -1; display: flex; align-items: center; gap: 5px; min-width: 0; color: #e9f2fc; font: 600 9px 'IBM Plex Mono', ui-monospace, monospace; line-height: 1.25;}
+.tunnel-scene__node.is-focus .tunnel-scene__risk {font-size: 11px;}
+.tunnel-scene__risk > span:last-child {overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.tunnel-scene__signal {flex: 0 0 6px; width: 6px; height: 6px; background: #9cb1cc; transform: rotate(45deg);}
+.tunnel-scene__node--high .tunnel-scene__signal {background: #ff997e;}
+.tunnel-scene__node--medium .tunnel-scene__signal {background: #f4cc77;}
+.tunnel-scene__node--low .tunnel-scene__signal,
+.tunnel-scene__node--normal .tunnel-scene__signal {background: #8fd1d0;}
+.tunnel-scene__empty {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 12px 20px; color: #d8e5f4; background: #102239; border: 1px solid #8fa5bf; text-align: center;}
+.tunnel-scene__foot {align-items: flex-start; flex-wrap: wrap; padding-right: 160px; border-top: 1px solid #34465c; color: #c2d4eb; line-height: 1.5; letter-spacing: 0;}
+
+@media (max-width: 540px) {
+  .tunnel-scene__head,
+  .tunnel-scene__foot {padding-inline: 12px;}
+  .tunnel-scene__notice {padding-inline: 12px;}
+  .tunnel-scene__head h3 {font-size: 15px;}
+  .tunnel-scene__canvas {min-height: 390px; scrollbar-color: #829bbc #0a192a;}
+  .tunnel-scene__focus-readout {display: none;}
+  .tunnel-scene__foot {padding-right: 140px; font-size: 9px;}
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tunnel-scene__node,
+  .tunnel-scene__focus-readout {transition: background-color .18s ease, border-color .18s ease;}
+}

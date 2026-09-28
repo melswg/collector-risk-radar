@@ -1,0 +1,182 @@
+/* Смена: плотная инженерная консоль. Цвет подчёркивает состояние, а не украшает. */
+.shell:has(.workplace), .shell:has(.role-workspace) {
+  --canvas: #060a12;
+  --surface: #0c121d;
+  --raised: #151e2e;
+  --line: #29364a;
+  --ink: #f1f5fb;
+  --muted: #a8b7cc;
+  --accent: #6ca3ff;
+  --tint: #17345d;
+  --sidebar: #080e18;
+  --nav: #e9f1fc;
+  color: var(--ink);
+  background: var(--canvas);
+}
+.shell:has(.workplace) .content, .shell:has(.role-workspace) .content {background: var(--canvas)}
+.shell:has(.workplace) .page-title, .shell:has(.role-workspace) .page-title {margin-bottom: 12px}
+.shell:has(.workplace) .page-title h1, .shell:has(.role-workspace) .page-title h1 {font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: clamp(25px,2.8vw,38px); letter-spacing: -.04em}
+.shell:has(.workplace) .source-banner, .shell:has(.role-workspace) .source-banner {background: #101b2e; border: 1px solid #35507a; color: #e9f1fc}
+.shell:has(.workplace) .source-banner small, .shell:has(.role-workspace) .source-banner small {color: #c0cde0}
+.shell:has(.workplace) .sidebar, .shell:has(.role-workspace) .sidebar {border-color: #263246}
+.shell:has(.workplace) .sidebar .workspace, .shell:has(.role-workspace) .sidebar .workspace {background: #101b2e; border-color: #30445f}
+.shell:has(.workplace) .sidebar nav button.active, .shell:has(.role-workspace) .sidebar nav button.active {background: #173a72; color: #e9f1fc; box-shadow: inset 3px 0 #4188f7}
+.shell:has(.workplace) header, .shell:has(.role-workspace) header {border-bottom: 1px solid #29364a}
+
+.workplace {font-family: 'IBM Plex Sans', sans-serif}
+.workplace-title span, .workplace-panel-head span, .workplace-detail-label, .workplace-underbar>span, .control-kicker {font-family: 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .055em}
+.workplace-title h2 {font-weight: 600}
+.workplace-grid.has-selection {grid-template-columns: minmax(200px, 235px) minmax(0,1fr) minmax(315px, 365px); border-top: 1px solid var(--line)}
+.workplace-item.selected {background: #142947}
+.workplace-item-score.high {color: #ff9984}
+.workplace-item-score.medium {color: #e7c276}
+.workplace-map-wrap {display: flex; flex-direction: column; background: #081321}
+.workplace-map-wrap .tunnel-scene {flex: 1; min-height: 560px; border: 0}
+.control-scene-layer {position: relative; display: flex; flex: 1; min-height: 560px; isolation: isolate; overflow: hidden}
+.moscow-backdrop {position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .54; filter: grayscale(1) contrast(.95) brightness(.75) sepia(.35) hue-rotate(174deg)}
+.workplace-grid.list-closed.has-selection {grid-template-columns: minmax(0, 1fr) minmax(340px, 375px)}
+.control-scene-layer .tunnel-scene {position: relative; z-index: 1; background: #07122255}
+.control-scene-layer .tunnel-scene__canvas {background-color: #06152740; background-image: linear-gradient(#2942628a 1px, transparent 1px), linear-gradient(90deg, #2942628a 1px, transparent 1px)}
+.control-map-credit {position: absolute; z-index: 4; right: 9px; bottom: 8px; padding: 4px 5px; background: #06101be0; color: #d7e5f5; font: 9px 'IBM Plex Sans',sans-serif; text-decoration: underline}
+.workplace-map-note {position: static; flex: 0 0 auto; min-height: 32px; background: #0a1527; color: #c9d7ea; border-color: #30435e}
+.control-queue {display: flex; align-items: stretch; gap: 6px; margin: 0 0 10px; overflow-x: auto; scrollbar-width: thin}
+.control-queue>span {display: grid; align-items: center; flex: 0 0 135px; padding: 9px 12px; color: #9fb3d0; font: 600 10px 'IBM Plex Mono',monospace; letter-spacing: .08em}
+.control-queue button {position: relative; flex: 1 0 155px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-height: 60px; padding: 10px 12px; text-align: left; border: 1px solid #344761; border-radius: 2px; background: #0e1929; color: #f0f4fb}
+.control-queue button.active {border-color: #5c9aff; box-shadow: inset 0 -3px #397beb; background: #17345d}
+.control-queue button:hover {background: #1a2d47}
+.control-queue button small {color: #b8cbe4; font: 10px 'IBM Plex Mono',monospace}
+.control-queue button strong {font-size: 11px; max-width: calc(100% - 35px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap}
+.control-queue button b {position: absolute; right: 11px; bottom: 9px; color: #ffae99; font-size: 13px}
+.control-queue p {font-size: 11px; color: var(--muted)}
+.control-map-toolbar {display: flex; justify-content: flex-end; align-items: center; gap: 9px; padding: 8px 11px; background: #0a1527; border-bottom: 1px solid #30435e}
+.control-map-toolbar>div {display: flex; gap: 4px}
+.control-map-toolbar button {border: 1px solid #456384; background: #0e2038; color: #dce9fb; padding: 6px 8px; font-size: 10px; min-height: 29px}
+.control-map-toolbar button[aria-pressed=true] {background: #164a95; border-color: #71a9ff; color: white}
+.control-map-toolbar .workplace-open-list {position: static; margin-right: auto}
+.workplace-detail-main {padding: 21px 18px}
+.workplace-detail-main h3 {font-size: clamp(23px,2vw,31px); line-height: 1.08; margin-top: 10px}
+.control-incident-summary {display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 18px 0 16px}
+.control-incident-summary>div {padding: 12px; background: #111d2f; border: 1px solid #344761}
+.control-incident-summary span {display: block; color: #aebed4; font: 10px 'IBM Plex Mono',monospace}
+.control-incident-summary strong {display: block; margin-top: 6px; font-size: 24px; font-variant-numeric: tabular-nums}
+.control-incident-summary>div:first-child strong {color: #ffa38f}
+.control-steps {display: grid; grid-template-columns: repeat(4,1fr); gap: 3px; margin: 0 0 18px}
+.control-steps span {min-height: 39px; display: grid; place-items: center; padding: 5px; font: 9px 'IBM Plex Mono',monospace; text-align: center; color: #cedbef; border: 1px solid #3a4d68}
+.control-steps span:nth-child(2) {background: #15488d; color: white; border-color: #6ca3ff}
+.control-camera {margin-top: 17px; padding: 11px; border: 1px solid #3b5272; background: #101a29}
+.control-camera>div {display: flex; align-items: center; gap: 8px; font-size: 11px}
+.control-camera>button {margin-top: 9px; min-height: 29px; padding: 5px 9px; border: 1px solid #5f85b3; color: #e5efff; background: #15325a; font-size: 10px}
+.control-camera p {margin: 10px 0 0; color: #c7d5e8; line-height: 1.45; font-size: 11px}
+.workplace-primary {background: #1751a2; border-color: #5797f2; color: white; min-height: 40px}
+.workplace-primary:hover {background: #2567c5}
+body:has(.workplace-detail) .companion.companion-role:not(.companion-moved) {right: 14px; bottom: 14px}
+.shell--control-room:has(.workplace-detail) .companion.companion-role:not(.companion-moved) {right: calc(31% + 18px); bottom: 16px}
+.companion.companion-role:not(.companion-moved) .companion-trigger {width: 76px; height: 62px; padding: 0 5px}
+.companion.companion-role:not(.companion-moved) .companion-robot {width: 48px; height: 66px}
+.companion.companion-role:not(.companion-moved) .companion-robot img {width: 54px; height: 77px; left: -5px; bottom: -2px}
+.companion.companion-role:not(.companion-moved) .companion-caption {display: none}
+.companion.companion-role:not(.companion-moved) .companion-grip {display: none}
+
+.role-workspace {font-family: 'IBM Plex Sans',sans-serif; border: 1px solid #2e405b; background: #0b1320}
+.role-workspace--technician {border-top: 4px solid #c59a62}
+.role-workspace--manager {border-top: 4px solid #718ead}
+.role-workspace--analyst {border-top: 4px solid #6fb5a7}
+.role-workspace--technician .role-workspace-mark {color: #d4ab70}
+.role-workspace--analyst .role-workspace-mark {color: #78cab8}
+.role-workflow {display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); border-bottom: 1px solid #30435e; background: #17202b}
+.role-workflow span {padding: 16px; border-right: 1px solid #435267; color: #e0e6eb; font-size: 12px}
+.role-workflow b {display: block; margin-bottom: 7px; color: #e0b785; font: 700 12px 'IBM Plex Mono',monospace}
+.repair-panel {background: #0d1622; border-color: #34445c}
+.repair-panel .panel-title {border-bottom: 1px solid #40506a}
+.repair-guidance {display: grid; gap: 6px; padding: 15px 22px; background: #2b261e; border-bottom: 1px solid #776344; color: #f0e5d3; font-size: 12px}
+.repair-card {border-bottom: 1px solid #34445c}
+.repair-card-main h3 {font-size: 19px; line-height: 1.3}
+.repair-evidence {display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; color: #c6d3e2; font-size: 11px}
+.repair-evidence span {border: 1px solid #43536a; padding: 6px 8px}
+.repair-notes {margin-top: 17px; border-top: 1px solid #3a4a60; padding-top: 12px}
+.repair-notes h4 {display: flex; align-items: center; gap: 7px; margin: 0 0 10px; font-size: 13px}
+.repair-notes p {margin: 8px 0; padding: 8px 10px; background: #172538; font-size: 11px}
+.repair-notes time {margin-left: 8px; color: #aebcd0}
+.repair-notes p span {display: block; margin-top: 5px; line-height: 1.4}
+.repair-notes form {display: grid; gap: 7px; margin-top: 13px}
+.repair-notes label {font-size: 11px; color: #d4dfec}
+.repair-notes textarea {width: 100%; min-height: 74px; resize: vertical; background: #0b1625; color: #f3f7fb; border: 1px solid #637c9d; padding: 9px}
+.repair-notes form button {justify-self: start; padding: 7px 12px; background: #235591; color: white; border: 1px solid #5f9be6}
+.repair-notes form button:disabled {opacity: .5}
+.role-workspace-head {display: flex; justify-content: space-between; padding: 25px 27px; border-bottom: 1px solid #30435e}
+.role-workspace-head h2 {font-size: clamp(25px,3vw,39px); letter-spacing: -.04em; margin: 8px 0}
+.role-workspace-head p {font-size: 12px; color: #b5c5d8; margin: 0}
+.role-workspace-mark {color: #7cadf4}
+.control-kicker {font-size: 10px; color: #90bcff}
+.role-metrics {display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-bottom: 1px solid #30435e}
+.role-metrics>div {padding: 20px 27px; border-right: 1px solid #30435e}
+.role-metrics small, .role-metrics span {display: block; color: #b6c7dc; font-size: 11px}
+.role-metrics strong {display: block; font-size: 36px; font-variant-numeric: tabular-nums; margin: 4px 0}
+.role-workspace-columns {display: grid; grid-template-columns: 1.2fr .8fr}
+.role-workspace-section {padding: 24px 27px; border-right: 1px solid #30435e}
+.role-section-head {display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 13px}
+.role-section-head h3 {font-size: 17px; margin: 0}
+.role-section-head button, .role-section-action {background: transparent; color: #90bcff; border: 0; font-size: 11px; padding: 4px; display: flex; align-items: center; gap: 5px}
+.role-row {display: flex; justify-content: space-between; width: 100%; gap: 15px; padding: 13px 0; border: 0; border-top: 1px solid #30435e; background: transparent; color: #eef4fc; text-align: left}
+.role-row:hover {background: #162740}
+.role-row small {display: block; margin-top: 4px; color: #b4c5da}
+.role-row>span:last-child {color: #ffad96; white-space: nowrap}
+.role-workspace-section>p {font-size: 12px; color: #c2d0e2; line-height: 1.5}
+.role-workspace-section>small {display: block; margin-top: 18px; color: #aabbd1; font-size: 10px}
+.role-empty {font-size: 12px; color: #c5d5e8}
+@media(max-width:1200px) {.workplace-grid.has-selection {grid-template-columns: 215px minmax(0,1fr) 305px}}
+@media(max-width:980px) {.workplace-grid.has-selection {grid-template-columns: 220px minmax(0,1fr)}.workplace-grid.list-closed.has-selection {grid-template-columns: 1fr}.workplace-detail {width: min(340px,75vw)}.control-queue>span {flex-basis: 115px}}
+@media(max-width:760px) {.control-queue {margin-bottom: 8px}.control-queue>span {flex: 0 0 90px}.control-queue button {flex-basis: 145px}.control-map-toolbar {justify-content: space-between}.workplace-map-wrap .tunnel-scene {min-height: 510px}.role-workspace-columns {grid-template-columns: 1fr}.role-workspace-section {border-right: 0; border-bottom: 1px solid #30435e}.role-workspace-head,.role-workspace-section {padding: 18px}.role-metrics>div {padding: 14px}.role-workflow {grid-template-columns: repeat(2,minmax(0,1fr))}.role-workflow span:nth-child(2) {border-right: 0}}
+
+/* The dispatch desk is one scene, not a dashboard stacked under app chrome. */
+.shell--control-room .sidebar {inset: 0 0 auto 0; width: 100%; height: 76px; flex-direction: row; align-items: center; border-right: 0; border-bottom: 1px solid #283c56; background: #03070d}
+.shell--control-room .sidebar .wordmark {flex: 0 0 294px; flex-wrap: nowrap; gap: 10px; padding: 0 25px; font-family: 'IBM Plex Sans',sans-serif; font-size: 23px; font-weight: 700; letter-spacing: -.065em; white-space: nowrap}
+.shell--control-room .sidebar .wordmark svg {width: 19px; color: #1b69df}
+.shell--control-room .sidebar .wordmark span {display: block; margin: 0 0 0 4px; color: #b6a08b; font-size: 9px; letter-spacing: .08em}
+.shell--control-room .sidebar .workspace,.shell--control-room .sidebar-bottom {display: none}
+.shell--control-room .sidebar nav {display: flex; align-items: stretch; flex: 1; min-width: 0; height: 100%; padding: 0; overflow-x: auto; scrollbar-width: thin}
+.shell--control-room .sidebar nav button {flex: 0 0 auto; width: auto; height: 100%; margin: 0; padding: 0 17px; border-radius: 0; gap: 8px; color: #9facbd; font: 600 12px 'IBM Plex Mono',monospace; white-space: nowrap}
+.shell--control-room .sidebar nav button.active {background: #0f1a29; color: #72b8ff; box-shadow: inset 0 -3px #2483ff}
+.shell--control-room .sidebar nav button.active:before {display: none}
+.shell--control-room .sidebar .user {flex: 0 0 auto; height: 100%; margin: 0; padding: 0 17px; border: 0; border-left: 1px solid #283c56; font-size: 11px}
+.shell--control-room .sidebar .user .avatar {border-radius: 3px; background: #153b72}
+.shell--control-room main {width: 100%; margin-left: 0; padding-top: 76px; background: #03070d}
+.shell--control-room main>header {display: none}
+.shell--control-room .content {max-width: none; padding: 11px 18px 0}
+.shell--control-room .page-title,.shell--control-room .source-banner,.shell--control-room .notice {display: none}
+.shell--control-room .workplace-topline {height: 58px; align-items: center; padding: 0 2px 9px; border-bottom-color: #273850}
+.shell--control-room .workplace-title {display: flex; align-items: baseline; gap: 17px}
+.shell--control-room .workplace-title span {color: #69b9ed; font-size: 10px; white-space: nowrap}
+.shell--control-room .workplace-title h2 {font-size: clamp(27px,2.7vw,39px); color: #f3f6fa; font-weight: 700; letter-spacing: -.055em}
+.shell--control-room .workplace-stats {font-size: 12px; color: #b8c7d7; gap: 19px}
+.shell--control-room .workplace-stats b {font-size: 25px; color: #e8f1fb}
+.shell--control-room .control-queue {height: 65px; margin: 7px 0}
+.shell--control-room .control-queue>span {flex-basis: 126px; color: #86a7c6}
+.shell--control-room .control-queue button {min-height: 0; padding: 8px 12px; border-color: #273b58; background: #0a1320}
+.shell--control-room .control-queue button.active {background: #102b50; border-color: #4293f2; box-shadow: inset 0 -3px #4293f2}
+.shell--control-room .control-queue button small {font-size: 11px}
+.shell--control-room .control-queue button strong {font-size: 13px}
+.shell--control-room .workplace-grid {height: calc(100vh - 224px); min-height: 580px; border: 1px solid #273850; background: #050c15}
+.shell--control-room .workplace-grid.list-closed.has-selection {grid-template-columns: minmax(0,1fr) minmax(365px, 31%)}
+.shell--control-room .workplace-map-wrap {min-height: 0; background: #050c15}
+.shell--control-room .control-scene-layer {min-height: 0}
+.shell--control-room .workplace-map-wrap .tunnel-scene {min-height: 0}
+.shell--control-room .workplace-detail {min-width: 0; background: #070d17; border-left: 1px solid #273850; overflow-y: auto}
+.shell--control-room .workplace-detail-main {padding: 26px 28px}
+.shell--control-room .workplace-detail-main h3 {font-size: clamp(32px,3.3vw,52px); line-height: 1.04; max-width: 12ch; margin: 15px 0 9px; letter-spacing: -.05em}
+.shell--control-room .workplace-detail-main>p {font-size: 15px; color: #d2deeb}
+.shell--control-room .workplace-detail-label {color: #66bbef; font-size: 11px}
+.shell--control-room .control-incident-summary {margin: 22px 0 20px}
+.shell--control-room .control-incident-summary>div {background: #0c192a; padding: 15px}
+.shell--control-room .control-incident-summary strong {font-size: 30px}
+.shell--control-room .control-steps span {font-size: 10px; min-height: 49px}
+.shell--control-room .workplace-fact {font-size: 12px}
+.shell--control-room .control-camera {margin-top: 22px}
+.shell--control-room .workplace-primary {width: 100%; margin-top: 22px; justify-content: space-between; padding: 14px 17px; font-size: 13px; font-weight: 700}
+.shell--control-room .workplace-underbar {margin-top: 0; border-top: 0}
+.shell--control-room footer {display: none}
+@media(max-width:1150px) {.shell--control-room .sidebar .wordmark {flex-basis: 220px; font-size: 20px}.shell--control-room .sidebar nav button {padding-inline: 12px; font-size: 11px}.shell--control-room .sidebar .user {padding-inline: 9px}.shell--control-room .sidebar .user>span:not(.avatar) {display: none}}
+@media(max-width:980px) {.shell--control-room .workplace-grid.list-closed.has-selection {grid-template-columns: 1fr}.shell--control-room .workplace-detail {position: absolute; width: min(380px,76vw); right: 0; top: 0; bottom: 0; z-index: 4}}
+@media(max-width:980px) {.shell--control-room:has(.workplace-detail) .companion.companion-role:not(.companion-moved) {right: 8px}}
+@media(max-width:760px) {.shell--control-room .sidebar {inset: auto 0 0 0; width: 100%; height: auto; border-top: 1px solid #283c56; border-bottom: 0}.shell--control-room .sidebar .wordmark,.shell--control-room .sidebar .user {display: none}.shell--control-room .sidebar nav {height: auto; padding: 4px}.shell--control-room .sidebar nav button {height: 59px; flex: 0 0 78px; flex-direction: column; gap: 4px; padding: 6px 2px; font-size: 9px}.shell--control-room main {padding-top: 0; padding-bottom: 70px}.shell--control-room main>header {display: flex}.shell--control-room .content {padding: 8px 10px 0}.shell--control-room .workplace-topline {height: auto; min-height: 67px; flex-wrap: wrap; gap: 4px}.shell--control-room .workplace-title {display: block}.shell--control-room .workplace-title span {display: block; font-size: 9px}.shell--control-room .workplace-title h2 {font-size: 25px}.shell--control-room .workplace-stats {gap: 10px; font-size: 9px}.shell--control-room .workplace-stats b {font-size: 14px}.shell--control-room .control-queue {height: 60px}.shell--control-room .control-queue>span {flex-basis: 73px; font-size: 8px}.shell--control-room .control-queue button {flex-basis: 138px}.shell--control-room .workplace-grid {height: auto; min-height: 520px}.shell--control-room .workplace-grid.list-closed.has-selection {display: block}.shell--control-room .workplace-detail {width: min(340px,91vw)}.shell--control-room .workplace-detail-main {padding: 18px}.shell--control-room .workplace-detail-main h3 {font-size: 31px}}
+@media(max-width:760px) {.shell:has(.role-workspace) .page-title,.shell:has(.role-workspace) .source-banner {display:none}}

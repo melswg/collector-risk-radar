@@ -1,0 +1,51 @@
+.underground-map {position: relative; isolation: isolate; overflow: hidden; background: #203145}
+.underground-map__canvas {position: absolute; inset: 0; width: 100%; height: 100%; background: #0a1b2e; visibility: hidden}
+.underground-map__canvas.is-ready {visibility: visible}
+.underground-map .maplibregl-canvas:focus-visible {outline: 2px solid #acd6ff; outline-offset: -3px}
+.underground-map .maplibregl-control-container {font-family: 'Commissioner',sans-serif}
+.underground-map .maplibregl-ctrl-bottom-right {bottom: 50px}
+.underground-map .maplibregl-ctrl-attrib {background: #e7e3d9eb; color: #243248; font-size: 9px}
+.underground-map .maplibregl-ctrl-attrib a {color: #174e9f}
+.underground-map .maplibregl-ctrl-group {border: 1px solid #8ca5bf; border-radius: 2px; background: #f4f1e9}
+.underground-map .maplibregl-ctrl-group button {border-color: #c5c0b6}
+.underground-object-pin {width: 15px; height: 15px; padding: 0; border: 2px solid #fff; border-radius: 50%; background: #6f8191; box-shadow: 0 0 0 3px #142337a8; cursor: pointer}
+.underground-object-pin.high {width: 19px; height: 19px; background: #d1493c}
+.underground-object-pin.medium {background: #e4b543}
+.underground-object-pin.low,.underground-object-pin.normal {background: #77b2b4}
+.underground-object-pin.selected {box-shadow: 0 0 0 4px #003882,0 0 0 6px #b8d9fa}
+.underground-object-pin:focus-visible,.underground-camera-pin:focus-visible {outline: 3px solid #acd6ff; outline-offset: 4px}
+.underground-map__error {position: absolute; z-index: 800; top: 53px; left: 12px; padding: 7px 10px; background: #4a211f; color: #fff; font-size: 11px}
+.underground-camera-pin {display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 2px solid #f5f1e9; border-radius: 3px; background: #255fbb; box-shadow: 0 0 0 2px #0c2449, 0 2px 5px #0008; cursor: pointer}
+.underground-camera-pin[hidden] {display: none}
+.underground-camera-pin[aria-pressed=true] {background:#e5c17b;border-color:#fff;box-shadow:0 0 0 3px #0a1b2e,0 0 0 5px #e5c17b}
+.underground-camera-pin {width:24px;height:24px;background:#234c62;border:1px solid #a9c4cf;border-radius:4px;box-shadow:0 1px 4px #07132180}
+.underground-camera-pin span {position: relative; width: 10px; height: 7px; border: 1.5px solid white; border-radius: 1px}
+.underground-camera-pin span:after {content: ''; position: absolute; top: 0; right: -4px; width: 3px; height: 5px; border: 1px solid white; transform: skewY(-18deg)}
+.underground-map__topbar {position: absolute; z-index: 500; top: 12px; left: 12px; display: flex; gap: 7px; align-items: center; flex-wrap: wrap; max-width: calc(100% - 24px)}
+.underground-map__topbar>span,.underground-map__topbar button {display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 7px 10px; border: 1px solid #496477; border-radius: 4px; background: #10283deb; color: #eff5ff; font: 500 11px 'Commissioner',sans-serif; letter-spacing: 0}
+.underground-map__topbar>span {color:#adc3d2;font-size:10px;letter-spacing:.04em}
+.underground-map__topbar button {cursor: pointer}
+.underground-map__topbar button[aria-pressed=false] {background: #e7e2d7; color: #1a2c43}
+.underground-map__topbar button b {color: #91c4ff}
+.underground-map__topbar button[aria-pressed=false] b {color: #1a2c43}
+.underground-map__topbar button:focus-visible,.underground-camera-view button:focus-visible {outline: 3px solid #91c4ff; outline-offset: 2px}
+.underground-camera-view {position: absolute; z-index: 750; top: 54px; right: 12px; width: min(284px,calc(100% - 24px)); padding: 11px; border: 1px solid #91aecb; background: #0a1829f5; color: #edf4fd; box-shadow: 0 12px 30px #0006}
+.underground-camera-view__head {display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-bottom: 9px; border-bottom: 1px solid #47617b; font: 600 10px 'IBM Plex Mono',monospace}
+.underground-camera-view__head>span {display: flex; align-items: center; gap: 7px}
+.underground-camera-view__head button {display: grid; place-items: center; width: 24px; height: 24px; border: 0; background: transparent; color: #eaf4ff; cursor: pointer}
+.underground-camera-view__scene {position: relative; height: 128px; margin: 11px 0; overflow: hidden; border: 1px solid #425973; background: linear-gradient(160deg,#14273a 0 48%,#172c3c 48% 100%)}
+.underground-camera-view__scene:before,.underground-camera-view__scene:after {content: ''; position: absolute; inset: 0; border: 1px solid #8da4b8; opacity: .55; clip-path: polygon(0 0,100% 0,62% 65%,38% 65%)}
+.underground-camera-view__scene:after {clip-path: polygon(0 100%,100% 100%,62% 65%,38% 65%); opacity: .28}
+.underground-camera-view__scene>span {position: absolute; z-index: 1; left: 10px; top: 9px; color: #aac6e1; font: 600 8px 'IBM Plex Mono',monospace; letter-spacing: .12em}
+.underground-camera-view__vanish {position: absolute; left: 38%; top: 38%; width: 24%; height: 27%; border: 1px solid #7a98ae; background: #091523}
+.underground-camera-view>strong {display: block; font-size: 14px}
+.underground-camera-view>p {margin: 4px 0 11px; color: #b9cddd; font-size: 11px; line-height: 1.35}
+.underground-camera-view__nearby {display: grid; gap: 5px}
+.underground-camera-view__nearby>span {margin-bottom: 2px; color: #8daecc; font: 600 9px 'IBM Plex Mono',monospace; letter-spacing: .08em}
+.underground-camera-view__nearby button {display: flex; gap: 8px; align-items: center; padding: 7px 9px; border: 1px solid #425a75; background: #10283f; color: #eef5ff; font: 600 10px 'IBM Plex Mono',monospace; text-align: left; cursor: pointer}
+.underground-camera-view__nearby button[aria-pressed=true] {border-color: #75aeff; background: #214b84}
+.underground-camera-view__nearby small {font: 400 10px 'Commissioner',sans-serif; color: #c4d6e9}
+.underground-map__legend-camera {width: 11px; height: 11px; margin-left: 7px; border: 2px solid #fff; background: #255fbb}
+.underground-map .map-legend {z-index: 500; bottom: 42px; left: 12px; display: flex; align-items: center; gap: 5px; padding: 7px 9px; background: #f5f1e9ed; color: #26334a}
+.underground-map .map-caption {z-index: 500; right: auto; left: 12px; bottom: 12px; padding: 4px 7px; background: #0b2139e8; color: #edf4ff; font-size: 9px}
+@media(max-width:760px) {.underground-camera-view {top: 49px; right: 7px; width: min(250px,calc(100% - 14px))}.underground-map__topbar {top: 7px; left: 7px}.underground-map .map-legend {bottom: 39px; left: 7px; font-size: 8px}.underground-map .map-caption {left: 7px; font-size: 8px}}

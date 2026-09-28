@@ -1,0 +1,133 @@
+/* Map-first dispatch layout. Existing decisions and detail actions remain available. */
+.shell--control-room:has(.mapdesk){--canvas:#0a1b2e;--surface:#102235;--ink:#e7edf2;--muted:#a9bdcc;--line:#334456}
+.shell--control-room:has(.mapdesk) .content{background:#0a1b2e}
+.shell--control-room .workplace.mapdesk .control-queue{background:#102235;border-color:#334456}
+.shell--control-room .workplace.mapdesk .control-queue>span{color:#a9bdcc}
+.shell--control-room .workplace.mapdesk .control-queue button{background:#102235;color:#e7edf2;border-color:#334456}
+.shell--control-room .workplace.mapdesk .control-queue button small{color:#a9bdcc}
+.shell--control-room .workplace.mapdesk .control-queue button.active{background:#234966;border-color:#8cbace}
+.shell--control-room .workplace.mapdesk .control-queue button b{color:#e7edf2}
+.shell--control-room .workplace.mapdesk .workplace-detail .workplace-panel-head{background:#19344c;border-color:#334456}
+.shell--control-room .workplace.mapdesk .workplace-detail .workplace-panel-head span,.shell--control-room .workplace.mapdesk .workplace-detail .workplace-panel-head button{color:#c6d8e6}
+.shell--control-room .workplace.mapdesk .workplace-detail-main h3{color:#e7edf2}
+.shell--control-room .workplace.mapdesk .workplace-fact strong{color:#e7edf2}
+.shell--control-room .workplace.mapdesk .workplace-fact span,.shell--control-room .workplace.mapdesk .workplace-limit{color:#a9bdcc}
+.shell--control-room .workplace.mapdesk .control-camera{background:#19344c;border-color:#496074;color:#e7edf2}
+.shell--control-room .workplace.mapdesk .control-camera p{color:#c0d2e0}
+.shell--control-room .workplace.mapdesk .control-camera>button{background:#234966;color:#e7edf2;border-color:#8cbace}
+.shell--control-room .workplace.mapdesk .workplace-detail-label{color:#e5c17b}
+.shell--control-room .workplace.mapdesk .control-incident-summary{width:100%;float:none;border-color:#334456}
+.shell--control-room .workplace.mapdesk .control-incident-summary span{color:#a9bdcc}
+.shell--control-room .workplace.mapdesk .workplace-map-note{background:#102235;color:#a9bdcc;border-color:#334456}
+.shell--control-room .workplace.mapdesk .workplace-topline{min-height:48px;height:48px;padding:0 2px;background:transparent;border:0;animation:none;overflow:visible}
+.shell--control-room .workplace.mapdesk .workplace-topline::after{display:none}
+.shell--control-room .workplace.mapdesk .workplace-title{display:flex;align-items:center;gap:18px}
+.shell--control-room .workplace.mapdesk .workplace-title h2{font:600 20px/1.2 'Commissioner',sans-serif;color:#e5edf4;margin:0;letter-spacing:-.025em}
+.shell--control-room .workplace.mapdesk .workplace-title span{font-size:10px;color:#9fb4c4}
+.shell--control-room .workplace.mapdesk .workplace-stats b{font-size:17px;color:#e5edf4}
+.shell--control-room .workplace.mapdesk .workplace-stats{font-size:11px;color:#a9bdcc}
+.shell--control-room .workplace.mapdesk .workplace-grid{height:calc(100dvh - 260px);min-height:430px;border:1px solid #334456}
+.shell--control-room .workplace.mapdesk .workplace-grid.list-closed.has-selection{grid-template-columns:minmax(0,1fr) 320px}
+.shell--control-room .workplace.mapdesk .workplace-map-wrap{height:auto;min-height:0}
+.shell--control-room .workplace.mapdesk .workplace-map-wrap .map.large{flex:1;height:auto;min-height:0}
+.shell--control-room .workplace.mapdesk .workplace-map-wrap .map-caption{top:auto;bottom:12px;left:12px;right:auto;color:#dbe6f0}
+.shell--control-room .workplace.mapdesk .workplace-detail{background:#102235;color:#e7edf2;box-shadow:none;overflow-y:auto;overscroll-behavior:contain}
+.shell--control-room .workplace.mapdesk .workplace-detail-main{display:block;padding:20px}
+.shell--control-room .workplace.mapdesk .workplace-detail-main h3{font:600 25px/1.2 'Commissioner',sans-serif;max-width:none;letter-spacing:-.025em;margin:12px 0}
+.shell--control-room .workplace.mapdesk .workplace-detail-main>p{font-size:14px;color:#b8cbd9}
+.shell--control-room .workplace.mapdesk .control-incident-summary{margin:16px 0}
+.shell--control-room .workplace.mapdesk .control-incident-summary>div{padding:10px;background:transparent;border-color:#334456}
+.shell--control-room .workplace.mapdesk .control-incident-summary strong{font-size:24px;color:#dce9f2}
+.shell--control-room .workplace.mapdesk .control-steps{display:none}
+.shell--control-room .workplace.mapdesk .workplace-primary{padding:12px;font-size:12px;margin-top:16px}
+@media(max-width:980px){.shell--control-room .workplace.mapdesk .workplace-grid.list-closed.has-selection{display:grid;grid-template-columns:minmax(0,1fr) 290px}.shell--control-room .workplace.mapdesk .workplace-detail{position:static;width:auto;height:auto}}
+@media(max-width:760px){.shell--control-room .workplace.mapdesk .workplace-topline{height:auto;min-height:58px;gap:6px;align-items:flex-start}.shell--control-room .workplace.mapdesk .workplace-title h2{font-size:18px}.shell--control-room .workplace.mapdesk .workplace-grid,.shell--control-room .workplace.mapdesk .workplace-grid.list-closed.has-selection{display:block;height:65dvh;min-height:460px;position:relative}.shell--control-room .workplace.mapdesk .workplace-map-wrap{height:100%}.shell--control-room .workplace.mapdesk .workplace-detail{position:absolute;inset:28% 0 0;width:100%;z-index:900;border-top:1px solid #668298}.shell--control-room .workplace.mapdesk .workplace-detail-main{padding:16px}.shell--control-room .workplace.mapdesk .workplace-detail-main h3{font-size:22px}}
+
+/* Operational hierarchy: dark geographic canvas, paper inspection sheet. */
+.shell--control-room .workplace.mapdesk .underground-map__topbar>span{display:none}
+.shell--control-room .workplace.mapdesk .map-caption{display:none}
+.shell--control-room .workplace.mapdesk[data-selected-risk=high] .workplace-detail-label{color:#a7352a}
+.shell--control-room .workplace.mapdesk[data-selected-risk=low] .workplace-detail-label{color:#316c69}
+.shell--control-room .workplace.mapdesk {
+  font-family: 'Commissioner', sans-serif;
+  --desk-paper: #f1eee7;
+  --desk-ink: #243447;
+  --desk-muted: #596676;
+}
+.shell--control-room .workplace.mapdesk .workplace-topline {
+  height: 64px;
+  padding-block: 12px;
+}
+.shell--control-room .workplace.mapdesk .workplace-title h2 {font-size: 26px; font-weight: 650}
+.shell--control-room .workplace.mapdesk .workplace-title span {font: 500 11px 'Commissioner', sans-serif; letter-spacing: .08em}
+.shell--control-room .workplace.mapdesk .workplace-stats {gap: 22px}
+.shell--control-room .workplace.mapdesk .workplace-stats span {border: 0; padding: 0; display: flex; gap: 7px; align-items: baseline}
+.shell--control-room .workplace.mapdesk .workplace-stats b {font-size: 21px; font-variant-numeric: tabular-nums}
+.shell--control-room .workplace.mapdesk .control-queue {
+  height: auto;
+  min-height: 80px;
+  margin: 0 0 14px;
+  gap: 0;
+  padding: 0;
+  border: 1px solid #344859;
+  border-radius: 6px;
+  background: #122739;
+}
+.shell--control-room .workplace.mapdesk .control-queue>span {flex-basis: 108px; padding: 14px; font: 500 11px/1.5 'Commissioner', sans-serif; letter-spacing: .06em}
+.shell--control-room .workplace.mapdesk .control-queue button {
+  flex-basis: 165px;
+  padding: 14px 16px;
+  border: 0;
+  border-inline-start: 1px solid #344859;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  gap: 7px;
+}
+.shell--control-room .workplace.mapdesk .control-queue button:hover {background:#203b50}
+.shell--control-room .workplace.mapdesk .control-queue button.active {background:#284a60; box-shadow:inset 0 -3px #a9d2e5}
+.shell--control-room .workplace.mapdesk .control-queue button small {font:400 12px 'Commissioner',sans-serif;color:#b7c9d6}
+.shell--control-room .workplace.mapdesk .control-queue button strong {font-size:14px;font-weight:600}
+.shell--control-room .workplace.mapdesk .control-queue button b {font:500 14px 'Commissioner',sans-serif;right:14px;bottom:14px;color:#d4c4a9}
+.shell--control-room .workplace.mapdesk .workplace-grid {height:calc(100dvh - 286px); min-height:440px; border-radius:6px; border-color:#344859}
+.shell--control-room .workplace.mapdesk .control-map-toolbar {min-height:46px;padding:7px 12px;background:#122739;border-color:#344859}
+.shell--control-room .workplace.mapdesk .control-map-toolbar button {font:500 12px 'Commissioner',sans-serif; min-height:32px; border-color:#456075;border-radius:4px;padding:6px 12px}
+.shell--control-room .workplace.mapdesk .control-map-toolbar button[aria-pressed=true] {background:#d8e8ee;color:#16364b;border-color:#d8e8ee}
+.shell--control-room .workplace.mapdesk .workplace-detail {background:var(--desk-paper);color:var(--desk-ink);border-inline-start:1px solid #d7d1c5}
+.shell--control-room .workplace.mapdesk .workplace-detail .workplace-panel-head {background:#e5dfd3;min-height:46px;padding-inline:20px;border-color:#d7d1c5}
+.shell--control-room .workplace.mapdesk .workplace-detail .workplace-panel-head span,
+.shell--control-room .workplace.mapdesk .workplace-detail .workplace-panel-head button {color:#5a5147}
+.shell--control-room .workplace.mapdesk .workplace-detail-main {padding:24px}
+.shell--control-room .workplace.mapdesk .workplace-detail-main h3 {color:var(--desk-ink);font-size:28px;letter-spacing:-.035em;margin:12px 0 8px}
+.shell--control-room .workplace.mapdesk .workplace-detail-main>p {color:var(--desk-muted);font-size:14px}
+.shell--control-room .workplace.mapdesk .workplace-detail-label {color:#795a2c;font:600 11px 'Commissioner',sans-serif;letter-spacing:.08em}
+.shell--control-room .workplace.mapdesk .control-incident-summary {margin:24px 0;border:0;gap:20px}
+.shell--control-room .workplace.mapdesk .control-incident-summary>div {padding:0;background:transparent;border:0}
+.shell--control-room .workplace.mapdesk .control-incident-summary span {color:var(--desk-muted);font:400 12px 'Commissioner',sans-serif}
+.shell--control-room .workplace.mapdesk .control-incident-summary strong,
+.shell--control-room .workplace.mapdesk .control-incident-summary>div:first-child strong {color:var(--desk-ink);font-size:32px;font-weight:550;margin-top:8px}
+.shell--control-room .workplace.mapdesk .workplace-fact {padding-block:14px;border-color:#d4cfc4;font-size:12px}
+.shell--control-room .workplace.mapdesk .workplace-fact strong {color:var(--desk-ink);font-weight:550}
+.shell--control-room .workplace.mapdesk .workplace-fact span,
+.shell--control-room .workplace.mapdesk .workplace-limit {color:var(--desk-muted)}
+.shell--control-room .workplace.mapdesk .control-camera {padding:14px;margin-top:20px;background:#e4e7e4;border:0;border-radius:4px;color:var(--desk-ink)}
+.shell--control-room .workplace.mapdesk .control-camera>div {font-size:12px}
+.shell--control-room .workplace.mapdesk .control-camera>button {background:transparent;border-color:#899ca4;color:#244b61;padding:7px 12px;font:500 12px 'Commissioner',sans-serif}
+.shell--control-room .workplace.mapdesk .control-camera p {color:#4d6070;font-size:12px;line-height:1.6}
+.shell--control-room .workplace.mapdesk .workplace-primary {background:#24556c;border:0;border-radius:4px;color:#fff;font:550 13px 'Commissioner',sans-serif;min-height:46px;margin-top:20px;padding:12px}
+.shell--control-room .workplace.mapdesk .workplace-primary:hover {background:#173f55}
+.shell--control-room .workplace.mapdesk .workplace-limit {font-size:11px;line-height:1.6;margin-top:12px}
+.shell--control-room .workplace.mapdesk .workplace-underbar {padding-block:12px;border:0}
+.shell--control-room .workplace.mapdesk .workplace-underbar>span {font:400 10px 'Commissioner',sans-serif;letter-spacing:.06em;color:#94aebb}
+@media(max-width:760px){
+  .shell--control-room .workplace.mapdesk .workplace-topline{height:auto;gap:10px;padding:10px 0 14px}
+  .shell--control-room .workplace.mapdesk .workplace-title h2{font-size:23px}
+  .shell--control-room .workplace.mapdesk .workplace-stats{gap:14px;font-size:10px}
+  .shell--control-room .workplace.mapdesk .workplace-stats b{font-size:16px}
+  .shell--control-room .workplace.mapdesk .control-queue{min-height:74px;margin-bottom:10px}
+  .shell--control-room .workplace.mapdesk .control-queue>span{flex-basis:82px;font-size:10px;padding:10px}
+  .shell--control-room .workplace.mapdesk .control-queue button{padding:12px;flex-basis:168px}
+  .shell--control-room .workplace.mapdesk .workplace-grid{height:65dvh;min-height:460px}
+  .shell--control-room .workplace.mapdesk .workplace-detail-main{padding:20px}
+  .shell--control-room .workplace.mapdesk .workplace-detail{border-radius:12px 12px 0 0;border-top:1px solid #d7d1c5}
+}

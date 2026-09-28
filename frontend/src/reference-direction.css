@@ -1,0 +1,295 @@
+@font-face {
+  font-family: Commissioner;
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/commissioner-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;
+}
+@font-face {
+  font-family: Commissioner;
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/commissioner-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+/* A civic field notebook: warm paper outside, electric survey drawing inside. */
+.shell--control-room,
+.shell:has(.role-workspace) {
+  --canvas: #f0ede6;
+  --surface: #f9f7f1;
+  --raised: #e8e3d8;
+  --line: #cfc8bc;
+  --ink: #241f1a;
+  --muted: #665e55;
+  --accent: #205bc9;
+  --tint: #e2e9f8;
+  --sidebar: #f9f7f1;
+  --nav: #241f1a;
+  color: var(--ink);
+  background: var(--canvas);
+  font-family: 'Commissioner', sans-serif;
+}
+.shell--control-room *, .shell:has(.role-workspace) * {box-sizing: border-box}
+.shell--control-room .workplace {font-family:'Commissioner',sans-serif}
+.shell--control-room .content, .shell:has(.role-workspace) .content {background: var(--canvas)}
+.shell--control-room .sidebar {
+  height: 72px;
+  background: #f9f7f1;
+  border-bottom: 1px solid #afa89b;
+  color: #241f1a;
+}
+.shell--control-room .sidebar .wordmark {
+  flex-basis: 282px;
+  padding-inline: 25px;
+  color: #241f1a;
+  font: 800 23px 'Commissioner',sans-serif;
+  letter-spacing: -.075em;
+}
+.shell--control-room .sidebar .wordmark svg {color: #205bc9; width: 25px; height: 25px}
+.shell--control-room .sidebar .wordmark span {color: #9d6748; font: 600 9px 'IBM Plex Mono',monospace; letter-spacing: .11em}
+.shell--control-room .sidebar nav button {
+  color: #534c45;
+  font: 600 11px 'Commissioner',sans-serif;
+  letter-spacing: -.012em;
+  transition: color .22s ease, background-color .22s ease;
+}
+.shell--control-room .sidebar nav button:hover {color: #205bc9; background: #ede8df}
+.shell--control-room .sidebar nav button.active {color: #154fae; background: #e1e9f9; box-shadow: inset 0 -4px #205bc9}
+.shell--control-room .sidebar .user {border-left-color: #cfc8bc; color: #473e37}
+.shell--control-room .sidebar .user .avatar {background: #c07851; color: #fff}
+.shell--control-room main {padding-top: 72px; background: var(--canvas)}
+.shell--control-room .content {padding: 18px 24px 0}
+
+.shell--control-room .workplace-topline {
+  position: relative;
+  height: auto;
+  min-height: 116px;
+  padding: 13px 23px 17px;
+  align-items: end;
+  overflow: hidden;
+  border: 1px solid #cfc6b8;
+  background: #e7e0d5;
+}
+.shell--control-room .workplace-topline::after {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: 43%;
+  width: 175px;
+  height: 220px;
+  border: 26px solid #c6977138;
+  transform: rotate(24deg);
+  pointer-events: none;
+}
+.shell--control-room .workplace-title {position: relative; z-index: 1; display: block}
+.shell--control-room .workplace-title span {display: block; color: #765c48; font-size: 10px; letter-spacing: .12em}
+.shell--control-room .workplace-title h2 {
+  margin-top: 7px;
+  color: #241f1a;
+  font: 750 clamp(34px,4vw,56px)/.95 'Commissioner',sans-serif;
+  letter-spacing: -.055em;
+}
+.shell--control-room .workplace-stats {position: relative; z-index: 1; align-items: stretch; gap: 0; color: #51473e}
+.shell--control-room .workplace-stats span {
+  min-width: 112px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 3px 16px 1px;
+  border-left: 1px solid #bea994;
+  font: 500 10px 'Commissioner',sans-serif;
+}
+.shell--control-room .workplace-stats b {color: #205bc9; font: 700 30px/.9 'Commissioner',sans-serif}
+.shell--control-room .workplace-stats span:first-child b {color: #a25836}
+.shell--control-room .control-queue {height: 84px; margin: 0; padding: 10px 0 12px; gap: 5px; background: #f0ede6}
+.shell--control-room .control-queue>span {
+  flex-basis: 135px;
+  padding-left: 10px;
+  color: #69564b;
+  font: 600 10px 'IBM Plex Mono',monospace;
+}
+.shell--control-room .control-queue button {
+  position: relative;
+  min-height: 60px;
+  padding: 10px 14px;
+  border: 1px solid #c9c1b7;
+  background: #faf8f3;
+  color: #29231f;
+  box-shadow: none;
+  transition: transform .25s cubic-bezier(.2,.8,.2,1), background-color .25s, border-color .25s;
+}
+.shell--control-room .control-queue button:hover {transform: translateY(-3px); background: #fff; border-color: #9e8c79}
+.shell--control-room .control-queue button.active {background: #205bc9; border-color: #205bc9; box-shadow: inset 0 -4px #123f97; color: #fff}
+.shell--control-room .control-queue button small {color: #755644; font: 600 10px 'Commissioner',sans-serif}
+.shell--control-room .control-queue button.active small {color: #d7e6ff}
+.shell--control-room .control-queue button strong {font: 650 12px 'Commissioner',sans-serif}
+.shell--control-room .control-queue button strong {max-width: calc(100% - 44px)}
+.shell--control-room .control-queue button b {color: #ad553b; font: 700 17px 'Commissioner',sans-serif}
+.shell--control-room .control-queue button.active b {color: #fff}
+
+.shell--control-room .workplace-grid {
+  height: calc(100vh - 301px);
+  min-height: 600px;
+  border: 1px solid #a8a193;
+  background: #f9f7f1;
+}
+.shell--control-room .workplace-grid.list-closed.has-selection {grid-template-columns: minmax(0,1fr) minmax(335px, 27%)}
+.shell--control-room .workplace-map-wrap {background: #102338}
+.shell--control-room .control-map-toolbar {
+  min-height: 49px;
+  padding: 6px 13px;
+  justify-content: flex-start;
+  border-bottom: 1px solid #355271;
+  background: #11263e;
+}
+.shell--control-room .control-map-toolbar>div {margin-left: auto}
+.shell--control-room .control-map-toolbar button {
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid #476482;
+  background: #10243a;
+  color: #e2edf9;
+  font: 600 10px 'Commissioner',sans-serif;
+}
+.shell--control-room .control-map-toolbar button[aria-pressed=true] {background: #3468cb; border-color: #77a7f1; color: #fff}
+.shell--control-room .control-scene-layer {background: #12263d}
+.shell--control-room .moscow-backdrop {opacity: .58; filter: grayscale(1) contrast(.9) brightness(.92) sepia(.15) hue-rotate(175deg)}
+.shell--control-room .control-scene-layer .tunnel-scene {background: transparent}
+.shell--control-room .tunnel-scene__canvas {background: #0615272e}
+.shell--control-room .tunnel-scene__head {padding: 15px 21px 14px; border-color: #49637b; background: #10253bdb}
+.shell--control-room .tunnel-scene__eyebrow {color: #a6cef5; font-size: 10px}
+.shell--control-room .tunnel-scene__head h3 {font: 700 23px 'Commissioner',sans-serif; letter-spacing: -.045em}
+.shell--control-room .tunnel-scene__count {color: #d2deea}
+.shell--control-room .tunnel-scene__notice {padding: 7px 21px; color: #d6d0c6; background: #493b33; border-color: #7c5944; font-size: 10px}
+.shell--control-room .tunnel-scene__route-edge {stroke: #a08167; opacity: 1}
+.shell--control-room .tunnel-scene__route-floor {stroke: #123751}
+.shell--control-room .tunnel-scene__route-edge--main {stroke-width: 44}
+.shell--control-room .tunnel-scene__route-floor--main {stroke-width: 34}
+.shell--control-room .tunnel-scene__route-edge--branch {stroke-width: 28}
+.shell--control-room .tunnel-scene__route-floor--branch {stroke-width: 20}
+.shell--control-room .tunnel-scene__junction {fill: #123751; stroke: #a08167; stroke-width: 5}
+.shell--control-room .tunnel-scene__node {border-color: #b8c9d9; border-left-width: 5px; background: #f7f4ed; color: #1d2633; box-shadow: 0 5px 0 #05142488}
+.shell--control-room .tunnel-scene__node {width: 78px; min-height: 34px; padding: 4px 5px; grid-template-columns: 13px minmax(0,1fr)}
+.shell--control-room .tunnel-scene__node.is-focus {width: 96px; min-height: 45px}
+.shell--control-room .tunnel-scene__node-copy small {display:none}
+.shell--control-room .tunnel-scene__node:not(.is-focus):not(.is-selected) .tunnel-scene__risk>span:last-child {display:none}
+.shell--control-room .tunnel-scene__node .tunnel-scene__risk {font-size:9px}
+.shell--control-room .tunnel-scene__node-copy strong {font-size: 12px}
+.shell--control-room .tunnel-scene__node-copy small {font-size: 10px}
+.shell--control-room .tunnel-scene__node:hover {background: #fff; border-color: #fff}
+.shell--control-room .tunnel-scene__node.is-focus {background: #fff; border-color: #92c7ff; box-shadow: 0 0 0 4px #10253b,0 0 0 6px #7cb9ff}
+.shell--control-room .tunnel-scene__node.is-selected {background: #205bc9; color: #fff; border-color: #fff}
+.shell--control-room .tunnel-scene__node--high,
+.shell--control-room .tunnel-scene__node--high.is-focus {border-color:#b3332b; border-left-color:#b3332b; background:#fff7f0; box-shadow:0 0 0 5px #b3332b55,0 0 0 9px #fff1e855}
+.shell--control-room .tunnel-scene__node--high .tunnel-scene__risk {color:#a62a25}
+.shell--control-room .tunnel-scene__node--high .tunnel-scene__signal {width:11px; height:11px; flex-basis:11px; border-radius:50%; background:#d73d34; transform:none; box-shadow:0 0 0 4px #d73d3433}
+.shell--control-room .tunnel-scene__node--medium {border-left-color:#c48c2e}
+.shell--control-room .tunnel-scene__node--medium .tunnel-scene__signal {width:9px; height:9px; flex-basis:9px; border-radius:50%; background:#d4a13a; transform:none}
+.shell--control-room .tunnel-scene__slot, .shell--control-room .tunnel-scene__risk {color: inherit}
+.shell--control-room .tunnel-scene__node-copy small {color: #5f6870}
+.shell--control-room .tunnel-scene__node.is-selected .tunnel-scene__node-copy small {color: #dce8fa}
+.shell--control-room .tunnel-scene__focus-readout {background: #f5f1e9; color: #2a221d; border-color: #e6ccb6; border-left-color: #a56342; box-shadow: 9px 9px 0 #07182b66}
+.shell--control-room .tunnel-scene__focus-readout>span {color: #a56342}
+.shell--control-room .tunnel-scene__focus-readout small {color: #5c5148}
+.shell--control-room .tunnel-scene__focus-readout:hover {background: #fff; border-color: #e6ccb6}
+.shell--control-room .tunnel-scene__foot {background: #10253be8; border-color: #49637b}
+.shell--control-room .workplace-map-note {min-height: 30px; background: #e9e2d6; color: #4c493f; border-color: #b9ae9e}
+.shell--control-room .control-map-credit {background: #12263ddd; font-size: 10px}
+
+.shell--control-room .workplace-detail {background: #f9f7f1; border-left: 1px solid #aaa091}
+.shell--control-room .workplace-detail .workplace-panel-head {min-height: 48px; padding-inline: 20px; background: #c99672; border-bottom-color: #a96f4d}
+.shell--control-room .workplace-detail .workplace-panel-head span {color: #3c271e; font-size: 10px}
+.shell--control-room .workplace-detail .workplace-panel-head button {color: #3c271e}
+.shell--control-room .workplace-detail-main {padding: 23px 24px}
+.shell--control-room .workplace-detail-label {color: #a05a39; font-size: 10px}
+.shell--control-room .workplace-detail-main h3 {max-width: 14ch; margin: 11px 0 7px; color: #272019; font: 750 clamp(30px,3vw,45px)/1.02 'Commissioner',sans-serif; letter-spacing: -.065em}
+.shell--control-room .workplace-detail-main>p {color: #65594e; font-size: 13px}
+.shell--control-room .control-incident-summary {margin: 20px 0 15px; gap: 0; border: 1px solid #c9bdae}
+.shell--control-room .control-incident-summary>div {padding: 12px 13px; border: 0; background: #eee9df}
+.shell--control-room .control-incident-summary>div:first-child {border-right: 1px solid #c9bdae}
+.shell--control-room .control-incident-summary span {color: #685b51; font-size: 9px}
+.shell--control-room .control-incident-summary strong {color: #2c251f; font-size: 30px}
+.shell--control-room .control-incident-summary>div:first-child strong {color: #ac5837}
+.shell--control-room .control-steps {gap: 0; margin-bottom: 18px; border: 1px solid #b9b1a5}
+.shell--control-room .control-steps span {min-height: 42px; color: #5b524b; border: 0; border-right: 1px solid #b9b1a5; font-size: 8px}
+.shell--control-room .control-steps span:last-child {border-right: 0}
+.shell--control-room .control-steps span:nth-child(2) {background: #dce6f8; color: #1b4c9f}
+.shell--control-room .workplace-fact {border-color: #d0c7bb; color: #392f28; font-size: 11px}
+.shell--control-room .workplace-fact span {color: #685f55}
+.shell--control-room .control-camera {border-color: #bdb0a0; background: #eee8de; color: #342d27}
+.shell--control-room .control-camera button {color: #1d55af}
+.shell--control-room .workplace-primary {background: #205bc9; border-color: #205bc9; border-radius: 0; color: #fff; font: 700 12px 'Commissioner',sans-serif}
+.shell--control-room .workplace-primary:hover {background: #144ba8; color: #fff}
+.shell--control-room .workplace-limit {color: #766b60}
+.shell--control-room .workplace-underbar {border-color: #cfc6b8; color: #655b52}
+.shell--control-room .workplace-underbar button {color: #205bc9}
+
+@media(prefers-reduced-motion:no-preference) {
+  .shell--control-room .workplace-topline {animation: deskEnter .5s cubic-bezier(.18,.77,.26,1) both}
+  .shell--control-room .control-queue button {animation: deskEnter .48s cubic-bezier(.18,.77,.26,1) both}
+  .shell--control-room .control-queue button:nth-of-type(2) {animation-delay:.06s}
+  .shell--control-room .control-queue button:nth-of-type(3) {animation-delay:.12s}
+  .shell--control-room .control-queue button:nth-of-type(4) {animation-delay:.18s}
+  .shell--control-room .tunnel-scene__route-axis {animation: surveyFlow 8s linear infinite}
+}
+@keyframes deskEnter {from {opacity:0; transform:translateY(13px)} to {opacity:1; transform:translateY(0)}}
+@keyframes surveyFlow {to {stroke-dashoffset:-80}}
+
+.shell:has(.role-workspace) .sidebar {background: #f9f7f1; color: #241f1a; border-color: #cfc8bc}
+.shell:has(.role-workspace) .sidebar .wordmark,.shell:has(.role-workspace) .sidebar .user {color: #241f1a}
+.shell:has(.role-workspace) .sidebar nav button {color: #61584e}
+.shell:has(.role-workspace) .sidebar nav button.active {background: #dce6f8; color: #205bc9; box-shadow: inset 3px 0 #205bc9}
+.shell:has(.role-workspace) main {background: var(--canvas)}
+.shell:has(.role-workspace) header {background: #f9f7f1; color: #241f1a; border-color: #cfc8bc}
+.shell:has(.role-workspace) .page-title h1 {color: #241f1a; font-family: 'Commissioner',sans-serif}
+.shell:has(.role-workspace) .role-workspace.rw {--rw-bg:#f9f7f1; --rw-panel:#eee9df; --rw-panel-alt:#e5dfd3; --rw-line:#c9beae; --rw-text:#2b2520; --rw-muted:#6b6156; --rw-blue:#205bc9; border-color:#c9beae; font-family:'Commissioner',sans-serif}
+.shell:has(.role-workspace) .role-workspace.rw-technician {--rw-blue:#a65b38}
+.shell:has(.role-workspace) .role-workspace.rw-analyst {--rw-blue:#1d668a}
+.shell:has(.role-workspace) .rw .rw-head {background:#e7e0d5}
+.shell:has(.role-workspace) .rw .rw-head h2 {font-family:'Commissioner',sans-serif; font-weight:750}
+.shell:has(.role-workspace) .rw-route {background:#eee9df}
+.shell:has(.role-workspace) .rw-primary {background:#205bc9; border-color:#205bc9}
+.shell:has(.role-workspace) .rw-technician .rw-primary {background:#a65b38; border-color:#a65b38}
+.shell:has(.role-workspace) .rw-route-note {background:#f1e1cc; color:#583b25; border-color:#c29a6d}
+.shell:has(.role-workspace) .rw-route li.current>b {background:#a65b38; border-color:#a65b38}
+
+@media(max-width:1100px) {
+  .shell--control-room .sidebar .wordmark {flex-basis:230px; font-size:19px}
+  .shell--control-room .sidebar nav button {padding-inline:10px}
+}
+@media(max-width:980px) {
+  .shell--control-room .workplace-grid.list-closed.has-selection {display:flex; flex-direction:column; height:auto; min-height:0}
+  .shell--control-room .workplace-map-wrap {height:620px; flex:none}
+  .shell--control-room .workplace-detail {position:relative; inset:auto; width:100%; overflow:visible; border-left:0; border-top:1px solid #aaa091}
+  .shell--control-room .workplace-detail-main {display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:24px}
+  .shell--control-room .workplace-detail-main>h3,.shell--control-room .workplace-detail-main>p,.shell--control-room .workplace-detail-label {grid-column:1}
+  .shell--control-room .control-incident-summary,.shell--control-room .control-steps {grid-column:2}
+  .shell--control-room .workplace-fact,.shell--control-room .control-camera,.shell--control-room .workplace-primary,.shell--control-room .workplace-limit {grid-column:1/-1}
+}
+@media(max-width:760px) {
+  .shell--control-room .sidebar {height:auto; background:#f9f7f1; border-color:#cfc8bc}
+  .shell--control-room .sidebar nav button {color:#61584e}
+  .shell--control-room .sidebar nav button.active {background:#dce6f8; color:#205bc9}
+  .shell--control-room main {padding-top:0}
+  .shell--control-room main>header {background:#f9f7f1; border-color:#cfc8bc}
+  .shell--control-room .content {padding:10px 10px 0}
+  .shell--control-room .workplace-topline {padding:15px; min-height:120px; align-items:start}
+  .shell--control-room .workplace-title h2 {font-size:32px}
+  .shell--control-room .workplace-stats {width:100%; justify-content:flex-start}
+  .shell--control-room .workplace-stats span {min-width:0; padding:0 11px; font-size:9px}
+  .shell--control-room .workplace-stats span:first-child {padding-left:0; border-left:0}
+  .shell--control-room .workplace-stats b {font-size:21px}
+  .shell--control-room .control-queue {height:77px}
+  .shell--control-room .control-queue>span {flex-basis:92px; font-size:8px}
+  .shell--control-room .control-queue button {flex-basis:155px}
+  .shell--control-room .workplace-map-wrap {height:550px}
+  .shell--control-room .workplace-detail-main {display:block; padding:20px}
+  .shell--control-room .control-incident-summary {margin-top:18px}
+  .shell--control-room .tunnel-scene__head h3 {font-size:18px}
+}
+@media(prefers-reduced-motion:reduce) {
+  .shell--control-room .control-queue button {transition:none}
+}

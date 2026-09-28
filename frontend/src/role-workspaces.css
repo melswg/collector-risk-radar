@@ -1,0 +1,186 @@
+.role-workspace.rw {
+  --rw-bg: #09111d;
+  --rw-panel: #101b2a;
+  --rw-panel-alt: #142238;
+  --rw-line: #31435c;
+  --rw-text: #eef4fb;
+  --rw-muted: #adbed3;
+  --rw-blue: #74afff;
+  background: var(--rw-bg);
+  color: var(--rw-text);
+  border: 1px solid var(--rw-line);
+  border-top: 3px solid var(--rw-blue);
+  font-family: 'IBM Plex Sans', sans-serif;
+  min-width: 0;
+}
+.role-workspace.rw-technician {--rw-blue: #e7b477; border-top-color: var(--rw-blue)}
+.role-workspace.rw-analyst {--rw-blue: #7ec6bd; border-top-color: var(--rw-blue)}
+.rw * {box-sizing: border-box}
+.rw button {font-family: inherit}
+.rw .rw-head {
+  height: auto;
+  min-height: 176px;
+  padding: 25px 30px;
+  border: 0;
+  border-bottom: 1px solid var(--rw-line);
+  background: var(--rw-bg);
+  color: var(--rw-text);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.rw-head > svg {color: var(--rw-blue); flex: none}
+.rw-kicker, .rw-section-label {
+  color: var(--rw-blue);
+  font: 600 10px 'IBM Plex Mono', monospace;
+  letter-spacing: .11em;
+}
+.rw .rw-head h2 {
+  color: var(--rw-text);
+  font-size: clamp(31px, 3.6vw, 53px);
+  font-weight: 650;
+  line-height: 1.04;
+  letter-spacing: -.055em;
+  margin: 13px 0 10px;
+}
+.rw .rw-head p {color: var(--rw-muted); font-size: 12px; line-height: 1.45; margin: 0}
+.rw-strip, .rw-analyst-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  background: var(--rw-panel);
+  border-bottom: 1px solid var(--rw-line);
+}
+.rw-strip span, .rw-analyst-strip span {
+  display: flex;
+  align-items: baseline;
+  gap: 11px;
+  padding: 13px 20px;
+  color: var(--rw-muted);
+  font-size: 11px;
+  border-right: 1px solid var(--rw-line);
+}
+.rw-strip span:last-child, .rw-analyst-strip span:last-child {border-right: 0}
+.rw-strip b, .rw-analyst-strip b {font-size: 21px; line-height: 1; color: var(--rw-text); font-variant-numeric: tabular-nums}
+.rw .rw-section-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  min-height: 38px;
+  margin: 0 0 13px;
+}
+.rw-section-label > span:last-child:not(:first-child) {color: var(--rw-muted)}
+.rw-section-label button {
+  border: 0;
+  background: transparent;
+  color: var(--rw-blue);
+  padding: 5px 0;
+  font-size: 11px;
+  font-weight: 600;
+}
+.rw-section-label button:hover {background: transparent; color: var(--rw-text)}
+.rw-tech-grid {display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr); border-bottom: 1px solid var(--rw-line)}
+.rw-main {padding: 22px 27px 26px; min-width: 0}
+.rw-feature {min-height: 314px; display: flex; flex-direction: column; align-items: flex-start; background: var(--rw-panel); border: 1px solid var(--rw-line); padding: 25px}
+.rw-feature .rw-object {font: 600 11px 'IBM Plex Mono', monospace; color: var(--rw-blue)}
+.rw-feature h3 {font-size: clamp(24px, 2.4vw, 38px); line-height: 1.12; letter-spacing: -.035em; max-width: 24ch; margin: 12px 0 20px}
+.rw-facts {display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; width: 100%; margin-top: auto; padding: 13px 0 16px; border-top: 1px solid var(--rw-line)}
+.rw-facts span {display: flex; flex-direction: column; gap: 6px; font-size: 10px; color: var(--rw-muted); line-height: 1.35}
+.rw-facts b {color: var(--rw-text); font-size: 11px; font-weight: 600; overflow-wrap: anywhere}
+.rw-primary {display: inline-flex; justify-content: space-between; gap: 16px; align-items: center; min-height: 40px; background: #215aab; color: #fff; border: 1px solid #4c8ee8; border-radius: 4px; font-weight: 700; font-size: 11px; text-align: left; padding: 9px 12px}
+.rw-primary:hover {background: #2a68be; color: #fff}
+.rw-technician .rw-primary {background: #91632e; border-color: #cc9b58}
+.rw-technician .rw-primary:hover {background: #a27438}
+.rw-secondary {background: transparent; color: var(--rw-blue); border: 1px solid var(--rw-line); font-size: 11px}
+.rw-secondary:hover {background: var(--rw-panel-alt)}
+.rw-feature-empty p {color: var(--rw-muted); font-size: 12px; line-height: 1.5; max-width: 48ch; margin-bottom: 20px}
+.rw-route {padding: 22px 24px; background: #0d1826; border-left: 1px solid var(--rw-line); min-width: 0}
+.rw-route ol {list-style: none; margin: 0; padding: 0}
+.rw-route li {display: flex; gap: 15px; position: relative; min-height: 68px; color: var(--rw-muted)}
+.rw-route li:not(:last-child):before {content: ''; position: absolute; left: 13px; top: 30px; bottom: 0; border-left: 1px solid var(--rw-line)}
+.rw-route li > b {display: grid; place-items: center; flex: 0 0 27px; height: 27px; border: 1px solid var(--rw-line); border-radius: 3px; color: var(--rw-muted); font: 700 10px 'IBM Plex Mono', monospace; background: var(--rw-bg)}
+.rw-route li.current > b {background: #71502d; color: #fff; border-color: #c18f51}
+.rw-route li strong {display: block; font-size: 12px; color: var(--rw-text); margin: 2px 0 5px}
+.rw-route li small {display: block; font-size: 10px; line-height: 1.35; color: var(--rw-muted)}
+.rw-route-note {display: flex; gap: 9px; padding: 11px; border: 1px solid #755c3a; color: #e8ceab; background: #2c241a; font-size: 10px; line-height: 1.45}
+.rw-route-note svg {flex: none}
+.rw-bottom-grid, .rw-manager-grid {display: grid; grid-template-columns: repeat(2, minmax(0, 1fr))}
+.rw-queue {min-width: 0; padding: 18px 27px 25px; border-right: 1px solid var(--rw-line)}
+.rw-queue:last-child {border-right: 0}
+.rw .rw-list-row {display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 14px; padding: 12px 2px; min-height: 61px; border: 0; border-top: 1px solid var(--rw-line); border-radius: 0; background: transparent; color: var(--rw-text); text-align: left; box-shadow: none}
+.rw .rw-list-row:hover {background: var(--rw-panel-alt)}
+.rw-list-main {min-width: 0; flex: 1}
+.rw-list-main strong {display: block; font-size: 12px; line-height: 1.35; overflow: hidden; white-space: nowrap; text-overflow: ellipsis}
+.rw-list-main small {display: block; color: var(--rw-muted); font-size: 10px; line-height: 1.4; margin-top: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis}
+.rw-list-status {display: flex; align-items: center; gap: 5px; flex: none; color: var(--rw-blue); font-size: 11px}
+.rw .rw-empty {color: var(--rw-muted); font-size: 12px; line-height: 1.45; padding: 16px 0; margin: 0; border-top: 1px solid var(--rw-line)}
+.rw-manager-lead {display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr); border-bottom: 1px solid var(--rw-line)}
+.rw-lead-number {display: grid; grid-template-columns: auto 1fr; gap: 5px 22px; align-items: end; padding: 25px 30px}
+.rw-lead-number strong {font-size: clamp(80px, 10vw, 135px); font-weight: 550; line-height: .9; letter-spacing: -.09em; font-variant-numeric: tabular-nums; color: var(--rw-blue)}
+.rw-lead-number span {font-size: clamp(17px, 1.9vw, 27px); line-height: 1.1; font-weight: 650; padding-bottom: 9px}
+.rw-lead-number button {grid-column: 1 / -1; justify-self: start; border: 0; background: transparent; color: var(--rw-blue); font-size: 11px; padding: 12px 0 0; font-weight: 700}
+.rw-lead-number button:hover {background: transparent; color: var(--rw-text)}
+.rw-manager-status {display: grid; grid-template-columns: repeat(2, 1fr); background: var(--rw-panel); border-left: 1px solid var(--rw-line)}
+.rw-manager-status > div {display: flex; flex-direction: column; gap: 5px; padding: 24px 18px; border-right: 1px solid var(--rw-line); border-bottom: 1px solid var(--rw-line)}
+.rw-manager-status > div:nth-child(2) {border-right: 0}
+.rw-manager-status b {font-size: 32px; line-height: 1; font-variant-numeric: tabular-nums}
+.rw-manager-status span {color: var(--rw-muted); font-size: 11px}
+.rw-manager-status p {grid-column: 1 / -1; color: var(--rw-muted); font-size: 10px; line-height: 1.45; margin: 0; padding: 12px 18px}
+.rw-manager-grid {border-bottom: 1px solid var(--rw-line)}
+.rw-decisions {padding: 18px 27px 25px}
+.rw-decisions > button {display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(110px, .7fr) auto; width: 100%; gap: 12px; align-items: center; text-align: left; padding: 12px 2px; background: transparent; color: var(--rw-text); border: 0; border-top: 1px solid var(--rw-line); border-radius: 0; font-size: 11px}
+.rw-decisions > button:hover {background: var(--rw-panel-alt)}
+.rw-decisions > button strong {color: var(--rw-blue); font-weight: 600}
+.rw-decisions > button svg {color: var(--rw-blue)}
+.rw-analyst-grid {display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(280px, .55fr)}
+.rw-analyst-main {min-width: 0; padding: 20px 27px 28px}
+.rw-analyst-side {padding: 20px 24px; background: var(--rw-panel); border-left: 1px solid var(--rw-line)}
+.rw-analyst-list > button {display: grid; width: 100%; grid-template-columns: 24px minmax(0, 1.3fr) minmax(85px, .75fr) minmax(80px, .6fr) 15px; align-items: center; gap: 10px; text-align: left; padding: 13px 2px; border: 0; border-top: 1px solid var(--rw-line); border-radius: 0; background: transparent; color: var(--rw-text)}
+.rw-analyst-list > button:hover {background: var(--rw-panel-alt)}
+.rw-index {color: var(--rw-blue); font: 600 10px 'IBM Plex Mono', monospace}
+.rw-analytic-source {font-size: 11px}
+.rw-analytic-source small {display: block; font-size: 10px; color: var(--rw-muted); margin-top: 4px}
+.rw-analytic-decision {font-size: 10px; color: var(--rw-blue)}
+.rw-analyst-list > button svg {color: var(--rw-blue)}
+.rw-source-grid {display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--rw-line); margin: 17px 0}
+.rw-source-grid > div {display: flex; flex-direction: column; gap: 4px; padding: 14px; border-right: 1px solid var(--rw-line)}
+.rw-source-grid > div:last-child {border-right: 0}
+.rw-source-grid b {font-size: 28px; font-variant-numeric: tabular-nums}
+.rw-source-grid span {font-size: 10px; color: var(--rw-muted)}
+.rw-analyst-side > p {font-size: 11px; line-height: 1.55; color: var(--rw-muted); margin: 17px 0}
+.rw-quality {display: flex; gap: 10px; border-top: 1px solid var(--rw-line); border-bottom: 1px solid var(--rw-line); padding: 14px 0; margin-bottom: 18px}
+.rw-quality svg {color: var(--rw-blue); flex: none}
+.rw-quality strong {display: block; font-size: 12px}
+.rw-quality small {display: block; color: var(--rw-muted); font-size: 10px; line-height: 1.45; margin-top: 5px}
+@media (max-width: 980px) {
+  .rw-tech-grid, .rw-manager-lead, .rw-analyst-grid {grid-template-columns: 1fr}
+  .rw-route, .rw-manager-status, .rw-analyst-side {border-left: 0; border-top: 1px solid var(--rw-line)}
+}
+@media (max-width: 760px) {
+  .rw .rw-head {min-height: 0; padding: 20px 17px}
+  .rw-head > svg {width: 23px}
+  .rw .rw-head h2 {font-size: clamp(26px, 7.5vw, 36px)}
+  .rw-strip, .rw-analyst-strip {grid-template-columns: 1fr 1fr}
+  .rw-strip span, .rw-analyst-strip span {padding: 11px 13px; font-size: 10px}
+  .rw-strip span:nth-child(2), .rw-analyst-strip span:nth-child(2) {border-right: 0}
+  .rw-strip span:last-child, .rw-analyst-strip span:last-child {grid-column: 1 / -1; border-top: 1px solid var(--rw-line)}
+  .rw-main, .rw-route, .rw-queue, .rw-decisions, .rw-analyst-main, .rw-analyst-side {padding: 16px}
+  .rw-feature {padding: 18px; min-height: 0}
+  .rw-facts {grid-template-columns: 1fr 1fr; gap: 11px}
+  .rw-facts span:last-child {grid-column: 1 / -1}
+  .rw-bottom-grid, .rw-manager-grid {grid-template-columns: 1fr}
+  .rw-queue {border-right: 0; border-bottom: 1px solid var(--rw-line)}
+  .rw-lead-number {padding: 22px 18px}
+  .rw-lead-number strong {font-size: 76px}
+  .rw-lead-number span {font-size: 17px}
+  .rw-decisions > button {grid-template-columns: 1fr auto; gap: 4px}
+  .rw-decisions > button span:nth-child(2) {grid-column: 1; color: var(--rw-muted)}
+  .rw-decisions > button strong {grid-column: 2; grid-row: 1}
+  .rw-decisions > button svg {grid-column: 2; grid-row: 2}
+  .rw-analyst-list > button {grid-template-columns: 20px minmax(0, 1fr) auto; gap: 7px}
+  .rw-analytic-source {grid-column: 2; font-size: 10px}
+  .rw-analytic-source small {display: inline; margin-left: 6px}
+  .rw-analytic-decision {grid-column: 3; grid-row: 1}
+  .rw-analyst-list > button svg {grid-column: 3; grid-row: 2}
+}

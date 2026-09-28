@@ -1,0 +1,105 @@
+/* Shared visual language with the approved pale-blue operational map. */
+.role-workspace.rw {
+  --rw-bg: #fbfdff;
+  --rw-panel: #eef5fc;
+  --rw-panel-alt: #e6f0fb;
+  --rw-line: #c2cfe6;
+  --rw-text: #374b86;
+  --rw-muted: #5e719d;
+  --rw-blue: #374b86;
+  color-scheme: light;
+  font-family: inherit;
+  border: 1px solid var(--rw-line);
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+}
+.rw .rw-head {min-height: 145px; padding: 28px 32px; background: #f3f8fe; align-items: center}
+.rw .rw-head h2 {font-family: inherit; font-weight: 450; font-size: clamp(28px, 3vw, 42px); line-height: 1.15; letter-spacing: -.035em; margin: 13px 0 10px}
+.rw .rw-head p {font-size: 14px; line-height: 1.55}
+.rw .rw-kicker, .rw .rw-section-label {font-family: inherit; font-size: 12px; font-weight: 500; line-height: 1.45; letter-spacing: .015em}
+.rw .rw-section-label {min-height: 42px; margin-bottom: 8px}
+.rw .rw-section-label button {font-size: 13px; font-weight: 450; text-transform: none; min-height: 36px}
+.rw .rw-strip span, .rw .rw-analyst-strip span {padding: 20px 28px; font-size: 13px; gap: 15px; align-items: center; line-height: 1.45}
+.rw .rw-strip b, .rw .rw-analyst-strip b {font-size: 30px; font-weight: 450}
+.rw .rw-main, .rw .rw-queue, .rw .rw-decisions, .rw .rw-analyst-main {padding: 20px 28px 28px}
+.rw .rw-feature {background: transparent; border: 0; padding: 10px 0 22px; min-height: 0}
+.rw .rw-feature .rw-object {font-family: inherit; font-weight: 500; font-size: 15px}
+.rw .rw-feature h3 {font-size: clamp(24px, 2.5vw, 34px); font-weight: 450; line-height: 1.25; max-width: 32ch; margin: 14px 0 24px}
+.rw .rw-facts {grid-template-columns: 1fr; gap: 0; padding: 0; margin: 0 0 22px}
+.rw .rw-facts span {display: grid; grid-template-columns: 120px 1fr; gap: 18px; padding: 12px 0; border-bottom: 1px solid var(--rw-line); font-size: 13px; line-height: 1.5}
+.rw .rw-facts b {font-size: 13px; font-weight: 450}
+.rw .rw-primary {width: 100%; padding: 15px 18px; min-height: 52px; background: #3c508c; border: 1px solid #3c508c; border-radius: 3px; color: white; font-size: 15px; font-weight: 450}
+.rw .rw-primary:hover {background: #2c3e73}
+.rw .rw-secondary {font-size: 14px; min-height: 44px; border-radius: 3px}
+.rw .rw-route {padding: 20px 26px; background: var(--rw-panel)}
+.rw .rw-route li {min-height: 92px; gap: 15px}
+.rw .rw-route li > b {font-family: inherit; font-weight: 500; font-size: 12px; width: 28px; border-radius: 50%}
+.rw .rw-route li.current > b {background: #3c508c; color: #fff; border-color: #3c508c}
+.rw .rw-route li strong {font-size: 15px; font-weight: 500; margin-top: 3px}
+.rw .rw-route li small {font-size: 13px; line-height: 1.5}
+.rw .rw-route-note {border: 0; border-top: 1px solid var(--rw-line); background: transparent; color: var(--rw-muted); padding: 18px 0; font-size: 13px; line-height: 1.6}
+.rw .rw-list-row {min-height: 78px; padding: 15px 0}
+.rw .rw-list-main strong {font-size: 15px; font-weight: 500; white-space: normal; overflow-wrap: anywhere}
+.rw .rw-list-main small {font-size: 12px; line-height: 1.5; white-space: normal}
+.rw .rw-list-status {font-size: 12px; gap: 10px; text-align: right}
+.rw .rw-empty, .rw .rw-feature-empty p {font-size: 14px; line-height: 1.6}
+.rw .rw-lead-number {padding: 28px 32px; gap: 16px 24px; align-items: center}
+.rw .rw-lead-number strong {font-size: clamp(60px, 7vw, 88px); font-weight: 400; letter-spacing: -.05em; line-height: 1}
+.rw .rw-lead-number span {font-size: clamp(18px, 2vw, 25px); line-height: 1.3; font-weight: 400; padding: 0}
+.rw .rw-lead-number button {font-size: 14px; font-weight: 450; min-height: 36px; padding: 0}
+.rw .rw-manager-status > div {padding: 27px 22px; gap: 9px}
+.rw .rw-manager-status b {font-size: 40px; font-weight: 400}
+.rw .rw-manager-status span {font-size: 13px; line-height: 1.5}
+.rw .rw-manager-status p {font-size: 12px; padding: 16px 22px; line-height: 1.5}
+.rw .rw-decisions > button {min-height: 62px; font-size: 14px; line-height: 1.5}
+.rw .rw-decisions > button strong {font-weight: 450}
+.rw .rw-analyst-side {padding: 20px 26px}
+.rw .rw-analyst-list > button {padding: 18px 0; min-height: 86px}
+.rw .rw-index {font-family: inherit; font-size: 12px; font-weight: 450}
+.rw .rw-analytic-source {font-size: 13px}
+.rw .rw-analytic-source small, .rw .rw-analytic-decision {font-size: 12px; line-height: 1.5}
+.rw .rw-source-grid {border-left: 0; border-right: 0}
+.rw .rw-source-grid > div {padding: 18px 14px}
+.rw .rw-source-grid b {font-size: 36px; font-weight: 400}
+.rw .rw-source-grid span {font-size: 13px}
+.rw .rw-analyst-side > p {font-size: 13px; line-height: 1.65}
+.rw .rw-quality {padding: 20px 0; margin: 22px 0}
+.rw .rw-quality strong {font-size: 15px; font-weight: 500}
+.rw .rw-quality small {font-size: 13px; line-height: 1.6}
+.rw .rw-schematic {border-top: 1px solid var(--rw-line); padding-top: 10px}
+.rw .rw-schematic-layout {display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(160px, 1fr); align-items: center; gap: 16px}
+.rw .rw-schematic svg {width: 100%; max-height: 220px}
+.rw .rw-schematic svg text {font-family: inherit; font-size: 14px; fill: #41558d}
+.rw .rw-schematic-zones button {width: 100%; display: flex; gap: 12px; align-items: center; text-align: left; color: var(--rw-text); border: 0; border-bottom: 1px solid var(--rw-line); border-radius: 0; background: transparent; padding: 13px 6px; font-size: 13px; line-height: 1.4}
+.rw .rw-schematic-zones button[aria-pressed=true] {background: var(--rw-panel-alt)}
+.rw .rw-schematic-zones button > svg {width: 15px; flex-shrink: 0; margin-left: auto}
+.rw .rw-schematic p {font-size: 13px; line-height: 1.6; color: var(--rw-muted); min-height: 64px; margin: 16px 0 0}
+.rw .rw-schematic p strong {color: var(--rw-text); font-weight: 500}
+.rw button:focus-visible {outline: 2px solid #3b5793; outline-offset: 3px}
+.shell.approved-shell .rw .rw-head h2 {font-size: clamp(28px, 3vw, 42px); font-weight: 450; line-height: 1.15; letter-spacing: -.035em}
+.shell.approved-shell .rw .rw-feature h3 {font-size: clamp(24px, 2.5vw, 34px); font-weight: 450; line-height: 1.25; letter-spacing: -.035em}
+.shell.approved-shell .rw .rw-primary {background: #3c508c; border-color: #3c508c; color: #fff; font-size: 15px; font-weight: 450; border-radius: 3px; min-height: 52px}
+.shell.approved-shell .rw .rw-primary:hover {background: #2c3e73; color: #fff}
+.shell.approved-shell .rw :is(.rw-list-row,.rw-decisions > button,.rw-analyst-list > button,.rw-schematic-zones button) {background: transparent; color: var(--rw-text); border: 0; border-top: 1px solid var(--rw-line); border-radius: 0; box-shadow: none}
+.shell.approved-shell .rw :is(.rw-list-row,.rw-decisions > button,.rw-analyst-list > button,.rw-schematic-zones button):hover {background: var(--rw-panel-alt)}
+.shell.approved-shell .rw .rw-section-label button,.shell.approved-shell .rw .rw-lead-number button {background: transparent; border: 0; color: var(--rw-blue); font-weight: 450; border-radius: 0}
+.shell.approved-shell .rw .rw-section-label button {font-size: 13px}
+.shell.approved-shell .rw .rw-schematic-zones button {font-size: 13px; min-height: 44px}
+.shell.approved-shell .rw .rw-schematic-zones button[aria-pressed=true] {background: var(--rw-panel-alt)}
+@media (max-width: 760px) {
+  .rw .rw-head {padding: 24px 18px; min-height: 0}
+  .rw .rw-head h2, .shell.approved-shell .rw .rw-head h2 {font-size: 29px}
+  .rw .rw-main, .rw .rw-route, .rw .rw-queue, .rw .rw-decisions, .rw .rw-analyst-main, .rw .rw-analyst-side {padding: 16px 18px 24px}
+  .rw .rw-strip span, .rw .rw-analyst-strip span {padding: 14px 16px; font-size: 12px; gap: 12px}
+  .rw .rw-strip b, .rw .rw-analyst-strip b {font-size: 27px}
+  .rw .rw-facts span {grid-template-columns: 96px 1fr; gap: 12px}
+  .rw .rw-schematic-layout {grid-template-columns: 1fr}
+  .rw .rw-schematic svg {max-height: 200px}
+  .rw .rw-section-label {flex-wrap: wrap; gap: 6px}
+  .rw .rw-lead-number {padding: 24px 18px; gap: 12px 18px}
+  .rw .rw-lead-number span {font-size: 19px}
+  .rw .rw-list-status {max-width: 90px; font-size: 12px}
+  .rw .rw-analytic-decision {max-width: 85px; text-align: right}
+  .rw .rw-analytic-source {font-size: 12px}
+}

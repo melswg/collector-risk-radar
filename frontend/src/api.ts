@@ -1,5 +1,10 @@
 export type Row = Record<string, any>;
+export const isDemoMode = typeof window !== 'undefined' && window.location.pathname === '/demo.html';
 export async function api<T = any>(path: string, body?: unknown, method?: string): Promise<T> {
+  if (isDemoMode) {
+    const {demoApi} = await import('./demo-api');
+    return demoApi(path, body, method) as Promise<T>;
+  }
   const response = await fetch('/api/v1'+path,{credentials:'same-origin', method:method ?? (body===undefined?'GET':'POST'), headers:body instanceof FormData?{}:{'Content-Type':'application/json'},body:body===undefined?undefined:body instanceof FormData?body:JSON.stringify(body)});
   if(!response.ok){const err=await response.json();throw new Error(err.error?.message ?? 'Ошибка запроса');}
   return response.json();
