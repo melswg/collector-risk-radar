@@ -72,7 +72,7 @@ export function SignalCompanion({predictions, notifications, username, role, obj
   const medium = predictions.filter(p => p.incident_type !== 'intrusion_false_alarm' && p.risk === 'medium');
   const unread = notifications.filter(n => !n.data?.read_by?.includes(username));
   const state = high.length || unread.length ? 'alert' : medium.length ? 'watch' : 'calm';
-  const ranked = [...high, ...medium].sort((a,b) => (b.probability ?? -1) - (a.probability ?? -1));
+  const ranked = [...high, ...medium].filter(p => !p.decision).sort((a,b) => (b.probability ?? -1) - (a.probability ?? -1));
   const technical = [...predictions].sort((a,b) => Number(b.incident_type === 'sensor_failure') - Number(a.incident_type === 'sensor_failure') || (b.probability ?? -1) - (a.probability ?? -1));
   const sensorForecasts = technical.filter(p => p.incident_type === 'sensor_failure' && ['high', 'medium'].includes(p.risk));
   const isDispatcher = role === 'dispatcher' || role === 'admin';

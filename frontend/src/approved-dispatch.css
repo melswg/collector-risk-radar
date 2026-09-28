@@ -35,3 +35,6 @@
 .shell.approved-shell .underground-map .maplibregl-ctrl-group button{min-height:0;min-width:0;width:30px;height:30px;padding:0;border-radius:0}
 .underground-map .underground-camera-view{background:#f9fcff;color:#394f91}.underground-map .underground-camera-view button{color:#394f91}.underground-map .underground-camera-view__nearby button{background:#eaf3ff;border-color:#a5b9d8}.underground-map .underground-camera-view__nearby small,.underground-map .underground-camera-view>p{color:#4c669a}
 .underground-map .map-caption{background:#f5faffde;color:#526e9d}
+.approved-dispatch .underground-map :is(.map-caption,.map-legend){background:#f5faffed;color:#526e9d;font-family:Commissioner,sans-serif;border:1px solid #c5d1e8;box-shadow:none}
+.approved-dispatch .underground-map .map-caption{font-size:10px;line-height:1.4;max-width:calc(100% - 24px);white-space:normal}
+.approved-dispatch .underground-map .map-legend{font-size:10px;bottom:48px}

@@ -9,9 +9,10 @@ type Props = {objects:Row[]; predictions:Row[]; events:Row[]; recommendations:Ro
 export function Dashboard({objects,predictions,events,recommendations,objectName,onSelect,onTab,onDemo,canDecide,busy,criticalSignal,onCriticalDismiss}:Props){
  const [selectedId,setSelectedId]=useState<string|null>(null),[closed,setClosed]=useState(false),[query,setQuery]=useState(''),[risk,setRisk]=useState('all'),[listOpen,setListOpen]=useState(false),[cameraOpen,setCameraOpen]=useState(false),[previewSignal,setPreviewSignal]=useState<Row|null>(null);
  const ordered=useMemo(()=>predictions.filter(p=>p.incident_type!=='intrusion_false_alarm').sort((a,b)=>(b.probability??-1)-(a.probability??-1)),[predictions]);
- const selected=closed?null:ordered.find(p=>p.id===selectedId)??ordered[0]??null;
+ const pending=ordered.filter(p=>!p.decision&&['high','medium','insufficient'].includes(p.risk));
+ const selected=closed?null:ordered.find(p=>p.id===selectedId)??pending[0]??ordered[0]??null;
  const visible=ordered.filter(p=>(risk==='all'||p.risk===risk)&&objectName(p.object_id).toLocaleLowerCase('ru').includes(query.toLocaleLowerCase('ru')));
- const pending=ordered.filter(p=>!p.decision),latest=selected?events.find(e=>e.object_id===selected.object_id):null,activeAlert=criticalSignal??previewSignal;
+ const latest=selected?events.find(e=>e.object_id===selected.object_id):null,activeAlert=criticalSignal??previewSignal;
  useEffect(()=>setCameraOpen(false),[selected?.id]);
  useModalFocus(cameraOpen,'.ad-camera-overlay [role="dialog"]');
  function choose(p:Row){setSelectedId(p.id);setClosed(false);setListOpen(false)}
