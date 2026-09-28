@@ -6,6 +6,21 @@ const source=await readFile(new URL('../src/latest-request.ts',import.meta.url),
 const {outputText}=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}});
 const {createLatestRequest}=await import(`data:text/javascript;base64,${Buffer.from(outputText).toString('base64')}`);
 
+test('closing a panel invalidates its pending success and failure',async()=>{
+ for(const outcome of ['success','failure']){
+  const begin=createLatestRequest();
+  let resolve,reject,selected=null,error=null;
+  const pending=new Promise((yes,no)=>{resolve=yes;reject=no});
+  const current=begin();
+  const opening=(async()=>{try{const result=await pending;if(current())selected=result}catch(e){if(current())error=e}})();
+  begin(); // The inbox calls this synchronously on close, and again on unmount.
+  if(outcome==='success')resolve('prediction');else reject(new Error('late response'));
+  await opening;
+  assert.equal(selected,null);assert.equal(error,null);
+  assert.equal(begin()(),true); // A newly opened panel can accept its own result.
+ }
+});
+
 test('a late result cannot replace the result of a more recent filter',async()=>{
  const begin=createLatestRequest();
  let oldResolve,newResolve,visible;
