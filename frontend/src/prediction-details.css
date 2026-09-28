@@ -1,0 +1,51 @@
+.shell.approved-shell .prediction-details-overlay {background: #20325f55; z-index: 1200}
+.shell.approved-shell .drawer.prediction-details {width: 620px; max-width: 100vw; height: 100dvh; padding: 0; overflow-y: auto; background: #fff; color: #394d8c; border-left: 1px solid #bccbe3; box-shadow: none; font-family: Commissioner, sans-serif; overscroll-behavior: contain}
+.shell.approved-shell .prediction-details .pd-heading {position: sticky; top: 0; z-index: 2; min-height: 0; height: auto; display: flex; align-items: flex-start; gap: 20px; justify-content: space-between; padding: 22px 28px; background: #f1f7fd; border-bottom: 1px solid #c5d1e8; color: #394d8c}
+.shell.approved-shell .prediction-details .pd-heading>div {min-width: 0}
+.shell.approved-shell .prediction-details .pd-heading h2 {font: 500 26px/1.2 Commissioner, sans-serif; letter-spacing: -.025em; margin: 8px 0; overflow-wrap: anywhere}
+.shell.approved-shell .prediction-details .pd-heading p {font-size: 12px; line-height: 1.5; color: #6377a1; margin: 0; overflow-wrap: anywhere}
+.shell.approved-shell .prediction-details .pd-heading button {flex: none; min-width: 38px; padding: 7px; background: transparent; border: 0}
+.shell.approved-shell .prediction-details .pd-body {padding: 0 28px 32px}
+.shell.approved-shell .prediction-details .pd-eyebrow {font-size: 12px; line-height: 1.5; font-weight: 450; color: #6175a0}
+.shell.approved-shell .prediction-details .pd-summary {padding: 24px 0}
+.shell.approved-shell .prediction-details .pd-metrics {display: grid; grid-template-columns: 1fr 1fr; margin: 18px 0; gap: 20px}
+.shell.approved-shell .prediction-details .pd-metrics>div {display: flex; flex-direction: column; gap: 8px}
+.shell.approved-shell .prediction-details .pd-metrics>div+div {padding-left: 24px; border-left: 1px solid #c5d1e8}
+.shell.approved-shell .prediction-details .pd-metrics span {font-size: 13px; color: #6175a0}
+.shell.approved-shell .prediction-details .pd-metrics strong {font-size: clamp(24px, 3vw, 36px); line-height: 1.15; font-weight: 450; font-variant-numeric: tabular-nums}
+.shell.approved-shell .prediction-details .pd-summary-foot {display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12px; color: #6175a0}
+.shell.approved-shell .prediction-details .pd-risk {display: inline-block; padding: 5px 10px; border: 1px solid #bccbe3; border-radius: 20px; color: #394d8c; font-size: 13px}
+.shell.approved-shell .prediction-details .pd-risk-high {color: #a7362d; border-color: #d78a80; background: #fff5f3}
+.shell.approved-shell .prediction-details .pd-risk-medium {color: #9b531e; border-color: #d5a477; background: #fff9f2}
+.shell.approved-shell .prediction-details .pd-caption,.shell.approved-shell .prediction-details .pd-status {font-size: 13px; line-height: 1.6; color: #65779b; margin: 12px 0 0}
+.shell.approved-shell .prediction-details .pd-section {padding: 24px 0; border-top: 1px solid #c5d1e8}
+.shell.approved-shell .prediction-details .pd-section h3 {font-size: 18px; font-weight: 500; letter-spacing: -.015em; line-height: 1.35; margin: 0 0 16px}
+.shell.approved-shell .prediction-details .pd-section p {font-size: 14px; line-height: 1.6; margin: 8px 0}
+.shell.approved-shell .prediction-details .pd-section small {font-size: 12px; line-height: 1.5; color: #65779b}
+.shell.approved-shell .prediction-details :is(.pd-factor,.pd-channel) {display: flex; align-items: flex-start; gap: 24px; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e0e7f2; font-size: 14px; line-height: 1.5}
+.shell.approved-shell .prediction-details :is(.pd-factor,.pd-channel)>span {min-width: 0; overflow-wrap: anywhere}
+.shell.approved-shell .prediction-details :is(.pd-factor,.pd-channel) small {display: block; margin-top: 4px}
+.shell.approved-shell .prediction-details :is(.pd-factor,.pd-channel) strong {font-size: 13px; font-weight: 450; max-width: 48%; text-align: right; overflow-wrap: anywhere}
+.shell.approved-shell .prediction-details .pd-record {padding: 12px 0; border-bottom: 1px solid #e0e7f2}
+.shell.approved-shell .prediction-details .pd-chart {margin: 12px -12px 0 -20px; min-width: 0}
+.shell.approved-shell .prediction-details .pd-load-error {padding: 16px; background: #fff7f4; color: #9c4938; border: 1px solid #e2b7a8; font-size: 13px; line-height: 1.6}
+.shell.approved-shell .prediction-details .pd-load-error p {margin: 0 0 12px}
+.shell.approved-shell .prediction-details .pd-warning {padding: 12px 14px; background: #fff7ec; color: #925323; font-size: 13px; line-height: 1.6; border-left: 2px solid #c88035}
+.shell.approved-shell .prediction-details .pd-saved {background: #f1f7fd; padding-inline: 16px}
+.shell.approved-shell .prediction-details .pd-decision fieldset {padding: 0; margin: 0; border: 0; display: grid; gap: 16px; min-width: 0}
+.shell.approved-shell .prediction-details label {display: flex; flex-direction: column; gap: 7px; font-size: 13px; color: #536994}
+.shell.approved-shell .prediction-details :is(select,input,textarea) {width: 100%; max-width: 100%; border: 1px solid #bccbe3; border-radius: 4px; background: #fff; color: #394d8c; padding: 11px 12px; min-height: 44px; font-family: inherit; font-size: 14px}
+.shell.approved-shell .prediction-details textarea {min-height: 100px; resize: vertical}
+.shell.approved-shell .prediction-details .pd-save {display: flex; justify-content: space-between; gap: 18px; width: 100%; min-height: 50px; margin: 20px 0 10px; padding: 12px 16px; background: #40558f; color: #fff; border-color: #40558f; font-size: 15px}
+.shell.approved-shell .prediction-details .pd-save:hover {background: #2f447b; color: #fff}
+.shell.approved-shell .prediction-details button:disabled {opacity: .55; cursor: not-allowed}
+.shell.approved-shell .prediction-details .pd-simulation form {display: flex; align-items: flex-end; gap: 12px; margin-top: 18px}
+.shell.approved-shell .prediction-details .pd-simulation label {flex: 1; min-width: 0}
+.shell.approved-shell .prediction-details .pd-simulation button {min-height: 44px}
+@media(max-width:650px) {
+  .shell.approved-shell .drawer.prediction-details {width: 100%}
+  .shell.approved-shell .prediction-details .pd-heading {padding: 18px 20px}
+  .shell.approved-shell .prediction-details .pd-heading h2 {font-size: 23px}
+  .shell.approved-shell .prediction-details .pd-body {padding: 0 20px 28px}
+  .shell.approved-shell .prediction-details .pd-simulation form {flex-direction: column; align-items: stretch}
+}
