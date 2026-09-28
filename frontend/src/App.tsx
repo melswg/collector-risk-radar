@@ -13,6 +13,9 @@ import {SignalCompanion} from './SignalCompanion';
 import {Dashboard} from './Dashboard';
 import {RoleDashboard} from './RoleDashboard';
 import {RecommendationsPanel} from './RecommendationsPanel';
+import {appendCritical} from './critical-queue';
+import {NotificationInbox} from './NotificationInbox';
+import {createLatestRequest} from './latest-request';
 const MapView=lazy(()=>import('./MapView'));
 const tabs=[['dashboard','Рабочее место',LayoutDashboard],['map','Карта объектов',MapPin],['predictions','Прогнозы',Activity],['events','Список событий',ClipboardList],['recommendations','Обслуживание',Wrench],['quality','Аналитика',ChartNoAxesCombined],['data','Источники данных',Database],['admin','Управление',Settings]] as const;
 const roleNames:Record<string,string>={admin:'Администратор',dispatcher:'Диспетчер ОДС',analyst:'Аналитик',manager:'Руководитель',technician:'Технический специалист'};
@@ -28,10 +31,13 @@ export default function App(){
  const [workSelection,setWorkSelection]=useState<string|null>(null);
  useEffect(()=>{if(tab!=='recommendations')setWorkSelection(null)},[tab,user?.username]);
  useEffect(()=>{if(user){document.getElementById('main-content')?.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'})}},[tab,user?.username]);
- const [criticalSignal,setCriticalSignal]=useState<Row|null>(null);
+ const [criticalSignals,setCriticalSignals]=useState<Row[]>([]);
+ const criticalSignal=criticalSignals[0]??null;
+ const setCriticalSignal=(signal:Row|null)=>setCriticalSignals(queue=>signal?appendCritical(queue,signal):queue.slice(1));
  const seenCritical=useRef(new Set<string>());
  const sessionGeneration=useRef(0);
- function resetSessionView(){sessionGeneration.current++;setObjects([]);setPredictions([]);setEvents([]);setOverviewEvents([]);setRecommendations([]);setNotifications([]);setStatus({});setSettings({});setStart('');setEnd('');setObjectFilter('');setEventQuery('limit=100&sort=desc');setShowPreferences(false);setNotice('');setError('');setCriticalSignal(null);setSelected(null);setShowNotifications(false);setTab('dashboard');setFilter('');setRiskFilter('');seenCritical.current.clear();}
+ const beginLoad=useRef(createLatestRequest());
+ function resetSessionView(){sessionGeneration.current++;setObjects([]);setPredictions([]);setEvents([]);setOverviewEvents([]);setRecommendations([]);setNotifications([]);setStatus({});setSettings({});setStart('');setEnd('');setObjectFilter('');setEventQuery('limit=100&sort=desc');setShowPreferences(false);setNotice('');setError('');setCriticalSignals([]);setSelected(null);setShowNotifications(false);setTab('dashboard');setFilter('');setRiskFilter('');seenCritical.current.clear();}
  const canAnalyze=user&&['admin','analyst','manager'].includes(user.role), canDecide=user&&['admin','dispatcher','analyst'].includes(user.role);
  const roleTabs: Record<string,string[]> = {
   dispatcher: ['dashboard','map','predictions','events','recommendations'],
@@ -40,11 +46,44 @@ export default function App(){
   analyst: ['dashboard','map','predictions','events','recommendations','quality','data','admin'],
   admin: tabs.map(t => t[0]),
  };
- const load=useCallback(async()=>{const generation=sessionGeneration.current;try{const [o,p,e,r,s,c,n,overview]=await Promise.all([api('/objects?limit=1000'),api('/predictions?latest=true&limit=1000'),api('/events?'+eventQuery),api('/recommendations'),api('/ml/status'),api('/settings'),api('/notifications'),api('/events?limit=100')]);if(generation!==sessionGeneration.current)return;setObjects(o.items);setPredictions(p.items);setSelected(old=>old?p.items.find((item:Row)=>item.id===old.id)??old:null);setEvents(e.items);setOverviewEvents(overview.items);setRecommendations(r.items);setStatus(s);setSettings(c);setNotifications(n.items);setError('');}catch(e){if(generation===sessionGeneration.current)setError(String(e));}},[eventQuery]);
+ const load=useCallback(async()=>{
+  const generation=sessionGeneration.current,isLatest=beginLoad.current();
+  const current=()=>isLatest()&&generation===sessionGeneration.current;
+  try{
+   const [o,p,e,r,s,c,n,overview]=await Promise.all([api('/objects?limit=1000'),api('/predictions?latest=true&limit=1000'),api('/events?'+eventQuery),api('/recommendations'),api('/ml/status'),api('/settings'),api('/notifications'),api('/events?limit=100')]);
+   if(!current())return;
+   setObjects(o.items);setPredictions(p.items);setSelected(old=>old?p.items.find((item:Row)=>item.id===old.id)??old:null);setEvents(e.items);setOverviewEvents(overview.items);setRecommendations(r.items);setStatus(s);setSettings(c);setNotifications(n.items);setError('');
+  }catch(e){if(current())setError(String(e))}
+ },[eventQuery]);
  useEffect(()=>{api('/auth/me').then(setUser).catch(()=>{setUser(null);setError('')}).finally(()=>setAuthReady(true));},[]);
  useEffect(()=>{if(user)void load();},[user,load]);
  useEffect(()=>{if(!user||!autoRefresh)return;const timer=setInterval(()=>void load(),30000);return()=>clearInterval(timer);},[user,autoRefresh,load]);
- useEffect(()=>{if(!user||isDemoMode)return;const source=new EventSource('/api/v1/notifications/stream');source.onmessage=e=>{const n=JSON.parse(e.data);setNotifications(old=>old.some(x=>x.id===n.id)?old:[n,...old]);if(['dispatcher','admin'].includes(user.role)&&n.data?.risk==='high'&&Date.now()-new Date(n.ts).getTime()<30000&&!seenCritical.current.has(n.id)){seenCritical.current.add(n.id);void api('/predictions/'+n.data.prediction_id).then(p=>{setPredictions(old=>old.some(x=>x.id===p.id)?old:[p,...old]);setCriticalSignal({...p,notificationId:n.id});setTab('dashboard')}).catch(()=>setNotice('Новый критический прогноз. Откройте уведомления.'));if(sound){const ac=new AudioContext();const osc=ac.createOscillator();osc.connect(ac.destination);osc.frequency.value=660;osc.start();osc.stop(ac.currentTime+.15);osc.onended=()=>void ac.close();}}};return()=>source.close();},[user,sound]);
+ useEffect(()=>{
+  if(!user||isDemoMode)return;
+  const generation=sessionGeneration.current;
+  let active=true;
+  const current=()=>generation===sessionGeneration.current;
+  const source=new EventSource('/api/v1/notifications/stream');
+  source.onmessage=e=>{
+   if(!active||!current())return;
+   let n:Row;
+   try{n=JSON.parse(e.data)}catch{return}
+   if(!n||typeof n.id!=='string'||!n.data||typeof n.data!=='object')return;
+   setNotifications(old=>old.some(x=>x.id===n.id)?old:[n,...old]);
+   const age=Date.now()-new Date(n.ts).getTime();
+   if(['dispatcher','admin'].includes(user.role)&&n.data.risk==='high'&&n.data.prediction_id&&age>=0&&age<30000&&!seenCritical.current.has(n.id)){
+    seenCritical.current.add(n.id);
+    void api('/predictions/'+n.data.prediction_id).then(p=>{
+     if(!current())return;
+     setPredictions(old=>old.some(x=>x.id===p.id)?old:[p,...old]);
+     setCriticalSignals(queue=>appendCritical(queue,{...p,notificationId:n.id}));
+     setSelected(null);setShowPreferences(false);setShowNotifications(false);setTab('dashboard');
+    }).catch(()=>{if(current()){seenCritical.current.delete(n.id);setNotice('Новый критический прогноз. Откройте уведомления.')}});
+    if(sound){try{const ac=new AudioContext();const osc=ac.createOscillator();osc.connect(ac.destination);osc.frequency.value=660;osc.start();osc.stop(ac.currentTime+.15);osc.onended=()=>void ac.close()}catch{/* A blocked audio context must not prevent the visual alert. */}}
+   }
+  };
+  return()=>{active=false;source.close()};
+ },[user,sound]);
  async function act(fn:()=>Promise<unknown>,message='Готово',refresh=true){setBusy(true);setError('');try{await fn();if(message)setNotice(message);if(refresh)await load();}catch(e){setError(String(e));}finally{setBusy(false);}}
  const objectName=(id:string)=>objects.find(o=>o.id===id)?.name??id;
  const visible=predictions.filter(p=>(!filter||p.incident_type===filter)&&(!riskFilter||p.risk===riskFilter));
@@ -60,7 +99,7 @@ export default function App(){
  {tab==='events'&&<section className="panel"><div className="toolbar"><label>С<input type="datetime-local" value={start} onChange={e=>setStart(e.target.value)}/></label><label>По<input type="datetime-local" value={end} onChange={e=>setEnd(e.target.value)}/></label><select aria-label="Объект" value={objectFilter} onChange={e=>setObjectFilter(e.target.value)}><option value="">Все объекты</option>{objects.map(o=><option key={o.id} value={o.id}>{o.name}</option>)}</select><select aria-label="Сортировка" value={sort} onChange={e=>setSort(e.target.value)}><option value="desc">Сначала новые</option><option value="asc">Сначала старые</option></select><label className="check"><input type="checkbox" checked={autoRefresh} onChange={e=>setAutoRefresh(e.target.checked)}/>Автообновление</label><button onClick={()=>{if(start&&end&&new Date(start)>new Date(end)){setError('Начало периода должно быть раньше конца.');return}const q=new URLSearchParams({sort,limit:'100'});if(start)q.set('start',new Date(start).toISOString());if(end)q.set('end',new Date(end).toISOString());if(objectFilter)q.set('object_id',objectFilter);setError('');if(q.toString()===eventQuery)void load();else setEventQuery(q.toString())}}>Применить</button></div><EventJournal rows={events} objectName={objectName}/></section>}
  {tab==='recommendations'&&<RecommendationsPanel rows={recommendations} selectedId={workSelection} onClearSelection={()=>setWorkSelection(null)} role={user.role} objectName={objectName} maintenanceNote={settings.maintenance_note} onRefresh={load} onStatus={(id,status)=>void act(()=>api('/recommendations/'+id,{status},'PATCH'),'Статус обновлён')} onDraft={id=>void act(async()=>{const result=await api('/recommendations/'+id+'/draft-order',{});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(result,null,2)],{type:'application/json'}));a.download='draft-order.json';a.click();URL.revokeObjectURL(a.href)},'Черновик выгружен')}/>}
  {tab==='quality'&&(user.role==='manager'?<OperationsAnalytics objects={objects} predictions={predictions} recommendations={recommendations} onPrediction={setSelected} onWork={id=>{setWorkSelection(id);setTab('recommendations')}}/>:<QualityPanel act={act} role={user.role} objects={objects}/>)}{tab==='data'&&<DataPanel act={act} user={user}/>}{tab==='admin'&&<><AdminPanel onRefresh={load} settings={settings} user={user} status={status}/>{user.role==='admin'&&<DeliveryPanel/>}</>}
- <footer><span>Москоллектор / Рабочее пространство</span><span>Демонстрационный прототип · ЛЦТ 2026</span></footer></div></main>{showPreferences&&<NotificationPreferences key={user.username} username={user.username} role={user.role} onClose={()=>setShowPreferences(false)}/>}<SignalCompanion predictions={predictions} notifications={notifications} username={user.username} role={user.role} objectName={objectName} onSelect={setSelected} onOpenNotification={n=>void act(async()=>{await api('/notifications/'+n.id+'/read',{});setSelected(await api('/predictions/'+n.data.prediction_id));},'Уведомление открыто')}/>{selected&&<PredictionDetails canSimulate={['dispatcher','analyst','admin'].includes(user.role)} p={selected} objectName={objectName} onClose={()=>setSelected(null)} settings={settings} act={act} canDecide={!!canDecide}/>}{showNotifications&&<div className="notification-panel"><div className="panel-title"><h2>Уведомления</h2><button onClick={()=>setShowNotifications(false)} aria-label="Закрыть"><X/></button></div><label className="check"><input type="checkbox" checked={sound} onChange={e=>setSound(e.target.checked)}/>Звук новых уведомлений</label>{notifications.length?notifications.map(n=><button key={n.id} className="notification-item" onClick={()=>void act(async()=>{await api('/notifications/'+n.id+'/read',{});setSelected(await api('/predictions/'+n.data.prediction_id));setShowNotifications(false)})}><strong>{incidentNames[n.data.incident_type]} · {objectName(n.object_id)}</strong><small>{date(n.ts)} · {Math.round(n.data.probability*100)}%</small><span>{n.data.read_by?.includes(user.username)?'Прочитано':'Новое'}</span></button>):<Empty/>}</div>}</div>
+ <footer><span>Москоллектор / Рабочее пространство</span><span>Демонстрационный прототип · ЛЦТ 2026</span></footer></div></main>{showPreferences&&<NotificationPreferences key={user.username} username={user.username} role={user.role} onClose={()=>setShowPreferences(false)}/>}<SignalCompanion predictions={predictions} notifications={notifications} username={user.username} role={user.role} objectName={objectName} onSelect={setSelected} onOpenNotification={n=>void act(async()=>{await api('/notifications/'+n.id+'/read',{});setSelected(await api('/predictions/'+n.data.prediction_id));},'Уведомление открыто')}/>{selected&&<PredictionDetails canSimulate={['dispatcher','analyst','admin'].includes(user.role)} p={selected} objectName={objectName} onClose={()=>setSelected(null)} settings={settings} act={act} canDecide={!!canDecide}/>}{showNotifications&&<NotificationInbox rows={notifications} username={user.username} sound={sound} busy={busy} error={error} objectName={objectName} onSound={setSound} onClose={()=>setShowNotifications(false)} onOpen={n=>void act(async()=>{await api('/notifications/'+n.id+'/read',{});setSelected(await api('/predictions/'+n.data.prediction_id));setShowNotifications(false)})}/>}</div>
 }
 function DataPanel({act,user}:{act:(f:()=>Promise<unknown>,m?:string)=>Promise<void>;user:Row}){
  const [result,setResult]=useState<Row|null>(null);

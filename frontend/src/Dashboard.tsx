@@ -14,6 +14,7 @@ export function Dashboard({objects,predictions,events,recommendations,objectName
  const visible=ordered.filter(p=>(risk==='all'||p.risk===risk)&&objectName(p.object_id).toLocaleLowerCase('ru').includes(query.toLocaleLowerCase('ru')));
  const latest=selected?events.find(e=>e.object_id===selected.object_id):null,activeAlert=criticalSignal??previewSignal;
  useEffect(()=>setCameraOpen(false),[selected?.id]);
+ useEffect(()=>{if(activeAlert)setCameraOpen(false)},[activeAlert]);
  useModalFocus(cameraOpen,'.ad-camera-overlay [role="dialog"]');
  function choose(p:Row){setSelectedId(p.id);setClosed(false);setListOpen(false)}
  function dismiss(){setPreviewSignal(null);onCriticalDismiss?.()}

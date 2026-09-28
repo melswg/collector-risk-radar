@@ -17,20 +17,13 @@ export function CriticalAlert({prediction, objectName, preview, previewHref, onO
   useModalFocus(true,'.critical-alert');
   useEffect(() => {
     document.querySelector<HTMLElement>('.critical-alert__primary')?.focus();
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onLater();
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => {
-      window.removeEventListener('keydown', onKeyDown);
-    };
-  }, [onLater]);
+  }, [prediction.id]);
 
   const kind = ({fire: 'Риск пожара', flood: 'Риск подтопления', sensor_failure: 'Риск отказа датчика'} as Record<string, string>)[prediction.incident_type]
     ?? `Риск: ${String(incidentNames[prediction.incident_type] ?? 'требуется проверка').toLocaleLowerCase('ru')}`;
   const score = typeof prediction.probability === 'number' ? `${Math.round(prediction.probability * 100)}%` : 'нет оценки';
 
-  return <div className="critical-alert" role="alertdialog" aria-modal="true" aria-labelledby="critical-alert-title" aria-describedby="critical-alert-description">
+  return <div className="critical-alert" role="alertdialog" aria-modal="true" aria-labelledby="critical-alert-title" aria-describedby="critical-alert-description" onKeyDown={event => {if (event.key === 'Escape') {event.preventDefault(); event.stopPropagation(); onLater();}}}>
     <div className="critical-alert__frame">
       <header className="critical-alert__header">
         <span className="critical-alert__brand"><span className="critical-alert__brand-mark"/> МОСКОЛЛЕКТОР / ОПЕРАТИВНЫЙ КОНТУР</span>
