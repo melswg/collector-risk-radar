@@ -12,6 +12,12 @@ export function useModalFocus(open:boolean, selector:string){
   controls()[0]?.focus();document.body.style.overflow='hidden';
   const trap=(event:KeyboardEvent)=>{if(event.key!=='Tab')return;const items=controls(),first=items[0],last=items[items.length-1];if(!first){event.preventDefault();return}if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}};
   dialog.addEventListener('keydown',trap);
-  return()=>{dialog.removeEventListener('keydown',trap);document.body.style.overflow=overflow;if(previous?.isConnected)previous.focus()};
+  return()=>{
+   dialog.removeEventListener('keydown',trap);
+   document.body.style.overflow=overflow;
+   // Opening a notification removes its button. Restore a usable focus target.
+   const target=previous?.isConnected?previous:document.getElementById('main-content');
+   target?.focus({preventScroll:true});
+  };
  },[open,selector]);
 }

@@ -3,7 +3,16 @@
 .underground-map__canvas.is-ready {visibility: visible}
 .underground-map .maplibregl-canvas:focus-visible {outline: 2px solid #acd6ff; outline-offset: -3px}
 .underground-map .maplibregl-control-container {font-family: 'Commissioner',sans-serif}
-.underground-map .maplibregl-ctrl-bottom-right {bottom: 50px}
+.underground-map .maplibregl-ctrl-bottom-right {bottom: 0}
+.underground-map .maplibregl-ctrl-bottom-right .maplibregl-ctrl-group {margin-bottom: 98px}
+.underground-map__footer {position: absolute; z-index: 500; left: 7px; right: 7px; bottom: 44px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; pointer-events: none}
+.shell.approved-shell .underground-map .underground-map__footer .map-legend,
+.shell.approved-shell .underground-map .underground-map__footer .map-caption,
+.underground-map .underground-map__footer .map-legend,
+.underground-map .underground-map__footer .map-caption {position: static; margin: 0; max-width: 100%; white-space: normal; width: fit-content}
+.underground-map .underground-map__footer .map-legend {flex-wrap: wrap}
+.shell.approved-shell .underground-map .underground-camera-view {max-height: calc(100% - 170px); overflow-y: auto; overscroll-behavior: contain}
+@media(max-width:760px) {.shell.approved-shell .underground-map .underground-camera-view {top: 100px; max-height: calc(100% - 230px)}}
 .underground-map .maplibregl-ctrl-attrib {background: #e7e3d9eb; color: #243248; font-size: 9px}
 .underground-map .maplibregl-ctrl-attrib a {color: #174e9f}
 .underground-map .maplibregl-ctrl-group {border: 1px solid #8ca5bf; border-radius: 2px; background: #f4f1e9}
@@ -14,7 +23,10 @@
 .underground-object-pin.low,.underground-object-pin.normal {background: #77b2b4}
 .underground-object-pin.selected {box-shadow: 0 0 0 4px #003882,0 0 0 6px #b8d9fa}
 .underground-object-pin:focus-visible,.underground-camera-pin:focus-visible {outline: 3px solid #acd6ff; outline-offset: 4px}
-.underground-map__error {position: absolute; z-index: 800; top: 53px; left: 12px; padding: 7px 10px; background: #4a211f; color: #fff; font-size: 11px}
+.underground-map__error {position: absolute; z-index: 800; top: 100px; left: 12px; right: 12px; width: fit-content; max-width: calc(100% - 24px); display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px; border: 1px solid #b5c7df; border-radius: 6px; background: #fff; color: #374b86; font-size: 13px; line-height: 1.5}
+.underground-map__error span {flex: 1 1 200px}
+.underground-map__error button {border: 1px solid #374b86; border-radius: 4px; padding: 8px 12px; background: #fff; color: #374b86; font: inherit; cursor: pointer}
+.underground-map__error button:focus-visible {outline: 3px solid #375eb0; outline-offset: 3px}
 .underground-camera-pin {display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 2px solid #f5f1e9; border-radius: 3px; background: #255fbb; box-shadow: 0 0 0 2px #0c2449, 0 2px 5px #0008; cursor: pointer}
 .underground-camera-pin[hidden] {display: none}
 .underground-camera-pin[aria-pressed=true] {background:#e5c17b;border-color:#fff;box-shadow:0 0 0 3px #0a1b2e,0 0 0 5px #e5c17b}

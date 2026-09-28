@@ -7,6 +7,8 @@
 .approved-shell .oa-heading label{display:grid;gap:8px;align-content:start;min-width:220px;font-size:13px}
 .approved-shell .oa-heading select{max-width:100%;min-height:44px;background:#fff;color:#394d8c;border:1px solid #bccbe3}
 .approved-shell .oa-totals{display:grid;grid-template-columns:repeat(4,1fr);margin:0;padding:24px 28px;background:#f1f7fd;gap:24px}
+.approved-shell .oa-totals>div{display:flex;flex-direction:column;min-width:0}
+.approved-shell .oa-totals dt{flex:1}
 .approved-shell .oa-totals dt{font-size:13px;line-height:1.5;max-width:170px}
 .approved-shell .oa-totals dd{font-size:36px;line-height:1.2;margin:12px 0 0;font-variant-numeric:tabular-nums}
 .approved-shell .oa-columns{display:grid;grid-template-columns:1fr 1fr}

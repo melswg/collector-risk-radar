@@ -4,6 +4,7 @@ import * as maplibregl from 'maplibre-gl';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {Row, riskNames} from './api';
+import {watchMapAvailability} from './map-availability';
 import './underground-map.css';
 
 type Coordinate = [number, number];
@@ -91,11 +92,15 @@ export default function MapView({objects, predictions, onSelect, onFocus, onObje
   const mapRef = useRef<maplibregl.Map | null>(null);
   const cameraMarkers = useRef<maplibregl.Marker[]>([]);
   const objectMarkers = useRef<maplibregl.Marker[]>([]);
+  const selectionHandlers = useRef({onSelect, onFocus, onObjectSelect});
+  useEffect(() => {selectionHandlers.current = {onSelect, onFocus, onObjectSelect};}, [onSelect, onFocus, onObjectSelect]);
+  const canSelectObject = !!onObjectSelect;
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
   const [showCameras, setShowCameras] = useState(true);
   const [showRoutes, setShowRoutes] = useState(true);
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState(false);
+  const [mapAttempt, setMapAttempt] = useState(0);
   const selectedCamera = CAMERAS.find(camera => camera.id === selectedCameraId);
   const selectedObject = objects.find(object => String(object.id)===focusedObjectId || predictions.some(p => p.id === selectedId && p.object_id === object.id));
   const predictionsByObject = useMemo(() => {
@@ -111,8 +116,17 @@ export default function MapView({objects, predictions, onSelect, onFocus, onObje
 
   useEffect(() => {
     if (!containerRef.current) return;
-    const map = new maplibregl.Map({container: containerRef.current, style: 'https://tiles.openfreemap.org/styles/liberty', center: CENTER, zoom: 11.8, minZoom: 10, maxZoom: 17});
+    setMapReady(false);
+    setMapError(false);
+    let map: maplibregl.Map;
+    try {
+      map = new maplibregl.Map({container: containerRef.current, style: 'https://tiles.openfreemap.org/styles/liberty', center: CENTER, zoom: 11.8, minZoom: 10, maxZoom: 17});
+    } catch {
+      setMapError(true);
+      return;
+    }
     mapRef.current = map;
+    const stopWatching = watchMapAvailability(map, setMapError);
     map.addControl(new maplibregl.NavigationControl({showCompass: false}), 'bottom-right');
     map.on('load', () => {
       styleVectorMap(map); addDemoRoutes(map); frameNetwork(map); setMapReady(true);
@@ -125,7 +139,6 @@ export default function MapView({objects, predictions, onSelect, onFocus, onObje
         setSelectedCameraId(nearest.id);
       });
     });
-    map.on('error', event => {if (event.error?.message?.includes('Failed to fetch')) setMapError(true);});
     const observer = new ResizeObserver(() => map.resize());
     observer.observe(containerRef.current);
     CAMERAS.forEach(camera => {
@@ -138,23 +151,23 @@ export default function MapView({objects, predictions, onSelect, onFocus, onObje
       element.addEventListener('click', event => {event.stopPropagation(); setSelectedCameraId(camera.id);});
       cameraMarkers.current.push(new maplibregl.Marker({element, anchor: 'center'}).setLngLat(camera.coordinate).addTo(map));
     });
-    return () => {observer.disconnect(); cameraMarkers.current = []; objectMarkers.current = []; map.remove(); mapRef.current = null;};
-  }, []);
+    return () => {stopWatching(); observer.disconnect(); cameraMarkers.current = []; objectMarkers.current = []; map.remove(); mapRef.current = null;};
+  }, [mapAttempt]);
 
   useEffect(() => {
     cameraMarkers.current.forEach(marker => {marker.getElement().hidden = !showCameras;});
     if (!showCameras) setSelectedCameraId(null);
-  }, [showCameras]);
+  }, [showCameras, mapAttempt]);
   useEffect(() => {
     cameraMarkers.current.forEach((marker,index) => marker.getElement().setAttribute('aria-pressed',String(CAMERAS[index].id === selectedCameraId)));
-  }, [selectedCameraId]);
+  }, [selectedCameraId, mapAttempt]);
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
     const update = () => ROUTE_LAYERS.forEach(id => {if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', showRoutes ? 'visible' : 'none');});
     update(); map.on('load', update);
     return () => {map.off('load', update);};
-  }, [showRoutes]);
+  }, [showRoutes, mapAttempt]);
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -166,12 +179,17 @@ export default function MapView({objects, predictions, onSelect, onFocus, onObje
       element.className = `underground-object-pin ${prediction?.risk ?? 'unknown'}${String(object.id)===focusedObjectId || prediction && selectedId === prediction.id ? ' selected' : ''}`;
       element.title = `${String(object.name ?? object.id)} · ${prediction ? riskNames[prediction.risk] ?? 'Прогноз' : 'Нет прогноза'} · демокоординаты`;
       element.setAttribute('aria-label', element.title);
-      element.disabled=!prediction&&!onObjectSelect;
-      element.addEventListener('click', event => {event.stopPropagation(); if(onObjectSelect)onObjectSelect(object);else if (prediction) (onFocus ?? onSelect)(prediction);});
+      element.disabled=!prediction&&!canSelectObject;
+      element.addEventListener('click', event => {
+        event.stopPropagation();
+        const handlers = selectionHandlers.current;
+        if (handlers.onObjectSelect) handlers.onObjectSelect(object);
+        else if (prediction) (handlers.onFocus ?? handlers.onSelect)(prediction);
+      });
       return new maplibregl.Marker({element, anchor: 'center'}).setLngLat([object.lon, object.lat]).addTo(map);
     });
     return () => {objectMarkers.current.forEach(marker => marker.remove()); objectMarkers.current = [];};
-  }, [objects, predictionsByObject, selectedId, onFocus, onSelect, onObjectSelect, focusedObjectId]);
+  }, [objects, predictionsByObject, selectedId, canSelectObject, focusedObjectId, mapAttempt]);
   useEffect(() => {
     const map=mapRef.current;
     if(!mapReady||!map?.getLayer('demo-route-selected'))return;
@@ -183,20 +201,22 @@ export default function MapView({objects, predictions, onSelect, onFocus, onObje
     const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 450;
     if (selectedCamera) mapRef.current?.flyTo({center: selectedCamera.coordinate, zoom: Math.max(mapRef.current.getZoom(), 13), duration});
     else if (selectedObject && Number.isFinite(selectedObject.lat) && Number.isFinite(selectedObject.lon)) mapRef.current?.flyTo({center: [selectedObject.lon,selectedObject.lat], duration});
-  }, [selectedCamera, selectedObject]);
+  }, [selectedCamera, selectedObject, mapReady]);
 
   return <div className={`map underground-map${large ? ' large' : ''}`}>
     <div ref={containerRef} className={`underground-map__canvas${mapReady ? ' is-ready' : ''}`} aria-label="Интерактивная векторная карта Москвы"/>
     <div className="underground-map__topbar"><span><MapPin size={13}/> МОСКВА / ВЕКТОРНАЯ КАРТА</span><button type="button" aria-pressed={showRoutes} onClick={() => setShowRoutes(value => !value)}><Layers3 size={14}/> Условные трассы</button><button type="button" aria-pressed={showCameras} onClick={() => setShowCameras(value => !value)}><Camera size={14}/> Камеры <b>{CAMERAS.length}</b></button><button type="button" onClick={() => {if (mapRef.current) frameNetwork(mapRef.current);}} aria-label="Показать всю сеть"><RotateCcw size={14}/> Вся сеть</button></div>
     {!mapReady && !mapError && <div className="underground-map__error" role="status">Загружаем карту Москвы…</div>}
-    {mapError && <div className="underground-map__error" role="status">Картографические данные временно недоступны.</div>}
+    {mapError && <div className="underground-map__error" role="status"><span>{mapReady ? 'Часть карты не загрузилась.' : 'Не удалось загрузить карту.'} Список объектов и прогнозы доступны в рабочем месте.</span><button type="button" onClick={() => setMapAttempt(value => value + 1)}>Повторить загрузку</button></div>}
     {selectedCamera && <aside className="underground-camera-view" aria-label={`Макет камеры ${selectedCamera.id}`}>
       <div className="underground-camera-view__head"><span><Camera size={15}/> {selectedCamera.id} / {selectedCamera.group}</span><button type="button" aria-label="Закрыть камеру" onClick={() => setSelectedCameraId(null)}><X size={17}/></button></div>
       <div className="underground-camera-view__scene"><span>ИЛЛЮСТРАЦИЯ / ДЕМО</span><img src="/collector-tunnel.webp" alt="Иллюстрация подземного тоннеля, не трансляция"/></div>
       <strong>{selectedCamera.place}</strong><p>Положение условное. Видеопоток не подключён.</p>
       <div className="underground-camera-view__nearby"><span>КАМЕРЫ ВЕТВИ</span>{CAMERAS.filter(camera => camera.group === selectedCamera.group).map(camera => <button type="button" key={camera.id} aria-pressed={camera.id === selectedCamera.id} onClick={() => setSelectedCameraId(camera.id)}>{camera.id} <small>{camera.place}</small></button>)}</div>
     </aside>}
-    <div className="map-legend"><span className="dot high"/> Высокий риск <span className="dot medium"/> Повышенный <span className="underground-map__legend-camera"/> Камера</div>
-    <div className="map-caption">Нажмите тоннель или камеру · трассы, объекты и камеры — макет</div>
+    <div className="underground-map__footer">
+      <div className="map-legend"><span className="dot high"/> Высокий риск <span className="dot medium"/> Повышенный <span className="underground-map__legend-camera"/> Камера</div>
+      <div className="map-caption">Нажмите тоннель или камеру · трассы, объекты и камеры — макет</div>
+    </div>
   </div>;
 }

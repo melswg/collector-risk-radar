@@ -1,6 +1,9 @@
 .companion-role .companion-trigger {background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 3px 12px #0002; transform: none}
 .companion-role .companion-trigger:hover {background: var(--raised); transform: none}
 .companion-role .companion-trigger:before {display: none}
+.companion-role .companion-trigger {touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab}
+.companion-role .companion-trigger:active {cursor: grabbing}
+.companion-role .companion-robot img {pointer-events: none; -webkit-user-drag: none}
 .companion-role .companion-robot img, .companion-role.alert .companion-robot img {animation: none; filter: none; transform: none}
 .companion-role .companion-trigger:hover .companion-robot img {animation: none; transform: none}
 .companion-role .companion-count {border-radius: 4px; border-color: var(--surface); background: #a03a2b; animation: none}

@@ -133,7 +133,8 @@ export function SignalCompanion({predictions, notifications, username, role, obj
   }
 
   function onPointerDown(event: React.PointerEvent<HTMLButtonElement>) {
-    if (open || event.button !== 0) return;
+    if (event.button !== 0 || !event.isPrimary) return;
+    ignoreClick.current = false;
     const rect = container.current?.getBoundingClientRect();
     if (!rect) return;
     drag.current = {pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, originX: rect.left, originY: rect.top, lastX: event.clientX, lastY: event.clientY, moved: false};
@@ -147,6 +148,7 @@ export function SignalCompanion({predictions, notifications, username, role, obj
     const dy = event.clientY - current.startY;
     if (!current.moved && Math.hypot(dx, dy) < 6) return;
     current.moved = true;
+    if (open) setOpen(false);
     current.lastX = event.clientX;
     current.lastY = event.clientY;
     const width = container.current?.getBoundingClientRect().width ?? 180;
@@ -159,7 +161,6 @@ export function SignalCompanion({predictions, notifications, username, role, obj
     if (!current || current.pointerId !== event.pointerId) return;
     if (current.moved) {
       ignoreClick.current = true;
-      window.setTimeout(() => {ignoreClick.current = false;}, 100);
       const width = container.current?.getBoundingClientRect().width ?? 180;
       const height = container.current?.getBoundingClientRect().height ?? 80;
       const next = {
@@ -170,10 +171,12 @@ export function SignalCompanion({predictions, notifications, username, role, obj
       try {localStorage.setItem('collector-companion-position', JSON.stringify(next));} catch { /* storage optional */ }
     }
     drag.current = null;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
   }
 
-  function onTriggerClick() {
-    if (ignoreClick.current) {ignoreClick.current = false; return;}
+  function onTriggerClick(event: React.MouseEvent<HTMLButtonElement>) {
+    if (ignoreClick.current && event.detail !== 0) {ignoreClick.current = false; return;}
+    ignoreClick.current = false;
     setOpen(value => !value);
   }
 
@@ -216,8 +219,8 @@ export function SignalCompanion({predictions, notifications, username, role, obj
       <div className="companion-footer"><button type="button" className="companion-reset" onClick={resetPosition}><RotateCcw size={14}/> Вернуть в угол</button><small>Данные демонстрационного стенда</small></div>
     </section>}
     <span id="companion-move-hint" className="companion-sr-only">Перетащите фигурку мышью или используйте Alt и клавиши со стрелками. Enter открывает помощника.</span>
-    <button type="button" className="companion-trigger" ref={trigger} aria-label={`${characters[character].name}: ${status}. Открыть помощника или перетащить`} aria-describedby="companion-move-hint" aria-controls={open ? 'signal-companion-panel' : undefined} aria-expanded={open} onKeyDown={moveWithKeyboard} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} onClick={onTriggerClick}>
-      <span className="companion-robot"><img src={characters[character].image} alt="" width="1024" height="1536"/></span>
+    <button type="button" className="companion-trigger" ref={trigger} aria-label={`${characters[character].name}: ${status}. Открыть помощника или перетащить`} aria-describedby="companion-move-hint" aria-controls={open ? 'signal-companion-panel' : undefined} aria-expanded={open} onKeyDown={moveWithKeyboard} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} onLostPointerCapture={onPointerUp} onDragStart={event => event.preventDefault()} onClick={onTriggerClick}>
+      <span className="companion-robot"><img src={characters[character].image} alt="" draggable={false} width="1024" height="1536"/></span>
       <span className="companion-caption"><strong>{characters[character].name}</strong><small>{isDispatcher && unread.length ? `${unread.length} новых` : isManager ? `${high.length} высоких` : isTechnician ? 'разбор' : 'на связи'}</small></span>
       <Grip className="companion-grip" size={14} aria-hidden="true"/>
       {isDispatcher && unread.length > 0 && <span className="companion-count" aria-hidden="true">{unread.length > 9 ? '9+' : unread.length}</span>}
