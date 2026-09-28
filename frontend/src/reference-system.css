@@ -13,11 +13,11 @@
 .shell.approved-shell .approved-dispatch{font-family:inherit;--ad-blue:#182e62;--ad-line:#c5cede}
 .shell.approved-shell :is(h2,h3){font-family:inherit;color:var(--ink)}
 .shell.approved-shell :is(.page-title h1,.rw .rw-head h2,.oa-heading h2),.login.approved-login .login-intro h1{
-  font-family:Unbounded,sans-serif;font-weight:700;letter-spacing:-.055em;line-height:1.12;text-wrap:balance;
+  font-family:Unbounded,sans-serif;font-weight:700;letter-spacing:-.025em;line-height:1.18;text-wrap:balance;
 }
 .shell.approved-shell .page-title h1,.shell.approved-shell .rw .rw-head h2{font-size:clamp(26px,2.6vw,38px)}
 .shell.approved-shell .sidebar{background:#edf2fa;border-bottom:1px solid #9daec9}
-.shell.approved-shell .sidebar .wordmark{font-family:'Golos Text',sans-serif;font-weight:650;font-size:25px;letter-spacing:-.055em}
+.shell.approved-shell .sidebar .wordmark{font-family:'Golos Text',sans-serif;font-weight:650;font-size:25px;letter-spacing:-.035em}
 .shell.approved-shell .sidebar nav button.active{color:var(--ref-blue)}
 .shell.approved-shell .sidebar nav button.active:before{background:var(--ref-blue);border-radius:1px;width:5px;height:14px}
 .shell.approved-shell .sidebar nav button{font-size:13px;padding-inline:11px}
@@ -31,7 +31,7 @@
 .shell.approved-shell .role-workspace.rw{--rw-text:#182e62;--rw-muted:#586885;--rw-blue:#284bd6;--rw-line:#c5cede}
 .shell.approved-shell .rw .rw-head{background:#e5eef9;border-bottom:1px solid #9daec9;padding-block:26px;min-height:136px}
 .shell.approved-shell .rw :is(.rw-strip,.rw-analyst-strip){background:#edf2fa}
-.shell.approved-shell .rw :is(.rw-strip b,.rw-analyst-strip b),.shell.approved-shell .oa-totals dd{font-family:Unbounded,sans-serif;font-weight:600;letter-spacing:-.065em}
+.shell.approved-shell .rw :is(.rw-strip b,.rw-analyst-strip b),.shell.approved-shell .oa-totals dd{font-family:Unbounded,sans-serif;font-weight:600;letter-spacing:-.025em}
 .shell.approved-shell .rw .rw-feature h3{font-weight:550;letter-spacing:-.035em}
 .shell.approved-shell .rw .rw-section-label{border-top:1px solid #9daec9;padding-top:14px}
 
@@ -54,9 +54,9 @@
 .shell.approved-shell .approved-dispatch .ad-maintenance{background:transparent;color:#cfdef2;border:0}
 .shell.approved-shell .approved-dispatch .ad-maintenance:hover{background:#243454}
 .shell.approved-shell .approved-dispatch .ad-inspector{background:#f4f7fc}
-.shell.approved-shell .approved-dispatch .ad-inspector h2{font-family:Unbounded,sans-serif;font-size:clamp(24px,2.05vw,32px);font-weight:650;line-height:1.15;letter-spacing:-.055em;text-transform:none;overflow-wrap:anywhere}
+.shell.approved-shell .approved-dispatch .ad-inspector h2{font-family:Unbounded,sans-serif;font-size:clamp(24px,2.05vw,32px);font-weight:650;line-height:1.2;letter-spacing:-.025em;text-transform:none;overflow-wrap:anywhere}
 .shell.approved-shell .approved-dispatch .ad-panel-top{font-size:10px;letter-spacing:.045em}
-.shell.approved-shell .approved-dispatch .ad-facts>div:first-child dd{font-family:Unbounded,sans-serif;font-weight:600;letter-spacing:-.06em}
+.shell.approved-shell .approved-dispatch .ad-facts>div:first-child dd{font-family:Unbounded,sans-serif;font-weight:600;letter-spacing:-.025em}
 .shell.approved-shell .approved-dispatch .ad-camera{border-radius:7px;overflow:hidden}
 .shell.approved-shell .approved-dispatch .ad-open-check{background:var(--ref-blue);font-size:17px;min-height:60px;font-weight:500}
 .shell.approved-shell .approved-dispatch .ad-open-check:hover{background:#1c3ba9}
