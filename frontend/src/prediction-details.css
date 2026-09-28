@@ -6,6 +6,9 @@
 .shell.approved-shell .prediction-details .pd-heading p {font-size: 12px; line-height: 1.5; color: #6377a1; margin: 0; overflow-wrap: anywhere}
 .shell.approved-shell .prediction-details .pd-heading button {flex: none; min-width: 38px; padding: 7px; background: transparent; border: 0}
 .shell.approved-shell .prediction-details .pd-body {padding: 0 28px 32px}
+.shell.approved-shell .prediction-details .pd-shortcut {padding: 12px 28px; border-bottom: 1px solid #c5d1e8}
+.shell.approved-shell .prediction-details .pd-shortcut button {display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 44px; color: #394d8c; background: #f1f7fd; border: 1px solid #bccbe3}
+.shell.approved-shell .prediction-details .pd-decision {scroll-margin-top: 170px}
 .shell.approved-shell .prediction-details .pd-eyebrow {font-size: 12px; line-height: 1.5; font-weight: 450; color: #6175a0}
 .shell.approved-shell .prediction-details .pd-summary {padding: 24px 0}
 .shell.approved-shell .prediction-details .pd-metrics {display: grid; grid-template-columns: 1fr 1fr; margin: 18px 0; gap: 20px}
