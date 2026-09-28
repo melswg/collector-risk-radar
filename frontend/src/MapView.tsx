@@ -86,7 +86,7 @@ function addDemoRoutes(map: maplibregl.Map) {
   map.addLayer({id:'demo-route-hit',type:'line',source:'demo-collector-routes',layout:{'line-cap':'round','line-join':'round'},paint:{'line-width':22,'line-color':'#ffffff','line-opacity':0}});
 }
 
-export default function MapView({objects, predictions, onSelect, onFocus, selectedId, large = false}: {objects: Row[]; predictions: Row[]; onSelect: (p: Row) => void; onFocus?: (p: Row) => void; selectedId?: string; large?: boolean}) {
+export default function MapView({objects, predictions, onSelect, onFocus, onObjectSelect, focusedObjectId, selectedId, large = false}: {objects: Row[]; predictions: Row[]; onSelect: (p: Row) => void; onFocus?: (p: Row) => void; onObjectSelect?: (object:Row)=>void; focusedObjectId?: string; selectedId?: string; large?: boolean}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const cameraMarkers = useRef<maplibregl.Marker[]>([]);
@@ -97,7 +97,7 @@ export default function MapView({objects, predictions, onSelect, onFocus, select
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState(false);
   const selectedCamera = CAMERAS.find(camera => camera.id === selectedCameraId);
-  const selectedObject = objects.find(object => predictions.some(p => p.id === selectedId && p.object_id === object.id));
+  const selectedObject = objects.find(object => String(object.id)===focusedObjectId || predictions.some(p => p.id === selectedId && p.object_id === object.id));
   const predictionsByObject = useMemo(() => {
     const grouped = new Map<string, Row>();
     for (const prediction of predictions) {
@@ -163,14 +163,15 @@ export default function MapView({objects, predictions, onSelect, onFocus, select
       const prediction = predictionsByObject.get(String(object.id));
       const element = document.createElement('button');
       element.type = 'button';
-      element.className = `underground-object-pin ${prediction?.risk ?? 'unknown'}${prediction && selectedId === prediction.id ? ' selected' : ''}`;
+      element.className = `underground-object-pin ${prediction?.risk ?? 'unknown'}${String(object.id)===focusedObjectId || prediction && selectedId === prediction.id ? ' selected' : ''}`;
       element.title = `${String(object.name ?? object.id)} · ${prediction ? riskNames[prediction.risk] ?? 'Прогноз' : 'Нет прогноза'} · демокоординаты`;
       element.setAttribute('aria-label', element.title);
-      element.addEventListener('click', event => {event.stopPropagation(); if (prediction) (onFocus ?? onSelect)(prediction);});
+      element.disabled=!prediction&&!onObjectSelect;
+      element.addEventListener('click', event => {event.stopPropagation(); if(onObjectSelect)onObjectSelect(object);else if (prediction) (onFocus ?? onSelect)(prediction);});
       return new maplibregl.Marker({element, anchor: 'center'}).setLngLat([object.lon, object.lat]).addTo(map);
     });
     return () => {objectMarkers.current.forEach(marker => marker.remove()); objectMarkers.current = [];};
-  }, [objects, predictionsByObject, selectedId, onFocus, onSelect]);
+  }, [objects, predictionsByObject, selectedId, onFocus, onSelect, onObjectSelect, focusedObjectId]);
   useEffect(() => {
     const map=mapRef.current;
     if(!mapReady||!map?.getLayer('demo-route-selected'))return;

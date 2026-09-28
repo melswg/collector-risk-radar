@@ -3,10 +3,12 @@ import {useState} from 'react';
 import {Row, date, incidentNames, riskNames} from './api';
 import './role-workspaces.css';
 import './role-approved.css';
+import {NetworkOverview} from './NetworkOverview';
 
 type Props = {
   role: string;
   username: string;
+  objects: Row[];
   predictions: Row[];
   recommendations: Row[];
   objectName: (id: string) => string;
@@ -107,7 +109,7 @@ function TechnicianWorkspace({username, predictions, recommendations, objectName
   </section>;
 }
 
-function ManagerWorkspace({username, predictions, recommendations, objectName, onTab, onSelect, onWorkSelect}: Omit<Props, 'role'>) {
+function ManagerWorkspace({username, objects, predictions, recommendations, objectName, onTab, onSelect, onWorkSelect}: Omit<Props, 'role'>) {
   const operational = predictions.filter(row => row.incident_type !== 'intrusion_false_alarm');
   const pending = operational.filter(row => row.risk === 'high' && !row.decision).sort((a, b) => (b.probability ?? -1) - (a.probability ?? -1));
   const decided = operational.filter(row => row.decision);
@@ -115,6 +117,7 @@ function ManagerWorkspace({username, predictions, recommendations, objectName, o
   return <section className="role-workspace rw rw-manager" aria-label="Рабочее место руководителя">
     <header className="rw-head"><div><span className="rw-kicker">РУКОВОДИТЕЛЬ / {username}</span><h2>Обзор сети</h2><p>Риски, решения диспетчеров и обслуживание по загруженным объектам.</p></div><ClipboardList aria-hidden="true" size={28}/></header>
     <div className="rw-manager-lead"><div className="rw-lead-number"><strong>{pending.length}</strong><span>прогнозов высокого риска<br/>ожидают решения</span><button type="button" onClick={() => onTab('predictions')}>Открыть прогнозы <ArrowRight size={16}/></button></div><div className="rw-manager-status"><div><b>{openWork.length}</b><span>работ в очереди</span></div><div><b>{decided.length}</b><span>прогнозов с решением</span></div><p>Числа относятся к загруженным записям. Они не показывают эффективность модели или состояние всей сети.</p></div></div>
+    <NetworkOverview objects={objects} predictions={predictions} recommendations={recommendations} onSelect={onSelect} onWorkSelect={onWorkSelect}/>
     <div className="rw-manager-grid"><section className="rw-queue" aria-label="Очередь решений"><div className="rw-section-label"><span>01 / ОЧЕРЕДЬ РЕШЕНИЙ</span><button type="button" onClick={() => onTab('predictions')}>Все прогнозы <ArrowUpRight size={15}/></button></div>{pending.length ? pending.slice(0, 4).map(row => <PredictionRow key={row.id} row={row} objectName={objectName} onOpen={() => onSelect(row)}/>) : <p className="rw-empty">Высоких прогнозов без решения в загруженных данных нет.</p>}</section><section className="rw-queue" aria-label="Очередь обслуживания"><div className="rw-section-label"><span>02 / ОБСЛУЖИВАНИЕ</span><button type="button" onClick={() => onTab('recommendations')}>Все работы <ArrowUpRight size={15}/></button></div>{openWork.length ? openWork.slice(0, 4).map(row => <WorkRow key={row.id} row={row} objectName={objectName} onOpen={() => onWorkSelect(row.id)}/>) : <p className="rw-empty">Открытых рекомендаций в загруженных данных нет.</p>}</section></div>
     <section className="rw-decisions" aria-label="Последние решения"><div className="rw-section-label"><span>03 / РЕШЕНИЯ ПО ПРОГНОЗАМ</span><span>человеческая проверка</span></div>{decided.length ? decided.slice(0, 4).map(row => <button type="button" key={row.id} onClick={() => onSelect(row)}><span>{objectName(row.object_id)}</span><span>{predictionName(row)}</span><strong>{decisionStatus[row.decision?.outcome] ?? 'Решение есть'}</strong><ArrowUpRight size={15}/></button>) : <p className="rw-empty">Решения диспетчера в этом срезе не сохранены.</p>}</section>
   </section>;
