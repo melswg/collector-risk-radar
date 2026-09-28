@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" role="img" aria-label="Демонстрационная координатная сетка">
+  <rect width="1000" height="650" fill="#26353d"/>
+  <defs>
+    <pattern id="minor" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#344850" stroke-width="1"/></pattern>
+    <pattern id="major" width="200" height="200" patternUnits="userSpaceOnUse"><path d="M200 0H0V200" fill="none" stroke="#48616d" stroke-width="1.5"/></pattern>
+  </defs>
+  <rect width="1000" height="650" fill="url(#minor)"/>
+  <rect width="1000" height="650" fill="url(#major)"/>
+  <g fill="#7995a2" font-family="Arial, sans-serif" font-size="10" letter-spacing="2">
+    <text x="20" y="28">СХЕМАТИЧНАЯ СЕТКА / ДЕМО</text>
+    <text x="20" y="226">СЕКТОР 01</text><text x="420" y="226">СЕКТОР 02</text><text x="820" y="226">СЕКТОР 03</text>
+    <text x="20" y="426">СЕКТОР 04</text><text x="420" y="426">СЕКТОР 05</text><text x="820" y="426">СЕКТОР 06</text>
+  </g>
+  <g stroke="#87a3ae" stroke-width="1" opacity=".7">
+    <path d="M500 12v18m-9-9h18M500 620v18m-9-9h18M12 325h18m-9-9v18M970 325h18m-9-9v18"/>
+  </g>
+</svg>
