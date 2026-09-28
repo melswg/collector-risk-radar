@@ -1,0 +1,12 @@
+.approved-shell .ej-search{display:flex;flex-wrap:wrap;gap:16px;padding:20px 24px 12px;border-top:1px solid #c5d1e8}
+.approved-shell .ej-search label{flex:1;min-width:200px;font-size:13px;color:#394d8c}
+.approved-shell .ej-search input,.approved-shell .ej-search select{width:100%;min-height:44px;background:#fff;color:#394d8c;border-color:#bccbe3}
+.approved-shell .ej-count{padding:0 24px 16px;margin:0;font-size:12px;color:#5d7096;line-height:1.6}
+.approved-shell .ej-level{display:inline-block;font-size:13px;line-height:1.5;white-space:normal;color:#394d8c}
+.approved-shell .ej-critical{color:#a12f29;font-weight:600}
+.approved-shell .ej-warning{color:#8c4b19;font-weight:500}
+.approved-shell .ej-unknown{color:#625473}
+.approved-shell .ej-expected{display:block;margin-top:6px;color:#5d7096}
+.approved-shell .ej-empty{padding:28px 24px;border-top:1px solid #c5d1e8}
+.approved-shell .event-journal td{overflow-wrap:anywhere}
+@media(max-width:760px){.approved-shell .ej-search{padding:20px 16px 12px}.approved-shell .ej-search label{min-width:0;flex-basis:100%}.approved-shell .ej-count{padding-inline:16px}.approved-shell .event-journal .table-scroll{overflow:visible}.approved-shell .event-journal .event-table{min-width:0;width:100%}.approved-shell .event-journal .event-table tr{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.approved-shell .event-journal .event-table td:nth-child(4){grid-column:1/-1}}
