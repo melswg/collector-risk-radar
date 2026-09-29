@@ -1,6 +1,8 @@
 horizons_h: [24]
 context_hours: 72
 schedule_seconds: 300
+ml_channel_threshold: null
+ml_channel_notify: false
 risk_thresholds: {low: 0.25, medium: 0.5, high: 0.75}
 notification_threshold: 0.75
 notification_cooldown_minutes: 60

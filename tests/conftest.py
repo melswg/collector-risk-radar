@@ -4,7 +4,13 @@ from pathlib import Path
 import pytest
 
 TEST_DIR=Path(tempfile.mkdtemp(prefix='moscollector-tests-'))
-os.environ.update(DATABASE_URL='sqlite:///'+str(TEST_DIR/'test.db'),DATA_DIR=str(TEST_DIR),AUTH_MODE='demo',DEMO_PASSWORD='test-password-2026-long',JWT_SECRET='test-only-secret-with-at-least-32-characters',ML_SERVICE_TOKEN='test-service-token',ML_STORE=str(TEST_DIR/'ml'),COOKIE_SECURE='false')
+os.environ.update(DATABASE_URL='sqlite:///'+str(TEST_DIR/'test.db'),DATA_DIR=str(TEST_DIR),AUTH_MODE='demo',DEMO_PASSWORD='test-password-2026-long',JWT_SECRET='test-only-secret-with-at-least-32-characters',ML_SERVICE_TOKEN='test-service-token',ML_STORE=str(TEST_DIR/'ml'),COOKIE_SECURE='false',ML_SCORING_ENABLED='0',ML_LOCAL_SCHEDULER='0')
+
+@pytest.fixture
+def live_scoring(monkeypatch):
+    """Включает синхронный автоматический расчёт каналов для конкретного теста."""
+    monkeypatch.setenv('ML_SCORING_ENABLED', '1')
+    monkeypatch.setenv('ML_SCORING_SYNC', '1')
 
 def pytest_addoption(parser):
     parser.addoption('--ml-url',action='store',default=None)

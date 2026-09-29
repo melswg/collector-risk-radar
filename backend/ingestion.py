@@ -97,7 +97,7 @@ def read_rows(content: bytes, filename: str) -> list[dict]:
 
 
 def ingest_events(session, rows: list[dict]) -> dict:
-    result = dict(accepted=0, duplicates=0, errors=[], warnings=[])
+    result: dict = dict(accepted=0, duplicates=0, errors=[], warnings=[], channels=[])
     # Отклоняем весь пакет до записи, чтобы ПДн не попали даже в частичный импорт.
     if contains_pii(rows):
         raise ValueError('Обнаружены возможные персональные данные; пакет отклонён')
@@ -149,8 +149,10 @@ def ingest_events(session, rows: list[dict]) -> dict:
                 result['warnings'].append({'row': index, 'message': 'Выброс температуры сохранён для проверки'})
             session.flush()
             result['accepted'] += 1
+            result['channels'].append(channel_id)
         except (ValueError, KeyError, TypeError) as exc:
             result['errors'].append({'row': index, 'message': str(exc)})
+    result['channels'] = sorted(set(result['channels']))
     return result
 
 

@@ -11,3 +11,5 @@ data/*
 !data/.gitkeep
 ml-заново/model_tables/
 ml-заново/models/*_hourly.parquet
+
+.hermes/
