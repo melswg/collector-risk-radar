@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import {Bell, Mail, MessageSquare, Send, X} from 'lucide-react';
+import {api, isDemoMode} from './api';
 import {useModalFocus} from './useModalFocus';
 import './notification-preferences.css';
 
@@ -23,6 +24,53 @@ const examples:Record<string,[string,string]>={
   admin:['Высокий прогноз риска в демонстрационном примере. Проверьте источник, журнал уведомлений и доступность рабочего места.','Новый сигнал повышенного риска в демонстрационном примере. Проверьте журнал и настройки сервиса.'],
 };
 
+type TelegramStatus = {linked: boolean; enabled: boolean; chat_id: string | null};
+const telegramErrorText = (error: unknown) => error instanceof Error ? error.message : 'Запрос не выполнен. Повторите попытку.';
+
+function TelegramLinkSection({username}: {username: string}) {
+  const [status, setStatus] = useState<TelegramStatus | null>(null);
+  const [deepLink, setDeepLink] = useState<{url: string; minutes: number} | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(''), [notice, setNotice] = useState('');
+
+  async function load() {
+    try {setStatus(await api<TelegramStatus>('/telegram/status'));} catch (e) {setError(telegramErrorText(e));}
+  }
+  useEffect(() => {if (!isDemoMode) void load();}, []);
+
+  async function requestLink() {
+    setBusy(true); setError(''); setNotice('');
+    try {
+      const r = await api<{deep_link: string; expires_in_minutes: number}>('/telegram/link/token', {});
+      setDeepLink({url: r.deep_link, minutes: r.expires_in_minutes});
+    } catch (e) {setError(telegramErrorText(e));} finally {setBusy(false);}
+  }
+  async function toggle(enabled: boolean) {
+    setBusy(true); setError('');
+    try {setStatus(await api<TelegramStatus>('/telegram/status', {enabled}, 'PUT'));} catch (e) {setError(telegramErrorText(e));} finally {setBusy(false);}
+  }
+  async function unlink() {
+    setBusy(true); setError(''); setNotice('');
+    try {await api('/telegram/unlink', {}); setDeepLink(null); await load(); setNotice('Привязка Telegram удалена.');} catch (e) {setError(telegramErrorText(e));} finally {setBusy(false);}
+  }
+
+  return <fieldset className="np-telegram"><legend>Telegram-бот</legend>
+    {isDemoMode ? <p className="source-note">Привязка Telegram недоступна в демонстрации интерфейса.</p> : <>
+      {error && <p role="alert" className="error">{error}</p>}
+      {notice && <p role="status" className="np-message">{notice}</p>}
+      {!status ? <p role="status">Загружаем статус привязки…</p> : status.linked ? <>
+        <p>Telegram привязан · chat_id {status.chat_id}.</p>
+        <label className="np-risk"><input type="checkbox" disabled={busy} checked={status.enabled} onChange={e => void toggle(e.target.checked)}/><span>Получать чрезвычайные сообщения в Telegram</span></label>
+        <button type="button" disabled={busy} onClick={() => void unlink()}>Отвязать Telegram</button>
+      </> : <>
+        <p>Telegram не привязан к аккаунту сотрудника «{username}».</p>
+        {deepLink ? <p>Ссылка действительна {deepLink.minutes} минут. Откройте её в Telegram и нажмите «Запустить»: <a href={deepLink.url} target="_blank" rel="noreferrer">{deepLink.url}</a></p>
+          : <button type="button" disabled={busy} onClick={() => void requestLink()}>Получить ссылку для привязки Telegram</button>}
+      </>}
+    </>}
+  </fieldset>;
+}
+
 export function NotificationPreferences({username,role,onClose}:{username:string;role:string;onClose:()=>void}) {
   const [preferences,setPreferences]=useState(()=>readPreferences(username));
   const [previewRisk,setPreviewRisk]=useState<'red'|'yellow'>('red');
@@ -36,7 +84,8 @@ export function NotificationPreferences({username,role,onClose}:{username:string
     <div className="np-top"><span><Bell size={18}/>Личные предпочтения</span><button type="button" aria-label="Закрыть настройки уведомлений" onClick={onClose}><X size={20}/></button></div>
     <h2 id="notification-preferences-title">Настройки уведомлений</h2>
     <p className="np-account">{username} · {roleNames[role]??role}</p>
-    <p className="np-draft">Черновик в этом браузере, доставка не подключена.</p>
+    <TelegramLinkSection username={username}/>
+    <p className="np-draft">Черновик в этом браузере, каналы ниже ещё не подключены.</p>
     <p className="np-intro">Выберите каналы и сигналы для будущего подключения. Здесь не запрашиваются контакты, токены или разрешение на отправку.</p>
     <form onSubmit={event=>{event.preventDefault();save()}}>
       <fieldset><legend>Куда получать</legend><div className="np-channels">{channels.map(({key,name,Icon})=><label key={key}><Icon size={19}/><span>{name}<small>Предпочтение, без подключения</small></span><input type="checkbox" checked={preferences[key]} onChange={event=>update(key,event.target.checked)}/></label>)}</div></fieldset>
