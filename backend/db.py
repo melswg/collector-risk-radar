@@ -23,8 +23,8 @@ class Object(Base):
     id: Mapped[str] = mapped_column(String, primary_key=True)
     name: Mapped[str] = mapped_column(String)
     tag: Mapped[str] = mapped_column(String, unique=True)
-    lat: Mapped[float] = mapped_column(Float)
-    lon: Mapped[float] = mapped_column(Float)
+    lat: Mapped[float | None] = mapped_column(Float, nullable=True)
+    lon: Mapped[float | None] = mapped_column(Float, nullable=True)
     meta: Mapped[dict] = mapped_column(JSON, default=dict)
 
 class Channel(Base):

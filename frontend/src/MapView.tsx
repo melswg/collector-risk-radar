@@ -193,7 +193,7 @@ export default function MapView({objects, predictions, onSelect, onFocus, onObje
   useEffect(() => {
     const map=mapRef.current;
     if(!mapReady||!map?.getLayer('demo-route-selected'))return;
-    const point=selectedCamera?.coordinate??(selectedObject?[selectedObject.lon,selectedObject.lat]:null);
+    const point=selectedCamera?.coordinate??(selectedObject && Number.isFinite(selectedObject.lat) && Number.isFinite(selectedObject.lon)?[selectedObject.lon,selectedObject.lat]:null);
     const nearest=point?ROUTES.map((route,id)=>({id,distance:Math.min(...route.points.map(p=>(p[0]-point[0])**2+(p[1]-point[1])**2))})).sort((a,b)=>a.distance-b.distance)[0].id:-1;
     map.setFilter('demo-route-selected',['==',['get','id'],nearest]);
   },[selectedCamera,selectedObject,mapReady]);

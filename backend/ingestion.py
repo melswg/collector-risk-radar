@@ -13,6 +13,14 @@ from backend.db import Channel, Event, Object, Record, utc
 from backend.settings import config
 
 TYPES = {2: 'contact-unlock-norm', 3: 'switch', 4: 'smoke', 5: 'movement', 6: 'gas', 7: 'pump', 8: 'fan', 9: 'phase', 12: 'temperature'}
+CUSTOMER_TYPE_CODES = {
+    'КД Дверь': 'contact-unlock-norm', 'КД Люк': 'contact-unlock-norm',
+    'КД АВ': 'contact-unlock-norm', 'Переключатель': 'switch',
+    'Датчик дыма': 'smoke', 'Датчик движения': 'movement',
+    'Газовый датчик': 'gas', 'Состояние насоса': 'pump',
+    'Состояние вентилятора': 'fan', 'Состояние фазы': 'phase',
+    'Датчик температуры': 'temperature',
+}
 ALIASES = {'ИД записи журнала': 'id', 'ИД канала данных': 'channel_id', 'ИД типа канала': 'type_id', 'ИД типа канала данных': 'type_id', 'Текущее значение': 'value', 'Дата записи': 'ts', 'Тег в дереве объектов': 'tag', 'ид_события': 'id', 'ид_канала_данных': 'channel_id', 'значение_датчика': 'value'}
 PII = [r'[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}', r'(?<!\d)(?:\+7|8)[\s(-]*\d{3}[\s)-]*\d{3}[\s-]*\d{2}[\s-]*\d{2}(?!\d)', r'\b\d{4}\s+\d{6}\b', r'\b[А-ЯЁ][а-яё]+\s+[А-ЯЁ][а-яё]+\s+[А-ЯЁ][а-яё]+(?:вич|вна)\b']
 
@@ -152,7 +160,53 @@ def ingest_registry(session, rows: list[dict], kind: str) -> dict:
     count, errors = 0, []
     for index, row in enumerate(rows, 1):
         try:
-            if kind == 'objects':
+            if kind == 'objects' and 'ид_объект' in row:
+                identity = str(row['ид_объект']).strip()
+                existing = session.get(Object, identity)
+                meta = dict(existing.meta or {}) if existing else {}
+                meta.update({
+                    'source': 'customer_registry',
+                    'object_kind': str(row['вид_объекта']).strip(),
+                    'parent_id': str(row['родитель']).strip(),
+                    'hierarchy_level': str(row['иерархия_уровень']).strip(),
+                    'location_status': 'provided' if existing and existing.lat is not None and existing.lon is not None else 'unavailable',
+                })
+                session.merge(Object(
+                    id=identity, name=str(row['диспетчерское_название_объекта']).strip(),
+                    tag=existing.tag if existing else f'customer-object:{identity}',
+                    lat=existing.lat if existing else None, lon=existing.lon if existing else None,
+                    meta=meta,
+                ))
+            elif kind == 'channels' and ('ид_канала_данных' in row or 'channel_id' in row) and 'тип_датчика' in row:
+                identity = int(number(row.get('channel_id', row.get('ид_канала_данных'))))
+                object_id = str(row['ид_объект']).strip()
+                obj = session.get(Object, object_id)
+                if obj is None:
+                    raise ValueError('Неизвестный объект; сначала загрузите справочник объектов')
+                existing = session.get(Channel, identity)
+                if existing and existing.object_id != object_id:
+                    raise ValueError('Канал уже привязан к другому объекту')
+                passport_id = f'ml-passport:{identity}'
+                passport = session.get(Record, passport_id)
+                if passport and passport.data.get('source') != 'customer_registry':
+                    raise ValueError('ML-паспорт канала задан вручную')
+                sensor = str(row['тип_датчика']).strip()
+                code = CUSTOMER_TYPE_CODES.get(sensor, 'unclassified')
+                type_id = next((key for key, value in TYPES.items() if value == code), 0)
+                session.merge(Channel(id=identity, object_id=object_id, type_id=type_id, type_code=code))
+                session.merge(Record(
+                    id=passport_id, kind='ml_channel_passport', object_id=object_id,
+                    data={
+                        'sensor_type': sensor,
+                        'engineering_system': str(row['тип_инж_системы']).strip(),
+                        'object_kind': obj.meta['object_kind'],
+                        'parent': obj.meta['parent_id'],
+                        'synthetic': False, 'source': 'customer_registry',
+                        'sensor_name': str(row['название_датчика']).strip(),
+                        'engineering_tag': str(row['тег_инженерной_системы']).strip(),
+                    },
+                ))
+            elif kind == 'objects':
                 session.merge(Object(id=str(row['id']), name=str(row['name']), tag=str(row['tag']), lat=number(row['lat']), lon=number(row['lon']), meta=row.get('meta', {}) if isinstance(row.get('meta', {}), dict) else {}))
             elif kind == 'channels':
                 type_id = int(number(row['type_id']))

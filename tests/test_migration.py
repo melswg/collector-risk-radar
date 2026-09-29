@@ -31,3 +31,17 @@ def test_text_value_migration_upgrades_existing_sqlite(monkeypatch):
         connection.execute(text("INSERT INTO events (id, value) VALUES ('text-state', NULL)"))
         with pytest.raises(ValueError, match='текстовые события'):
             migration.downgrade()
+
+
+def test_unlocated_objects_migration_upgrades_existing_sqlite(monkeypatch):
+    migration = importlib.import_module('backend.migrations.versions.0003_unlocated_objects')
+    engine = create_engine('sqlite://')
+    with engine.begin() as connection:
+        connection.execute(text('CREATE TABLE objects (id TEXT PRIMARY KEY, lat FLOAT NOT NULL, lon FLOAT NOT NULL)'))
+        monkeypatch.setattr(migration, 'op', Operations(MigrationContext.configure(connection)))
+        migration.upgrade()
+        columns = {c['name']: c for c in inspect(connection).get_columns('objects')}
+        assert columns['lat']['nullable'] and columns['lon']['nullable']
+        connection.execute(text("INSERT INTO objects (id, lat, lon) VALUES ('unknown', NULL, NULL)"))
+        with pytest.raises(ValueError, match='без координат'):
+            migration.downgrade()

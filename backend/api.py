@@ -132,7 +132,7 @@ def objects(limit: int=100, offset: int=0, session=Depends(db, scope='function')
 
 @app.get(api+'/objects/geojson')
 def geojson(session=Depends(db, scope='function'), user=Depends(current_user)):
-    return {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'id': o.id, 'geometry': {'type': 'Point', 'coordinates': [o.lon, o.lat]}, 'properties': {'id': o.id, 'name': o.name, 'tag': o.tag, 'wkt': f'POINT({o.lon} {o.lat})'}} for o in session.scalars(select(Object))]}
+    return {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'id': o.id, 'geometry': {'type': 'Point', 'coordinates': [o.lon, o.lat]}, 'properties': {'id': o.id, 'name': o.name, 'tag': o.tag, 'wkt': f'POINT({o.lon} {o.lat})'}} for o in session.scalars(select(Object)) if o.lat is not None and o.lon is not None]}
 
 @app.get(api+'/objects/{identity}')
 def object_detail(identity: str, session=Depends(db, scope='function'), user=Depends(current_user)):
