@@ -2,7 +2,8 @@
 
 Источник текущего состояния — Git и проверки отдельного worktree от
 `origin/develop=c6b8b64` с выборочным переносом ML-файлов из
-`origin/ml2=0e842e5`. Проверенные коммиты: `5eeddc1`, `fb3e04f`, `57b8f7f`.
+`origin/ml2=0e842e5`. Проверенная цепочка началась с `5eeddc1`,
+`fb3e04f`, `57b8f7f`; актуальный HEAD сверяйте по Git.
 Остальная история `ml2` не сливалась. Исходный checkout с чужими изменениями
 `STYLE.md` и `frontend/` не менялся.
 
@@ -19,7 +20,7 @@
 
 ## Чем проверено
 
-После каналовой интеграции: `.venv/bin/python -m pytest -q` — **40 passed**;
+После каналовой интеграции: `.venv/bin/python -m pytest -q` — **41 passed**;
 `.venv/bin/ruff check` по изменённым Python-файлам — без замечаний;
 `node --test frontend/tests/*.test.mjs` — **16 passed**;
 `npm --prefix frontend run build` — успешно с прежним предупреждением о

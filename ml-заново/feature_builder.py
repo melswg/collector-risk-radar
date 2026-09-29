@@ -59,6 +59,8 @@ def build_model_features(request: Mapping[str, Any]) -> dict[str, Any]:
     sensor = str(channel.get("sensor_type", "unknown"))
     current_methane = max(numeric_values) if "газ" in sensor.lower() and numeric_values else None
     prior_events = [(timestamp, event) for timestamp, event in parsed if timestamp < current_hour]
+    prior_alarms = [(timestamp, event) for timestamp, event in prior_events
+                    if timestamp.year != 2021 and bool(event.get("alarm"))]
     previous_hour = prior_events[-1][0].replace(minute=0, second=0, microsecond=0) if prior_events else None
     previous_values = [
         number for timestamp, event in prior_events
@@ -69,14 +71,13 @@ def build_model_features(request: Mapping[str, Any]) -> dict[str, Any]:
     hours_since_previous = (current_hour - previous_hour).total_seconds() / 3600 if previous_hour else None
     last_alarm_hour = next(
         (timestamp.replace(minute=0, second=0, microsecond=0)
-         for timestamp, event in reversed(prior_events) if bool(event.get("alarm"))), None
+         for timestamp, _ in reversed(prior_alarms)), None
     )
 
     def alarm_count(hours: int) -> int:
         start = current_hour - timedelta(hours=hours)
         return len({timestamp.replace(minute=0, second=0, microsecond=0)
-                    for timestamp, event in prior_events
-                    if start <= timestamp < current_hour and bool(event.get("alarm"))})
+                    for timestamp, _ in prior_alarms if start <= timestamp < current_hour})
 
     values = {
         "sensor": sensor,

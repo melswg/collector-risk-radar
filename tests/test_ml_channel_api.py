@@ -1,6 +1,7 @@
 """Stored channel forecast and dispatcher decision over the real HTTP API."""
 
 import json
+import hashlib
 from pathlib import Path
 
 
@@ -30,6 +31,7 @@ def test_channel_events_to_saved_ml_forecast_and_decision(client):
     assert prediction['object_id'] == 'obj-000001'
     assert prediction['incident_type'] == 'new_alarm_24h'
     assert prediction['model_kind'] == prediction['provider'] == 'ml'
+    assert prediction['model_version'] == hashlib.sha256(Path('ml-заново/models/incident_24h.cbm').read_bytes()).hexdigest()[:12]
     assert prediction['risk'] == 'unrated'
     assert prediction['extra']['feature_count'] == 19
     assert prediction['extra']['probability_calibrated'] is True

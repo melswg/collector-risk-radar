@@ -98,3 +98,16 @@ def test_methane_delta_expires_after_48_hours():
     })
     assert features["h_since_prev"] == 73
     assert features["methane_delta"] is None
+
+
+def test_excluded_2021_alarm_does_not_enter_training_history_features():
+    features = build_model_features({
+        "as_of": "2022-01-01T01:20:00+03:00",
+        "channel": {"sensor_type": "Газовый датчик"},
+        "history": [
+            {"timestamp": "2021-12-31T23:15:00+03:00", "value": "0.03", "alarm": True},
+            {"timestamp": "2022-01-01T01:05:00+03:00", "value": "0.04", "alarm": False},
+        ],
+    })
+    assert features["hours_since_alarm"] is None
+    assert features["alarms_24h"] == 0

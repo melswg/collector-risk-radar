@@ -1,5 +1,6 @@
 """Channel-level ML forecast from stored passport and causal sensor events."""
 
+import hashlib
 from datetime import timedelta
 from functools import lru_cache
 from importlib import import_module
@@ -13,13 +14,14 @@ from backend.ingestion import source_alarm
 
 
 MODEL_DIR = Path(__file__).resolve().parents[1] / 'ml-заново' / 'models'
+MODEL_PATH = MODEL_DIR / 'incident_24h.cbm'
 
 
 @lru_cache(maxsize=1)
 def predictor():
     model = import_module('ml-заново.inference')
     return model.AlarmPredictor(
-        MODEL_DIR / 'incident_24h.cbm',
+        MODEL_PATH,
         MODEL_DIR / 'new_alarm_channel_isotonic.joblib',
     )
 
@@ -60,7 +62,8 @@ def run_channel_prediction(session, channel_id: int, as_of, request_id: str | No
         id=str(uuid4()), request_id=identity, object_id=channel.object_id,
         incident_type='new_alarm_24h', horizon_h=24, probability=result['probability'],
         risk='unrated', as_of=timestamp, valid_until=timestamp + timedelta(hours=24),
-        provider='ml', model_id='incident_24h', model_version='ml2-2026', model_kind='ml',
+        provider='ml', model_id='incident_24h',
+        model_version=hashlib.sha256(MODEL_PATH.read_bytes()).hexdigest()[:12], model_kind='ml',
         role='active', data_sufficiency='sufficient',
         explanation={'target': result['target'], 'predicted_type': result['predicted_type']},
         extra={
