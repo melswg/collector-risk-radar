@@ -6,6 +6,7 @@ from sqlalchemy import select
 from backend.analytics import is_expected, label_window, metrics
 from backend.context import ContextBuilder
 from backend.db import Decision, Object, Prediction, Record, now, serialize, utc
+from backend.notifications.service import queue_deliveries
 from backend.settings import config
 
 
@@ -73,7 +74,10 @@ def run_predictions(session, provider, object_ids=None, as_of=None, horizons=Non
                     last = session.get(Record, 'dedup:'+key)
                     if not last or timestamp-utc(last.ts) >= timedelta(minutes=cfg['notification_cooldown_minutes']):
                         session.merge(Record(id='dedup:'+key, kind='dedup', object_id=pred.object_id, ts=timestamp, available_at=timestamp, data={'risk': pred.risk}))
-                        session.add(Record(id=str(uuid4()), kind='notification', object_id=pred.object_id, ts=timestamp, data={'prediction_id': pred.id, 'incident_type': pred.incident_type, 'risk': pred.risk, 'probability': pred.probability, 'read_by': []}))
+                        notification = Record(id=str(uuid4()), kind='notification', object_id=pred.object_id, ts=timestamp, data={'prediction_id': pred.id, 'incident_type': pred.incident_type, 'risk': pred.risk, 'probability': pred.probability, 'read_by': []})
+                        session.add(notification)
+                        session.flush()
+                        queue_deliveries(session, notification)
                 if pred.probability is not None and pred.probability >= cfg['risk_thresholds']['medium']:
                     obj = session.get(Object, pred.object_id)
                     rec_id = 'rec:'+pred.object_id+':'+pred.incident_type

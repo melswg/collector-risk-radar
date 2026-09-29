@@ -7,6 +7,8 @@ up: configure
 	$(COMPOSE) up -d --build
 up-ml: configure
 	$(COMPOSE) --profile ml up -d --build
+up-telegram: configure
+	$(COMPOSE) --profile telegram up -d --build
 down:
 	$(COMPOSE) down
 seed:
