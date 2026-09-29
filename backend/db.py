@@ -106,6 +106,33 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String)
     role: Mapped[str] = mapped_column(String)
 
+class TelegramLink(Base):
+    """Привязка Telegram-аккаунта к сотруднику. Без FK на users: в LDAP-режиме строки users нет."""
+    __tablename__ = 'telegram_links'
+    username: Mapped[str] = mapped_column(String, primary_key=True)
+    chat_id: Mapped[str] = mapped_column(String, unique=True, index=True)
+    enabled: Mapped[bool] = mapped_column(default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)
+
+class NotificationDelivery(Base):
+    """Журнал доставки чрезвычайных уведомлений во внешние каналы (Telegram и далее)."""
+    __tablename__ = 'notification_deliveries'
+    __table_args__ = (UniqueConstraint('notification_id', 'username', 'channel'),)
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    notification_id: Mapped[str] = mapped_column(ForeignKey('records.id'), index=True)
+    object_id: Mapped[str | None] = mapped_column(String, index=True)
+    username: Mapped[str] = mapped_column(String, index=True)
+    channel: Mapped[str] = mapped_column(String, default='telegram')
+    chat_id: Mapped[str] = mapped_column(String)
+    status: Mapped[str] = mapped_column(String, default='pending', index=True)
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    error_code: Mapped[str | None] = mapped_column(String)
+    error_message: Mapped[str | None] = mapped_column(String)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)
+    sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
 
 def init_db() -> None:
     Base.metadata.create_all(engine)

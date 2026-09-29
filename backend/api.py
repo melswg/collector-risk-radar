@@ -18,9 +18,10 @@ from starlette.staticfiles import StaticFiles
 from backend.auth import current_user, login, require
 from backend.context import ContextBuilder
 from backend.contracts import TrainJob
-from backend.db import Audit, Channel, Decision, Event, Object, Prediction, Record, Session, User, init_db, now, serialize, utc
+from backend.db import Audit, Channel, Decision, Event, NotificationDelivery, Object, Prediction, Record, Session, TelegramLink, User, init_db, now, serialize, utc
 from backend.ingestion import contains_pii, ingest_events, ingest_registry, parse_date, read_rows
 from backend.ml_channel import run_channel_prediction
+from backend.notifications import commands as telegram_commands, service as telegram_service, telegram
 from backend.prediction_providers.base import NotSupported
 from backend.prediction_providers.http import ProviderRouter
 from backend.services import evaluate, run_predictions, settings
@@ -415,19 +416,108 @@ def save_settings(body: dict, session=Depends(db, scope='function'), user=Depend
 
 @app.get(api+'/admin/users')
 def users(session=Depends(db, scope='function'), user=Depends(require('admin'))):
-    return [{'username': u.username, 'role': u.role} for u in session.scalars(select(User))]
+    links = {link.username: link for link in session.scalars(select(TelegramLink))}
+    return [{'username': u.username, 'role': u.role, 'telegram_linked': u.username in links, 'telegram_enabled': links[u.username].enabled if u.username in links else False, 'telegram_chat_id': telegram.mask_chat_id(links[u.username].chat_id) if u.username in links else None} for u in session.scalars(select(User))]
 
 @app.get(api+'/admin/audit')
 def audit(limit: int=100, offset: int=0, session=Depends(db, scope='function'), user=Depends(require('admin'))):
     return page(session, select(Audit).order_by(Audit.id.desc()), limit, offset)
 
 @app.get(api+'/notification-delivery/status')
-def delivery_status(user=Depends(require('admin'))):
-    return {'channels': [{'channel': channel, 'state': 'disabled'} for channel in ('telegram', 'email', 'sms')]}
+def delivery_status(session=Depends(db, scope='function'), user=Depends(require('admin'))):
+    ready = telegram.enabled()
+    recipients = session.scalar(select(func.count()).select_from(select(TelegramLink).where(TelegramLink.enabled.is_(True)).subquery())) if ready else 0
+    telegram_state = 'ready' if ready and recipients else 'unconfigured' if ready else 'disabled'
+    return {'channels': [{'channel': 'telegram', 'state': telegram_state}, {'channel': 'email', 'state': 'disabled'}, {'channel': 'sms', 'state': 'disabled'}]}
 
 @app.get(api+'/notification-delivery/outbox')
-def delivery_outbox(user=Depends(require('admin'))):
-    return {'items': [], 'total': 0}
+def delivery_outbox(limit: int=100, offset: int=0, session=Depends(db, scope='function'), user=Depends(require('admin'))):
+    if not 1 <= limit <= 1000 or offset < 0:
+        raise HTTPException(422, 'Неверная пагинация')
+    query = select(NotificationDelivery).order_by(NotificationDelivery.created_at.desc())
+    total = session.scalar(select(func.count()).select_from(query.subquery()))
+    items = []
+    for row in session.scalars(query.limit(limit).offset(offset)):
+        data = serialize(row)
+        data['chat_id'] = telegram.mask_chat_id(data.pop('chat_id', None))
+        items.append(data)
+    return {'items': items, 'total': total}
+
+class DeliveryDispatchBody(BaseModel):
+    confirm_send: bool
+    limit: int = Field(20, ge=1, le=100)
+
+@app.post(api+'/notification-delivery/dispatch')
+def delivery_dispatch(body: DeliveryDispatchBody, session=Depends(db, scope='function'), user=Depends(require('admin'))):
+    if not body.confirm_send:
+        raise ValueError('Подтвердите отправку реальных сообщений настроенным получателям')
+    if not telegram.enabled():
+        raise HTTPException(409, 'Telegram-уведомления отключены на сервере')
+    return {'dispatched': telegram_service.dispatch_pending(session, body.limit)}
+
+class DeliveryTestBody(BaseModel):
+    channel: Literal['telegram']
+    confirm_send: bool
+    request_id: str
+
+@app.post(api+'/notification-delivery/test')
+def delivery_test(body: DeliveryTestBody, session=Depends(db, scope='function'), user=Depends(require('admin'))):
+    if not body.confirm_send:
+        raise ValueError('Подтвердите отправку реальных сообщений настроенным получателям')
+    if not telegram.enabled():
+        raise HTTPException(409, 'Telegram-уведомления отключены на сервере')
+    link = session.get(TelegramLink, user['username'])
+    if link is None or not link.enabled:
+        raise HTTPException(409, 'Сначала привяжите свой Telegram в настройках уведомлений')
+    try:
+        telegram.send_message(link.chat_id, 'Тестовое сообщение сервиса «Москоллектор». Запрос: ' + body.request_id)
+    except telegram.TelegramDeliveryError as exc:
+        raise HTTPException(502, 'Telegram не принял тестовое сообщение. Попробуйте позже.') from exc
+    return {'ok': True}
+
+@app.post(api+'/telegram/link/token')
+def telegram_link_token(session=Depends(db, scope='function'), user=Depends(current_user)):
+    if not telegram.enabled():
+        raise HTTPException(409, 'Telegram-уведомления отключены на сервере')
+    token = telegram_service.create_link_token(session, user['username'])
+    return {'deep_link': f'https://t.me/{telegram.bot_username()}?start={token}', 'expires_in_minutes': telegram_service.LINK_TOKEN_TTL_MINUTES}
+
+@app.get(api+'/telegram/status')
+def telegram_status(session=Depends(db, scope='function'), user=Depends(current_user)):
+    link = session.get(TelegramLink, user['username'])
+    return {'linked': link is not None, 'enabled': bool(link and link.enabled), 'chat_id': telegram.mask_chat_id(link.chat_id) if link else None}
+
+class TelegramPreferenceBody(BaseModel):
+    enabled: bool
+
+@app.put(api+'/telegram/status')
+def telegram_set_enabled(body: TelegramPreferenceBody, session=Depends(db, scope='function'), user=Depends(current_user)):
+    link = session.get(TelegramLink, user['username'])
+    if link is None:
+        raise HTTPException(404, 'Telegram не привязан к аккаунту')
+    link.enabled = body.enabled
+    return {'linked': True, 'enabled': link.enabled, 'chat_id': telegram.mask_chat_id(link.chat_id)}
+
+@app.post(api+'/telegram/unlink')
+def telegram_unlink(session=Depends(db, scope='function'), user=Depends(current_user)):
+    link = session.get(TelegramLink, user['username'])
+    if link is not None:
+        session.delete(link)
+    return {'ok': True}
+
+@app.post(api+'/telegram/webhook')
+async def telegram_webhook(request: Request, session=Depends(db, scope='function')):
+    secret = os.getenv('TELEGRAM_WEBHOOK_SECRET')
+    if secret and request.headers.get('x-telegram-bot-api-secret-token') != secret:
+        raise HTTPException(401, 'Неверный секрет webhook')
+    if not telegram.enabled():
+        raise HTTPException(409, 'Telegram-уведомления отключены на сервере')
+    try:
+        update = await request.json()
+    except ValueError:
+        raise HTTPException(400, 'Некорректный формат Telegram update') from None
+    telegram_commands.handle_update(session, update)
+    return {'ok': True}
 
 @app.get(api+'/notifications')
 def notifications(session=Depends(db, scope='function'), user=Depends(current_user)):
