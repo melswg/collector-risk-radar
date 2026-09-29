@@ -29,6 +29,8 @@ frontend-тестов, production-сборка, живой HTTP-проход ML-
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt -r ml-заново/requirements-inference.txt
+export DEMO_PASSWORD='<свой пароль длиной не менее 12 символов>'
+python -m backend.seed
 make local
 ```
 
@@ -40,7 +42,7 @@ npm ci
 npm run dev
 ```
 
-Обычная страница `/` обращается к API на `127.0.0.1:8000` через Vite proxy. Для данных демо и пользователей запустите `python -m backend.seed` в активированном окружении. Настройки приведены в `.env.example`; для полноценного стенда используйте `make configure` и `make up`, но этот путь отдельно не принят на чистой машине. Не публикуйте локальные секреты из `.env`.
+Обычная страница `/` обращается к API на `127.0.0.1:8000` через Vite proxy. Один и тот же `DEMO_PASSWORD` нужен при создании пользователей и входе; не храните его в репозитории. Настройки приведены в `.env.example`; для полноценного стенда используйте `make configure` и `make up`, но этот путь отдельно не принят на чистой машине. Не публикуйте локальные секреты из `.env`.
 
 Для просмотра интерфейса без backend откройте `/demo.html`: роли `dispatcher`, `technician`, `manager`, `analyst`, `admin`, пароль `demo`. В этом режиме решения и настройки хранятся локально в браузере и не доказывают серверную интеграцию.
 
