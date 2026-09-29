@@ -8,9 +8,11 @@ import logging
 import os
 import secrets
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from sqlalchemy import select
 from backend.db import NotificationDelivery, Object, Record, TelegramLink, now, utc
 from backend.notifications import telegram
+from backend.settings import config
 
 log = logging.getLogger(__name__)
 
@@ -21,6 +23,14 @@ MAX_ATTEMPTS = len(RETRY_DELAYS_SECONDS)
 
 RISK_NAMES = {'high': 'Критический', 'medium': 'Повышенный', 'low': 'Низкий', 'normal': 'Норма', 'insufficient': 'Недостаточно данных'}
 INCIDENT_NAMES = {'fire': 'Пожар', 'flood': 'Подтопление', 'sensor_failure': 'Отказ датчика', 'intrusion_false_alarm': 'Ложная сработка', 'intrusion': 'Несанкционированный доступ'}
+TIMEZONE_LABELS = {'Europe/Moscow': 'МСК'}
+
+
+def display_timezone(session) -> str:
+    """Тот же часовой пояс, что настроен в /settings (конфиг + возможная правка администратора)."""
+    row = session.get(Record, 'settings')
+    override = row.data.get('timezone') if row else None
+    return override or config('settings')['timezone']
 
 
 def format_message(session, notification: Record) -> tuple[str, str | None]:
@@ -34,7 +44,9 @@ def format_message(session, notification: Record) -> tuple[str, str | None]:
     ]
     if isinstance(data.get('probability'), (int, float)):
         lines.append(f'Вероятность: {round(data["probability"]*100)}%')
-    lines += ['Время: ' + utc(notification.ts).strftime('%d.%m.%Y %H:%M UTC'), 'Статус: Требуется внимание сотрудника.']
+    tz_name = display_timezone(session)
+    local_ts = utc(notification.ts).astimezone(ZoneInfo(tz_name))
+    lines += ['Время: ' + local_ts.strftime('%d.%m.%Y %H:%M ') + TIMEZONE_LABELS.get(tz_name, tz_name), 'Статус: Требуется внимание сотрудника.']
     text = '\n'.join(lines)
     base = os.getenv('APP_PUBLIC_URL', '').rstrip('/')
     url = f'{base}/?prediction={data["prediction_id"]}' if base and data.get('prediction_id') else None

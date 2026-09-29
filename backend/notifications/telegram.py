@@ -1,6 +1,14 @@
 """Тонкий клиент Telegram Bot API. Токен только из окружения, ни в логах, ни в исходниках."""
+import logging
 import os
 import httpx
+
+# Telegram сама зашивает токен в URL (/bot<TOKEN>/method — это её контракт API, не наш выбор).
+# httpx по умолчанию логирует полный URL запроса на уровне INFO; глушим это здесь, а не только
+# у вызывающего кода, чтобы токен не утёк в лог независимо от того, как настроено логирование
+# в конкретном процессе (API, telegram_bot, будущий вызывающий код).
+logging.getLogger('httpx').setLevel(logging.WARNING)
+logging.getLogger('httpcore').setLevel(logging.WARNING)
 
 
 class TelegramDeliveryError(Exception):

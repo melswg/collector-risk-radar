@@ -1,4 +1,6 @@
 """Тесты Telegram-уведомлений. Реальные сообщения не отправляются: Telegram Bot API замещается заглушкой."""
+import logging
+from datetime import datetime, timezone
 from sqlalchemy import select
 from backend.db import NotificationDelivery, Record, TelegramLink, now
 from backend.notifications import commands, service, telegram
@@ -218,6 +220,51 @@ def test_webhook_requires_matching_secret(client, monkeypatch):
     monkeypatch.setenv('TELEGRAM_WEBHOOK_SECRET', 'shh')
     assert client.post('/api/v1/telegram/webhook', json={}, headers={'x-telegram-bot-api-secret-token': 'wrong'}).status_code == 401
     assert client.post('/api/v1/telegram/webhook', json={}, headers={'x-telegram-bot-api-secret-token': 'shh'}).status_code == 200
+
+
+# Regression: httpx logs the full request URL at INFO, and Telegram's own API embeds the
+# token in the URL (/bot<TOKEN>/method) -- so an app that enables INFO logging (as
+# backend/telegram_bot.py does) would otherwise leak the token to logs on every request.
+def test_httpx_request_logging_never_reaches_info_level():
+    assert logging.getLogger('httpx').isEnabledFor(logging.INFO) is False
+    assert logging.getLogger('httpcore').isEnabledFor(logging.INFO) is False
+
+
+def test_no_token_reaches_logs_even_if_client_tries_to_log_the_url(monkeypatch, caplog):
+    class FakeResponse:
+        status_code = 200
+
+        def json(self):
+            return {'ok': True, 'result': {}}
+
+    class FakeClient:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def post(self, path, json=None):
+            logging.getLogger('httpx').info('HTTP Request: POST https://api.telegram.org/botFAKE-SECRET-TOKEN%s', path)
+            return FakeResponse()
+
+    monkeypatch.setenv('TELEGRAM_BOT_TOKEN', 'FAKE-SECRET-TOKEN')
+    monkeypatch.setattr(telegram.httpx, 'Client', FakeClient)
+    caplog.clear()
+    telegram.call('getMe', {})
+    assert not any('FAKE-SECRET-TOKEN' in record.getMessage() for record in caplog.records)
+
+
+def test_message_time_is_shown_in_configured_timezone_not_utc(populated):
+    notification = Record(id='notif-tz', kind='notification', object_id='obj-000001', ts=datetime(2026, 9, 29, 14, 22, tzinfo=timezone.utc), data={'prediction_id': 'pred-1', 'incident_type': 'fire', 'risk': 'high', 'probability': 0.91, 'read_by': []})
+    populated.add(notification)
+    populated.flush()
+    text, _ = service.format_message(populated, notification)
+    assert 'Время: 29.09.2026 17:22 МСК' in text
+    assert 'UTC' not in text
 
 
 def test_admin_users_show_telegram_link_state(client, monkeypatch):
