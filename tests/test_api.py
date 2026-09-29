@@ -55,6 +55,15 @@ def test_recommendation_notes_are_persisted(client):
         assert session.get(Record, recommendation['id']).data['work_notes'][-1] == note
     assert client.post(path, json={'text': '   '}).status_code == 422
 
+def test_external_delivery_is_explicitly_disabled(client):
+    status = client.get('/api/v1/notification-delivery/status')
+    assert status.status_code == 200
+    assert {channel['state'] for channel in status.json()['channels']} == {'disabled'}
+    outbox = client.get('/api/v1/notification-delivery/outbox')
+    assert outbox.status_code == 200 and outbox.json() == {'items': [], 'total': 0}
+    assert client.post('/api/v1/auth/login', json={'username': 'dispatcher', 'password': os.environ['DEMO_PASSWORD']}).status_code == 200
+    assert client.get('/api/v1/notification-delivery/status').status_code == 403
+
 def test_import_export_settings(client):
     content='id;channel_id;value;ts\na;12;25,00;19.09.2026 12:15\n'.encode()
     first=client.post('/api/v1/import/files',files={'file':('sample.csv',content,'text/csv')})

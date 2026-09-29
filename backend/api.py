@@ -395,6 +395,14 @@ def users(session=Depends(db, scope='function'), user=Depends(require('admin')))
 def audit(limit: int=100, offset: int=0, session=Depends(db, scope='function'), user=Depends(require('admin'))):
     return page(session, select(Audit).order_by(Audit.id.desc()), limit, offset)
 
+@app.get(api+'/notification-delivery/status')
+def delivery_status(user=Depends(require('admin'))):
+    return {'channels': [{'channel': channel, 'state': 'disabled'} for channel in ('telegram', 'email', 'sms')]}
+
+@app.get(api+'/notification-delivery/outbox')
+def delivery_outbox(user=Depends(require('admin'))):
+    return {'items': [], 'total': 0}
+
 @app.get(api+'/notifications')
 def notifications(session=Depends(db, scope='function'), user=Depends(current_user)):
     return page(session, select(Record).where(Record.kind == 'notification').order_by(Record.ts.desc()), 100)
