@@ -12,6 +12,8 @@ def test_customer_rules():
     assert result.is_critical_risk and "security" in result.categories
     assert not ml_inference.classify_observation(sensor_type="Газовый датчик", value="0.03", alarm=False).is_critical_risk
     assert "gas" in ml_inference.classify_observation(sensor_type="Газовый датчик", value="1.0", alarm=True).categories
+    invalid_clock = ml_inference.classify_observation(sensor_type="Состояние фазы", value="01.01.1970 03:00:00", alarm=False)
+    assert invalid_clock.is_technical_fault and "fault" in invalid_clock.categories
 
 
 def test_model_contract():

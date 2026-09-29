@@ -30,6 +30,14 @@ def _timestamp(value: Any) -> datetime:
     return parsed.astimezone(MODEL_TIMEZONE)
 
 
+def model_hour_start(value: Any) -> datetime:
+    """At an exact boundary, score the last completed hourly observation."""
+    as_of = _timestamp(value)
+    if as_of == as_of.replace(minute=0, second=0, microsecond=0):
+        as_of -= timedelta(microseconds=1)
+    return as_of.replace(minute=0, second=0, microsecond=0)
+
+
 def build_model_features(request: Mapping[str, Any]) -> dict[str, Any]:
     """Convert one channel passport and causal history into model features."""
     channel = request.get("channel")
@@ -39,7 +47,7 @@ def build_model_features(request: Mapping[str, Any]) -> dict[str, Any]:
     if not isinstance(events, Sequence) or isinstance(events, (str, bytes)):
         raise ValueError("history должен быть массивом событий")
     as_of = _timestamp(request.get("as_of"))
-    current_hour = as_of.replace(minute=0, second=0, microsecond=0)
+    current_hour = model_hour_start(as_of)
     parsed = []
     for event in events:
         if not isinstance(event, Mapping) or "timestamp" not in event:

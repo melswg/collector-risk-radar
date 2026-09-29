@@ -3,6 +3,7 @@ import pytest
 
 
 build_model_features = importlib.import_module("ml-заново.feature_builder").build_model_features
+model_hour_start = importlib.import_module("ml-заново.feature_builder").model_hour_start
 MODEL_FEATURES = importlib.import_module("ml-заново.inference").MODEL_FEATURES
 
 
@@ -51,6 +52,23 @@ def test_current_alarm_is_not_sent_as_future_prediction():
         assert "тревожном часу" in str(error)
     else:
         raise AssertionError("current alarm must be rejected")
+
+
+def test_exact_hour_boundary_uses_last_completed_hour():
+    request = {
+        "as_of": "2026-08-01T09:00:00+03:00",
+        "channel": {"sensor_type": "Газовый датчик"},
+        "history": [
+            {"timestamp": "2026-08-01T07:30:00+03:00", "alarm": False, "value": "0.01"},
+            {"timestamp": "2026-08-01T08:30:00+03:00", "alarm": False, "value": "0.02"},
+            {"timestamp": "2026-08-01T09:00:00+03:00", "alarm": True, "value": "Обнаружен газ"},
+        ],
+    }
+    features = build_model_features(request)
+    assert features["hour_of_day"] == 8
+    assert features["n_events"] == 1
+    assert features["methane_delta"] == pytest.approx(0.01)
+    assert model_hour_start(request["as_of"]).hour == 8
 
 
 def test_offset_future_event_is_excluded():

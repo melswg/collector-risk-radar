@@ -50,6 +50,7 @@ def run_channel_prediction(session, channel_id: int, as_of, request_id: str | No
             'value': event.raw.get('значение_датчика', event.value) if isinstance(event.raw, dict) else event.value,
         })
     feature_builder = import_module('ml-заново.feature_builder')
+    feature_hour = feature_builder.model_hour_start(timestamp)
     features = feature_builder.build_model_features({
         'as_of': timestamp.isoformat(), 'channel': passport.data, 'history': history,
     })
@@ -61,7 +62,7 @@ def run_channel_prediction(session, channel_id: int, as_of, request_id: str | No
     prediction = Prediction(
         id=str(uuid4()), request_id=identity, object_id=channel.object_id,
         incident_type='new_alarm_24h', horizon_h=24, probability=result['probability'],
-        risk='unrated', as_of=timestamp, valid_until=timestamp + timedelta(hours=24),
+        risk='unrated', as_of=timestamp, valid_until=utc(feature_hour + timedelta(hours=24)),
         provider='ml', model_id='incident_24h',
         model_version=hashlib.sha256(MODEL_PATH.read_bytes()).hexdigest()[:12], model_kind='ml',
         role='active', data_sufficiency='sufficient',
@@ -70,6 +71,9 @@ def run_channel_prediction(session, channel_id: int, as_of, request_id: str | No
             'channel_id': channel_id, 'synthetic': bool(passport.data.get('synthetic')),
             'raw_probability': result['raw_probability'], 'probability_calibrated': True,
             'feature_count': len(features), 'threshold': None,
+            'feature_hour': utc(feature_hour).isoformat(),
+            'forecast_from': utc(feature_hour + timedelta(hours=1)).isoformat(),
+            'feature_hour_complete': timestamp >= utc(feature_hour + timedelta(hours=1)),
         },
     )
     session.add(prediction)

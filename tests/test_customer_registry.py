@@ -48,3 +48,13 @@ def test_customer_registry_and_journal_to_ml_http(client):
     assert result['extra']['synthetic'] is False
     assert result['extra']['probability_calibrated'] is True
     assert 0 <= result['probability'] <= 1
+    assert result['extra']['feature_hour_complete'] is False
+    boundary = client.post('/api/v1/predictions/ml-channel/run', json={
+        'channel_id': 230543, 'as_of': '2026-08-01T09:00:00+03:00',
+    })
+    assert boundary.status_code == 200, boundary.text
+    completed = boundary.json()
+    assert completed['probability'] == result['probability']
+    assert completed['extra']['feature_hour_complete'] is True
+    assert completed['extra']['forecast_from'] == '2026-08-01T06:00:00+00:00'
+    assert completed['valid_until'] == '2026-08-02T05:00:00+00:00'

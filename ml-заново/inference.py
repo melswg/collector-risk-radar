@@ -77,7 +77,7 @@ def classify_observation(
 
     technical_fault = bool(
         re.search(r"неисправ|неопредел|не определ|обесточ|отключ|выключ", text)
-        or re.search(r"1970[-/.]", value_text)
+        or re.search(r"(?:01[./-]01[./-]1970|1970[./-]01[./-]01)", value_text)
         or ("газ" in sensor and numeric_value is not None and numeric_value < 0)
     )
     if technical_fault:
