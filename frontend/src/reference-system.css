@@ -35,24 +35,6 @@
 .shell.approved-shell .rw .rw-feature h3{font-weight:550;letter-spacing:-.035em}
 .shell.approved-shell .rw .rw-section-label{border-top:1px solid #9daec9;padding-top:14px}
 
-/* Easy Commerce's numbered panels: one dark strip, a light selected panel. */
-.shell.approved-shell .approved-dispatch .ad-bottom{padding:12px;background:var(--ref-navy);border-color:var(--ref-navy);gap:10px}
-.shell.approved-shell .approved-dispatch .ad-queue{gap:6px}
-.shell.approved-shell .approved-dispatch .ad-queue>button{
-  display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:12px;
-  background:#1b2946;color:#cfdef2;border:1px solid #34425e;border-radius:7px;padding:17px 20px;
-}
-.shell.approved-shell .approved-dispatch .ad-queue>button.active{
-  background:linear-gradient(115deg,#bcd7f5,#e3effc);color:#172a50;border-color:#d8e9fc;
-}
-.shell.approved-shell .approved-dispatch .ad-queue>button.active:before{display:none}
-.shell.approved-shell .approved-dispatch .ad-queue>button:hover{background:#2a3b5d;color:#e0edff}
-.shell.approved-shell .approved-dispatch .ad-queue>button.active:hover{background:#d1e5fb;color:#172a50}
-.shell.approved-shell .approved-dispatch .ad-queue strong{font-size:12px;text-transform:none;letter-spacing:-.01em;justify-content:flex-start;text-align:left;line-height:1.4}
-.shell.approved-shell .approved-dispatch .ad-queue strong .ad-dot{flex:none}
-.shell.approved-shell .approved-dispatch .ad-queue>button>span{margin:0;text-align:left}
-.shell.approved-shell .approved-dispatch .ad-maintenance{background:transparent;color:#cfdef2;border:0}
-.shell.approved-shell .approved-dispatch .ad-maintenance:hover{background:#243454}
 .shell.approved-shell .approved-dispatch .ad-inspector{background:#f4f7fc}
 .shell.approved-shell .approved-dispatch .ad-inspector h2{font-family:Unbounded,sans-serif;font-size:clamp(24px,2.05vw,32px);font-weight:650;line-height:1.2;letter-spacing:-.025em;text-transform:none;overflow-wrap:anywhere}
 .shell.approved-shell .approved-dispatch .ad-panel-top{font-size:10px;letter-spacing:.045em}
@@ -70,8 +52,6 @@
   .shell.approved-shell .sidebar nav button{min-height:48px;padding:14px 12px}
   .shell.approved-shell .rw .rw-head{padding:22px 18px}
   .shell.approved-shell .rw .rw-head h2{font-size:26px}
-  .shell.approved-shell .approved-dispatch .ad-bottom{padding:8px}
-  .shell.approved-shell .approved-dispatch .ad-queue>button{flex-basis:228px;padding:15px}
   .shell.approved-shell .approved-dispatch .ad-inspector h2{font-size:26px}
 }
 @media(prefers-reduced-motion:reduce){.shell.approved-shell .approved-dispatch .ad-open-check svg{transition:none;transform:none}}
