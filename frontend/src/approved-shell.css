@@ -118,3 +118,12 @@
 .shell.approved-shell .sidebar nav{height:auto}
 .shell.approved-shell .content:has(>.role-workspace)>.page-title{display:none}
 @media(max-width:650px){.login.approved-login .login-intro{min-height:0}}
+
+.shell.approved-shell .sidebar nav button{border-bottom:3px solid transparent}
+.shell.approved-shell .sidebar nav button.active,.shell.approved-shell .sidebar nav button.active:hover{background:#dceaff;color:#173d82;border-bottom-color:#3156a0}
+.shell.approved-shell .sidebar nav button.active:before{display:none}
+@media(max-width:650px){
+  .shell.approved-shell .sidebar nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;overflow:visible;padding:8px 0 12px}
+  .shell.approved-shell .sidebar nav button{width:100%;min-height:44px;height:auto;padding:7px 4px;border:1px solid #b7c8e3;border-radius:5px;background:#fff;white-space:normal;line-height:1.2;font-size:clamp(11px,3vw,13px)}
+  .shell.approved-shell .sidebar nav button.active,.shell.approved-shell .sidebar nav button.active:hover{border-color:#3156a0;background:#dceaff}
+}

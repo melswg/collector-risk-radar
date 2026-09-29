@@ -5,7 +5,8 @@
 .underground-map .maplibregl-control-container {font-family: 'Commissioner',sans-serif}
 .underground-map .maplibregl-ctrl-bottom-right {bottom: 0}
 .underground-map .maplibregl-ctrl-bottom-right .maplibregl-ctrl-group {margin-bottom: 98px}
-.underground-map__footer {position: absolute; z-index: 500; left: 7px; right: 7px; bottom: 44px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; pointer-events: none}
+.underground-map__footer {position: absolute; z-index: 500; left: 8px; right: 44px; bottom: 8px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; pointer-events: none}
+@media(max-width:1100px) {.underground-map__footer {bottom: 36px}}
 .shell.approved-shell .underground-map .underground-map__footer .map-legend,
 .shell.approved-shell .underground-map .underground-map__footer .map-caption,
 .underground-map .underground-map__footer .map-legend,
@@ -60,4 +61,4 @@
 .underground-map__legend-camera {width: 11px; height: 11px; margin-left: 7px; border: 2px solid #fff; background: #255fbb}
 .underground-map .map-legend {z-index: 500; bottom: 42px; left: 12px; display: flex; align-items: center; gap: 5px; padding: 7px 9px; background: #f5f1e9ed; color: #26334a}
 .underground-map .map-caption {z-index: 500; right: auto; left: 12px; bottom: 12px; padding: 4px 7px; background: #0b2139e8; color: #edf4ff; font-size: 9px}
-@media(max-width:760px) {.underground-camera-view {top: 49px; right: 7px; width: min(250px,calc(100% - 14px))}.underground-map__topbar {top: 7px; left: 7px}.underground-map .map-legend {bottom: 39px; left: 7px; font-size: 8px}.underground-map .map-caption {left: 7px; font-size: 8px}}
+@media(max-width:760px) {.underground-camera-view {top: 100px; right: 7px; width: min(250px,calc(100% - 14px)); max-height: calc(100% - 170px)}.underground-map__topbar {top: 7px; left: 7px}.underground-map__footer {flex-direction: column; align-items: flex-start}.underground-map .map-legend {font-size: 10px}.underground-map .map-caption {font-size: 10px}}
