@@ -1,0 +1,107 @@
+{
+  "note": "Реконструкция часовой витрины из годовых архивов, не оригинальная таблица.",
+  "calibration_year": 2025,
+  "test_year": 2026,
+  "hourly_rows": 15854375,
+  "calm_rows": 15345390,
+  "valid_raw": {
+    "rows": 2079638,
+    "positives": 29564,
+    "positive_rate": 0.014216,
+    "pr_auc": 0.212549,
+    "roc_auc": 0.866858,
+    "raw_brier": 0.012499,
+    "calibrated_brier": 0.012499,
+    "raw_log_loss": 0.058038,
+    "calibrated_log_loss": 0.058038
+  },
+  "valid_refit": {
+    "rows": 2079638,
+    "positives": 29564,
+    "positive_rate": 0.014216,
+    "pr_auc": 0.202921,
+    "roc_auc": 0.869533,
+    "raw_brier": 0.012499,
+    "calibrated_brier": 0.012318,
+    "raw_log_loss": 0.058038,
+    "calibrated_log_loss": 0.056483
+  },
+  "valid_shipped_calibrator": {
+    "rows": 2079638,
+    "positives": 29564,
+    "positive_rate": 0.014216,
+    "pr_auc": 0.20285,
+    "roc_auc": 0.869527,
+    "raw_brier": 0.012499,
+    "calibrated_brier": 0.012319,
+    "raw_log_loss": 0.058038,
+    "calibrated_log_loss": 0.056491
+  },
+  "test_raw": {
+    "rows": 1145342,
+    "positives": 33318,
+    "positive_rate": 0.02909,
+    "pr_auc": 0.285276,
+    "roc_auc": 0.861612,
+    "raw_brier": 0.024179,
+    "calibrated_brier": 0.024179,
+    "raw_log_loss": 0.102243,
+    "calibrated_log_loss": 0.102243
+  },
+  "test_shipped_calibrator": {
+    "rows": 1145342,
+    "positives": 33318,
+    "positive_rate": 0.02909,
+    "pr_auc": 0.265654,
+    "roc_auc": 0.860598,
+    "raw_brier": 0.024179,
+    "calibrated_brier": 0.024413,
+    "raw_log_loss": 0.102243,
+    "calibrated_log_loss": 0.101184
+  },
+  "valid_channel_threshold": {
+    "threshold": 0.424613,
+    "flagged": 4620,
+    "flagged_share": 0.002222,
+    "precision": 0.7013,
+    "recall": 0.1096,
+    "f1": 0.1896
+  },
+  "test_channel_threshold": {
+    "threshold": 0.424613,
+    "flagged": 6128,
+    "flagged_share": 0.00535,
+    "precision": 0.6439,
+    "recall": 0.1184,
+    "f1": 0.2001
+  },
+  "valid_object_days": {
+    "object_days": 17420,
+    "with_fact": 2813,
+    "fact_rate": 0.161481,
+    "pr_auc": 0.602542,
+    "chosen_threshold": 0.143174,
+    "at_chosen": {
+      "threshold": 0.143174,
+      "flagged": 1571,
+      "flagged_share": 0.090184,
+      "precision": 0.7002,
+      "recall": 0.391,
+      "f1": 0.5018
+    }
+  },
+  "test_object_days": {
+    "object_days": 8845,
+    "with_fact": 1758,
+    "fact_rate": 0.198756,
+    "pr_auc": 0.666141,
+    "at_chosen": {
+      "threshold": 0.143174,
+      "flagged": 1137,
+      "flagged_share": 0.128547,
+      "precision": 0.723,
+      "recall": 0.4676,
+      "f1": 0.5679
+    }
+  }
+}
