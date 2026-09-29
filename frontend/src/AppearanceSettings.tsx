@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {ImagePlus, Trash2, X} from 'lucide-react';
+import {ImagePlus, Moon, Sun, Trash2, X} from 'lucide-react';
 import {useModalFocus} from './useModalFocus';
 import './appearance.css';
 
@@ -17,7 +17,9 @@ export const themes = [
 ] as const;
 
 export type ThemeId = typeof themes[number]['id'];
+export type AppearanceMode = 'light' | 'dark';
 const themeKey = 'moscollector-theme-v1';
+const modeKey = 'moscollector-mode-v1';
 const photoKey = 'moscollector-wallpaper-v1';
 
 export function readTheme(): ThemeId {
@@ -25,6 +27,11 @@ export function readTheme(): ThemeId {
     const stored = localStorage.getItem(themeKey);
     return themes.find(theme => theme.id === stored)?.id ?? 'blue';
   } catch {return 'blue';}
+}
+
+export function readMode(): AppearanceMode {
+  try {return localStorage.getItem(modeKey) === 'dark' ? 'dark' : 'light';}
+  catch {return 'light';}
 }
 
 export function readPhoto(): string | null {
@@ -58,13 +65,15 @@ function compressPhoto(file: File): Promise<string> {
 
 type Props = {
   theme: ThemeId;
+  mode: AppearanceMode;
   photo: string | null;
   onTheme: (theme: ThemeId) => void;
+  onMode: (mode: AppearanceMode) => void;
   onPhoto: (photo: string | null) => void;
   onClose: () => void;
 };
 
-export function AppearanceSettings({theme, photo, onTheme, onPhoto, onClose}: Props) {
+export function AppearanceSettings({theme, mode, photo, onTheme, onMode, onPhoto, onClose}: Props) {
   const [error, setError] = useState('');
   const [working, setWorking] = useState(false);
   useModalFocus(true, '.appearance-dialog');
@@ -77,6 +86,11 @@ export function AppearanceSettings({theme, photo, onTheme, onPhoto, onClose}: Pr
   function selectTheme(next: ThemeId) {
     try {localStorage.setItem(themeKey, next); onTheme(next); setError('');}
     catch {setError('Не удалось сохранить тему в этом браузере.');}
+  }
+
+  function selectMode(next: AppearanceMode) {
+    try {localStorage.setItem(modeKey, next); onMode(next); setError('');}
+    catch {setError('Не удалось сохранить режим в этом браузере.');}
   }
 
   async function selectPhoto(file?: File) {
@@ -100,6 +114,8 @@ export function AppearanceSettings({theme, photo, onTheme, onPhoto, onClose}: Pr
   return <div className="appearance-overlay" onClick={onClose}>
     <section className="appearance-dialog" role="dialog" aria-modal="true" aria-labelledby="appearance-title" onClick={event => event.stopPropagation()}>
       <header><div><h2 id="appearance-title">Внешний вид</h2><p>Оформление сохраняется в этом браузере.</p></div><button type="button" aria-label="Закрыть настройки внешнего вида" onClick={onClose}><X size={20}/></button></header>
+      <h3>Режим экрана</h3>
+      <div className="appearance-modes" role="group" aria-label="Режим экрана"><button type="button" aria-pressed={mode === 'light'} onClick={() => selectMode('light')}><Sun size={18}/> Светлая</button><button type="button" aria-pressed={mode === 'dark'} onClick={() => selectMode('dark')}><Moon size={18}/> Тёмная</button></div>
       <h3>Цветовая тема</h3>
       <div className="appearance-themes" role="group" aria-label="Цветовая тема">
         {themes.map(item => <button type="button" key={item.id} aria-pressed={theme === item.id} onClick={() => selectTheme(item.id)}><span className="appearance-swatch" style={{backgroundColor:item.color}}/>{item.name}</button>)}
