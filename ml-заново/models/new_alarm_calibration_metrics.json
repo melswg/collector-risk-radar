@@ -8,6 +8,5 @@
     "raw_log_loss": 0.058031,
     "calibrated_log_loss": 0.0564
   },
-  "object_days": 17481,
   "note": "Calibration changes probability scale, not the target semantics."
 }

@@ -58,6 +58,8 @@ def to_frame(data: pl.DataFrame):
 
 
 def main() -> None:
+    if not TABLE.exists():
+        raise FileNotFoundError(f"Для пересчёта калибровки нужна исходная таблица: {TABLE}")
     calm = build_calm_table(pl.read_parquet(TABLE))
     valid = calm.filter(pl.col("year") == 2025)
     model = CatBoostClassifier()
@@ -68,11 +70,14 @@ def main() -> None:
     calibrated = calibrator.predict(probabilities)
     joblib.dump(calibrator, OUT / "new_alarm_channel_isotonic.joblib")
     metrics = {
-        "target": "new_alarm_24h", "calibration_year": 2025, "rows": len(labels),
-        "raw_brier": round(float(brier_score_loss(labels, probabilities)), 6),
-        "calibrated_brier": round(float(brier_score_loss(labels, calibrated)), 6),
-        "raw_log_loss": round(float(log_loss(labels, probabilities, labels=[0, 1])), 6),
-        "calibrated_log_loss": round(float(log_loss(labels, calibrated, labels=[0, 1])), 6),
+        "target": "new_alarm_24h", "calibration_year": 2025,
+        "channel": {
+            "rows": len(labels),
+            "raw_brier": round(float(brier_score_loss(labels, probabilities)), 6),
+            "calibrated_brier": round(float(brier_score_loss(labels, calibrated)), 6),
+            "raw_log_loss": round(float(log_loss(labels, probabilities, labels=[0, 1])), 6),
+            "calibrated_log_loss": round(float(log_loss(labels, calibrated, labels=[0, 1])), 6),
+        },
         "note": "Калибровка меняет шкалу вероятности, но не смысл таргета.",
     }
     (OUT / "new_alarm_calibration_metrics.json").write_text(json.dumps(metrics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
