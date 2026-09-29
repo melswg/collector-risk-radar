@@ -20,6 +20,7 @@ from backend.context import ContextBuilder
 from backend.contracts import TrainJob
 from backend.db import Audit, Channel, Decision, Event, NotificationDelivery, Object, Prediction, Record, Session, TelegramLink, User, init_db, now, serialize, utc
 from backend.ingestion import contains_pii, ingest_events, ingest_registry, parse_date, read_rows
+from backend.jobs import enqueue_channel_scoring, redis_url, start_local_scheduler
 from backend.ml_channel import run_channel_prediction
 from backend.notifications import commands as telegram_commands, service as telegram_service, telegram
 from backend.prediction_providers.base import NotSupported
@@ -32,6 +33,9 @@ provider = ProviderRouter()
 @asynccontextmanager
 async def lifespan(app):
     init_db()
+    if redis_url() is None:
+        with Session() as session:
+            start_local_scheduler(settings(session)['schedule_seconds'])
     yield
 
 app = FastAPI(title='Москоллектор — прогнозы и ТО', version='1.0.0', lifespan=lifespan)
@@ -165,6 +169,9 @@ async def events_ingest(request: Request, session=Depends(db, scope='function'),
         payload = json.loads(raw)
         rows = payload if isinstance(payload, list) else payload['events']
     result = ingest_events(session, rows)
+    # События фиксируем до расчёта: фоновый поток читает их в своей транзакции.
+    session.commit()
+    result['scoring'] = enqueue_channel_scoring(result['channels'], reason='ingest')
     return result
 
 @app.post(api+'/registry/equipment/sync')
