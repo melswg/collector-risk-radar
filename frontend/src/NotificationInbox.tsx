@@ -1,12 +1,12 @@
-import {X} from 'lucide-react';
+import {Settings2, X} from 'lucide-react';
 import {useEffect,useRef,useState} from 'react';
 import {createLatestRequest} from './latest-request';
 import {date, incidentNames, type Row} from './api';
 import {useModalFocus} from './useModalFocus';
 
-type Props = {rows:Row[];username:string;sound:boolean;objectName:(id:string)=>string;onSound:(value:boolean)=>void;onClose:()=>void;onOpen:(row:Row)=>Promise<Row>;onSelect:(prediction:Row)=>void};
+type Props = {rows:Row[];username:string;sound:boolean;objectName:(id:string)=>string;onSound:(value:boolean)=>void;onClose:()=>void;onPreferences:()=>void;onOpen:(row:Row)=>Promise<Row>;onSelect:(prediction:Row)=>void};
 
-export function NotificationInbox({rows,username,sound,objectName,onSound,onClose,onOpen,onSelect}:Props){
+export function NotificationInbox({rows,username,sound,objectName,onSound,onClose,onPreferences,onOpen,onSelect}:Props){
   const [busy,setBusy]=useState(false),[error,setError]=useState('');
   const begin=useRef(createLatestRequest());
   useEffect(()=>()=>{begin.current()},[]);
@@ -22,6 +22,7 @@ export function NotificationInbox({rows,username,sound,objectName,onSound,onClos
   return <div className="overlay notification-overlay" onClick={close}>
     <section className="notification-panel" role="dialog" aria-modal="true" aria-labelledby="notification-inbox-title" onClick={event=>event.stopPropagation()} onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();close()}}}>
       <div className="panel-title"><h2 id="notification-inbox-title">Уведомления</h2><button type="button" onClick={close} aria-label="Закрыть уведомления"><X/></button></div>
+      <button type="button" className="notification-settings-link" onClick={onPreferences}><Settings2 size={16}/> Настройки уведомлений</button>
       <label className="check"><input type="checkbox" checked={sound} onChange={event=>onSound(event.target.checked)}/>Звук новых уведомлений</label>
       {busy&&<p role="status">Открываем прогноз…</p>}
       {error&&<p role="alert" className="error">{error}</p>}

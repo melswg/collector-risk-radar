@@ -39,7 +39,7 @@
 .approved-dispatch .underground-map .map-caption{font-size:10px;line-height:1.4;max-width:calc(100% - 24px);white-space:normal}
 .approved-dispatch .underground-map .map-legend{font-size:10px;bottom:48px}
 
-.approved-dispatch .ad-workspace{height:clamp(360px,calc(100dvh - 198px),1050px);min-height:0}
+.approved-dispatch .ad-workspace{height:clamp(360px,calc(100dvh - 152px),1050px);min-height:0}
 .approved-dispatch .ad-toolbar .ad-location,.approved-dispatch .ad-toolbar .ad-signal-filter{min-height:44px;border:1px solid #8da5cf;border-radius:5px;background:#fff;padding:9px 13px;font-weight:600}
 .approved-dispatch .ad-toolbar .ad-location:hover,.approved-dispatch .ad-toolbar .ad-signal-filter:hover{background:#e8f1ff;border-color:#456ab0}
 .approved-dispatch .ad-toolbar button[aria-expanded=true]{background:#dceaff;border-color:#3156a0;color:#173d82}
@@ -49,7 +49,7 @@
 .approved-dispatch .underground-map .underground-map__topbar button[aria-pressed=true]{background:#3156a0;border-color:#3156a0;color:#fff}
 .approved-dispatch .underground-map .underground-map__topbar button[aria-pressed=true] b{color:#fff}
 .approved-dispatch .underground-map .underground-map__topbar button:hover{border-color:#3156a0;box-shadow:0 0 0 2px #fff}
-@media(max-width:1100px){.approved-dispatch .ad-workspace{height:clamp(350px,calc(100dvh - 260px),850px)}}
+@media(max-width:1100px){.approved-dispatch .ad-workspace{height:clamp(350px,calc(100dvh - 214px),850px)}}
 @media(max-width:900px){
   .approved-dispatch .ad-workspace,.approved-dispatch .ad-workspace.has-detail{display:block;height:auto;min-height:0}
   .approved-dispatch .ad-map,.approved-dispatch .ad-list{height:clamp(340px,58dvh,620px)}

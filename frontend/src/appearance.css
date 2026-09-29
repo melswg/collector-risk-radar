@@ -20,7 +20,7 @@
 .shell.approved-shell th,.shell.approved-shell .upload-zone {background:var(--theme-soft);border-color:var(--theme-line);color:var(--theme-muted)}
 .shell.approved-shell tbody tr:hover {background:var(--theme-soft)}
 .shell.approved-shell[data-theme] .approved-dispatch {--ad-blue:var(--theme-ink);--ad-line:var(--theme-line);color:var(--theme-ink)}
-.shell.approved-shell .approved-dispatch .ad-toolbar {background:var(--theme-soft);border-color:var(--theme-line)}
+.shell.approved-shell .approved-dispatch .ad-toolbar {background:#fff;border-color:var(--theme-line)}
 .shell.approved-shell .approved-dispatch .ad-inspector {border-color:var(--theme-line)}
 .shell.approved-shell .approved-dispatch .ad-inspector h2 {color:var(--theme-ink)}
 .shell.approved-shell .approved-dispatch .ad-context-mark {background:var(--theme-hover)}
@@ -38,7 +38,7 @@
 .shell.approved-shell.has-wallpaper {background-image:linear-gradient(#ffffff99,#ffffff99),var(--wallpaper);background-size:cover;background-position:center;background-attachment:fixed}
 .shell.approved-shell.has-wallpaper main,.shell.approved-shell.has-wallpaper .content {background:transparent}
 .shell.approved-shell.has-wallpaper .sidebar,.shell.approved-shell.has-wallpaper main>header {background:color-mix(in srgb,var(--theme-soft) 88%,transparent);backdrop-filter:blur(12px)}
-.shell.approved-shell.has-wallpaper .approved-dispatch .ad-toolbar {background:color-mix(in srgb,var(--theme-soft) 90%,transparent)}
+.shell.approved-shell.has-wallpaper .approved-dispatch .ad-toolbar {background:#fff}
 .shell.approved-shell.has-wallpaper .approved-dispatch .ad-map {background-image:var(--wallpaper);background-size:cover;background-position:center}
 .shell.approved-shell.has-wallpaper .approved-dispatch .ad-map .underground-map {opacity:.83}
 .appearance-overlay {position:fixed;inset:0;z-index:1700;background:#18284399;display:grid;place-items:center;padding:16px}
