@@ -9,6 +9,7 @@
 | `backend/ingestion.py`, `backend/adapters.py`, `backend/context.py` | События, источники и контекст | Русский журнал CSV поддержан; производственные источники не подключены. |
 | `backend/prediction_providers/` | `rules` и HTTP-клиент контракта | Работающий ML inference не подтверждён. |
 | `backend/scheduler.py`, `backend/worker.py` | Фоновые задачи | Целевой Redis и восстановление не приняты. |
+| `backend/notifications/`, `backend/telegram_bot.py` | Telegram-доставка чрезвычайных уведомлений: клиент Bot API, очередь/повтор, бот-команды | Реализовано и юнит-протестировано с подменённым Bot API; выключено по умолчанию, реальная отправка не проверена. |
 | `contracts/ml/` | Текущий API-контракт и пример доступного запроса | Выходы моделей ветки `ml` с типами backend не совпадают. |
 | `frontend/` | React/TypeScript, пять ролей, карта, журналы, аналитика | Код UX в `develop`, визуальная приёмка частична. |
 | `frontend/tests/` | Node-тесты интерфейса | 16 тестов прошли на `36703d6`. |
