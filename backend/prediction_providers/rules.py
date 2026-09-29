@@ -37,8 +37,8 @@ class RulesProvider(PredictionProvider):
             pumps = series.get('pump', [])
             freq = float(np.count_nonzero(np.diff(pumps[-24:]) > 0)) / 3 if len(pumps) > 1 else 0
             indicators = {
-                'fire': dict(temp_z=min(z, 8), temp_slope=min(slope, 5), smoke=max(series.get('smoke', [0])[-12:]), gas=max(series.get('gas', [0])[-12:]), fan_off=1-min(series.get('fan', [1])[-12:])),
-                'flood': dict(pump_frequency=freq, phase_loss=1-min(series.get('phase', [1])[-12:]), precip=precip, flood_history=obj.maintenance.get('flood_history', 0)),
+                'fire': dict(temp_z=min(z, 8), temp_slope=min(slope, 5), smoke=max((series.get('smoke') or [0])[-12:]), gas=max((series.get('gas') or [0])[-12:]), fan_off=1-min((series.get('fan') or [1])[-12:])),
+                'flood': dict(pump_frequency=freq, phase_loss=1-min((series.get('phase') or [1])[-12:]), precip=precip, flood_history=obj.maintenance.get('flood_history', 0)),
                 'intrusion_false_alarm': dict(expected=int(bool(last_alarm and last_alarm.get('expected'))), repeats=min(8, len(alarms)), unhealthy=int(any(h.get('status') != 'ok' for h in health)), isolated=int(len({a.get('channel_id') for a in alarms}) <= 1), daytime=int(6 <= (request.as_of.hour+3)%24 < 22)),
                 'sensor_failure': {key: max([float(h.get(key, 0)) for h in health] or [0]) for key in ['flatline', 'dropout_rate', 'chatter', 'noise_ratio', 'drift']},
             }

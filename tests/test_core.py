@@ -99,6 +99,12 @@ def test_no_future_leakage(populated):
     populated.flush()
     assert not ContextBuilder(populated).build(['obj-000001'],t).objects[0].weather['forecast']
 
+def test_rules_handle_registered_channels_without_readings(populated):
+    request = ContextBuilder(populated).build(['obj-000001'], now())
+    response = RulesProvider().predict(request)
+    assert response.predictions
+    assert all(p.probability is None and p.data_sufficiency == 'insufficient' for p in response.predictions)
+
 def test_rules_scenarios_notifications(populated):
     for kind,obj in [('fire','obj-000001'),('flood','obj-000002')]:
         inject_scenario(populated,kind)
