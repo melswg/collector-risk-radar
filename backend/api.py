@@ -12,7 +12,6 @@ from uuid import uuid4
 from fastapi import Depends, FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
-from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from starlette.staticfiles import StaticFiles
@@ -296,6 +295,20 @@ def recommendation_update(identity: str, body: dict, session=Depends(db, scope='
     if body['status'] == 'rejected' and not body.get('reason'):
         raise ValueError('Для отклонения нужна причина')
     row.data = {**row.data, 'status': body['status'], 'reason': body.get('reason'), 'updated_by': user['username']}
+    return serialize(row)
+
+class WorkNoteBody(BaseModel):
+    text: str = Field(min_length=3, max_length=1000)
+
+@app.post(api+'/recommendations/{identity}/notes')
+def recommendation_note(identity: str, body: WorkNoteBody, session=Depends(db, scope='function'), user=Depends(require('dispatcher', 'technician'))):
+    row = get_or_404(session, Record, identity)
+    if row.kind != 'recommendation':
+        raise ValueError('Не рекомендация')
+    note = body.text.strip()
+    if len(note) < 3:
+        raise ValueError('Комментарий: от 3 до 1000 символов')
+    row.data = {**row.data, 'work_notes': [*row.data.get('work_notes', []), {'author': user['username'], 'ts': now().isoformat(), 'text': note}]}
     return serialize(row)
 
 @app.get(api+'/evaluation/metrics')

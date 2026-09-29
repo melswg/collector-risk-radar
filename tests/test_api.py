@@ -41,6 +41,20 @@ def test_fire_flood_decisions(client):
     assert client.get('/api/v1/sensors/12/series').json()['total']>0
     assert client.post('/api/v1/predictions/what-if',json={'object_ids':['obj-000002'],'precip_mm_delta':10}).status_code==200
 
+def test_recommendation_notes_are_persisted(client):
+    from backend.db import Record, Session
+
+    assert client.post('/api/v1/demo/fire', json={}).status_code == 200
+    recommendation = client.get('/api/v1/recommendations').json()['items'][0]
+    path = '/api/v1/recommendations/' + recommendation['id'] + '/notes'
+    response = client.post(path, json={'text': '  Проверить датчик  '})
+    assert response.status_code == 200, response.text
+    note = response.json()['data']['work_notes'][-1]
+    assert note['author'] == 'admin' and note['text'] == 'Проверить датчик'
+    with Session() as session:
+        assert session.get(Record, recommendation['id']).data['work_notes'][-1] == note
+    assert client.post(path, json={'text': '   '}).status_code == 422
+
 def test_import_export_settings(client):
     content='id;channel_id;value;ts\na;12;25,00;19.09.2026 12:15\n'.encode()
     first=client.post('/api/v1/import/files',files={'file':('sample.csv',content,'text/csv')})
