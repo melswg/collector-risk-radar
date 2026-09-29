@@ -45,3 +45,14 @@ def test_channel_events_to_saved_ml_forecast_and_decision(client):
     })
     assert decision.status_code == 200, decision.text
     assert client.get('/api/v1/predictions/' + prediction['id']).json()['decisions'][0]['id'] == decision.json()['id']
+
+
+def test_synthetic_live_demo_uses_model(client):
+    response = client.post('/api/v1/demo/ml-channel', json={})
+    assert response.status_code == 200, response.text
+    prediction = response.json()['prediction']
+    assert prediction['model_kind'] == 'ml'
+    assert prediction['extra']['synthetic'] is True
+    assert prediction['extra']['probability_calibrated'] is True
+    assert prediction['extra']['feature_count'] == 19
+    assert prediction['extra']['threshold'] is None

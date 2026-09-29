@@ -69,14 +69,14 @@ def test_offset_future_event_is_excluded():
 
 def test_features_match_training_hourly_example():
     features = build_model_features({
-        "as_of": "2026-08-01T12:30:00Z",
+        "as_of": "2026-08-01T12:30:00+03:00",
         "channel": {"sensor_type": "Газовый датчик", "engineering_system": "газ", "object_kind": "объект", "parent": "комплекс"},
         "history": [
-            {"timestamp": "2026-08-01T10:05:00Z", "alarm": True, "value": "0.06"},
-            {"timestamp": "2026-08-01T10:50:00Z", "alarm": True, "value": "0.07"},
-            {"timestamp": "2026-08-01T11:05:00Z", "alarm": False, "value": "0.03"},
-            {"timestamp": "2026-08-01T11:45:00Z", "alarm": False, "value": "0.05"},
-            {"timestamp": "2026-08-01T12:10:00Z", "alarm": False, "value": "0.04"},
+            {"timestamp": "2026-08-01T10:05:00+03:00", "alarm": True, "value": "0.06"},
+            {"timestamp": "2026-08-01T10:50:00+03:00", "alarm": True, "value": "0.07"},
+            {"timestamp": "2026-08-01T11:05:00+03:00", "alarm": False, "value": "0.03"},
+            {"timestamp": "2026-08-01T11:45:00+03:00", "alarm": False, "value": "0.05"},
+            {"timestamp": "2026-08-01T12:10:00+03:00", "alarm": False, "value": "0.04"},
         ],
     })
     expected = dict(zip(MODEL_FEATURES, [

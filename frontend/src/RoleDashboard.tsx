@@ -27,7 +27,7 @@ function pct(value: unknown) {
 function kind(prediction: Row) {
   if (prediction.model_kind === 'rules') return 'Правила';
   if (prediction.model_kind === 'stub') return 'STUB';
-  if (prediction.model_kind === 'ml') return `Модель ${prediction.model_version ? 'v' + prediction.model_version : ''}`.trim();
+  if (prediction.model_kind === 'ml') return `ML ${prediction.model_version ? 'v' + prediction.model_version : ''}`.trim();
   return 'Источник не указан';
 }
 

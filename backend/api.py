@@ -246,7 +246,7 @@ class MlChannelRunBody(BaseModel):
 
 @app.post(api+'/predictions/ml-channel/run')
 def ml_channel_run(body: MlChannelRunBody, session=Depends(db, scope='function'), user=Depends(require('dispatcher', 'analyst'))):
-    return run_channel_prediction(session, body.channel_id, body.as_of, body.request_id)
+    return run_channel_prediction(session, body.channel_id, parse_date(body.as_of) if body.as_of else None, body.request_id)
 
 @app.post(api+'/predictions/run')
 def prediction_run(body: RunBody, session=Depends(db, scope='function'), user=Depends(require('dispatcher', 'analyst'))):
@@ -497,6 +497,39 @@ def draft_order(identity: str, format: Literal['json', 'pdf']='json', session=De
     path = DATA / f'draft-{uuid4()}.pdf'
     pdf_rows(path, 'Черновик заявки. Не отправлен', [data])
     return FileResponse(path, filename=path.name)
+
+@app.post(api+'/demo/ml-channel')
+def demo_ml_channel(session=Depends(db, scope='function'), user=Depends(require('dispatcher', 'analyst'))):
+    if os.getenv('AUTH_MODE', 'demo') != 'demo':
+        raise HTTPException(403, 'Демо отключено')
+    object_id, channel_id = 'obj-000001', 990001
+    get_or_404(session, Object, object_id)
+    if session.get(Channel, channel_id) is None:
+        session.add(Channel(id=channel_id, object_id=object_id, type_id=6, type_code='gas'))
+    session.merge(Record(
+        id=f'ml-passport:{channel_id}', kind='ml_channel_passport', object_id=object_id,
+        ts=now(), data={
+            'sensor_type': 'Газовый датчик', 'engineering_system': 'газ',
+            'object_kind': 'объект', 'parent': 'комплекс', 'synthetic': True,
+        },
+    ))
+    timestamp = now()
+    hour = timestamp.replace(minute=0, second=0, microsecond=0)
+    for suffix, event_hour, minute, value, alarm in (
+        ('alarm', hour-timedelta(hours=2), 5, 0.07, True),
+        ('previous', hour-timedelta(hours=1), 10, 0.05, False),
+        ('current', hour, 0, 0.04, False),
+    ):
+        event_time = event_hour+timedelta(minutes=minute)
+        session.merge(Event(
+            id=f'demo-ml:{channel_id}:{event_time.isoformat()}:{suffix}',
+            channel_id=channel_id, object_id=object_id, ts=event_time,
+            value=value, expected=False, event='Предупреждение' if alarm else 'Норма',
+            severity='warning' if alarm else 'normal',
+            raw={'synthetic': True, 'тревожное': str(alarm), 'значение_датчика': str(value)},
+        ))
+    session.flush()
+    return {'prediction': run_channel_prediction(session, channel_id, timestamp)}
 
 @app.post(api+'/demo/{scenario}')
 def demo(scenario: Literal['fire', 'flood'], session=Depends(db, scope='function'), user=Depends(require('dispatcher', 'analyst'))):

@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 import math
 from typing import Any, Mapping, Sequence
+from zoneinfo import ZoneInfo
 
 from .inference import MODEL_FEATURES
+
+MODEL_TIMEZONE = ZoneInfo('Europe/Moscow')
 
 
 def _number(value: Any) -> float | None:
@@ -23,8 +26,8 @@ def _timestamp(value: Any) -> datetime:
     else:
         parsed = datetime.fromisoformat(str(value).strip().replace("Z", "+00:00"))
     if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=timezone.utc)
-    return parsed.astimezone(timezone.utc)
+        parsed = parsed.replace(tzinfo=MODEL_TIMEZONE)
+    return parsed.astimezone(MODEL_TIMEZONE)
 
 
 def build_model_features(request: Mapping[str, Any]) -> dict[str, Any]:

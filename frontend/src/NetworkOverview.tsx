@@ -11,7 +11,7 @@ const summaryNames:Record<string,string>={new:'новых',accepted:'приня�
 const severity:Record<string,number>={high:4,medium:3,low:2,normal:1,insufficient:0};
 const probability=(p:Row)=>typeof p.probability==='number'&&Number.isFinite(p.probability)?p.probability:-1;
 const compareRisk=(a:Row,b:Row)=>(severity[b.risk]??-1)-(severity[a.risk]??-1)||probability(b)-probability(a);
-const source=(p:Row)=>p.model_kind==='rules'?'Правила':p.model_kind==='stub'?'STUB · демонстрация':p.model_id?`${p.model_id}${p.model_version?' / '+p.model_version:''}`:'Источник не указан';
+const source=(p:Row)=>p.model_kind==='rules'?'Правила':p.model_kind==='stub'?'STUB · демонстрация':p.model_kind==='ml'?`ML · ${p.model_id}`:'Источник не указан';
 
 export function NetworkOverview({objects,predictions,recommendations,onSelect,onWorkSelect}:Props){
   const [query,setQuery]=useState(''),[filter,setFilter]=useState<Filter>('all'),[selectedObjectId,setSelectedObjectId]=useState<string|null>(null);

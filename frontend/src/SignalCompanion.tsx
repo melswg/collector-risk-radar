@@ -47,7 +47,7 @@ function percent(value: unknown) {
 function source(prediction: Row) {
   if (prediction.model_kind === 'rules') return 'Правила';
   if (prediction.model_kind === 'stub') return 'STUB';
-  return prediction.model_kind === 'ml' ? 'Модель' : 'Источник не указан';
+  return prediction.model_kind === 'ml' ? 'ML' : 'Источник не указан';
 }
 
 function detail(prediction: Row, objectName: Props['objectName']) {
