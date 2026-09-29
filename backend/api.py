@@ -20,6 +20,7 @@ from backend.context import ContextBuilder
 from backend.contracts import TrainJob
 from backend.db import Audit, Channel, Decision, Event, Object, Prediction, Record, Session, User, init_db, now, serialize, utc
 from backend.ingestion import contains_pii, ingest_events, ingest_registry, parse_date, read_rows
+from backend.ml_channel import run_channel_prediction
 from backend.prediction_providers.base import NotSupported
 from backend.prediction_providers.http import ProviderRouter
 from backend.services import evaluate, run_predictions, settings
@@ -221,6 +222,31 @@ class RunBody(BaseModel):
     as_of: datetime | None = None
     horizons_h: list[int] | None = None
     request_id: str | None = None
+
+class MlPassportBody(BaseModel):
+    sensor_type: str = Field(min_length=1, max_length=100)
+    engineering_system: str = Field(min_length=1, max_length=100)
+    object_kind: str = Field(min_length=1, max_length=100)
+    parent: str = Field(min_length=1, max_length=100)
+    synthetic: bool
+
+@app.put(api+'/sensors/{identity}/ml-passport')
+def ml_passport(identity: int, body: MlPassportBody, session=Depends(db, scope='function'), user=Depends(require('analyst'))):
+    channel = get_or_404(session, Channel, identity)
+    session.merge(Record(
+        id=f'ml-passport:{identity}', kind='ml_channel_passport', object_id=channel.object_id,
+        ts=now(), data=body.model_dump(),
+    ))
+    return {'channel_id': identity, 'object_id': channel.object_id, **body.model_dump()}
+
+class MlChannelRunBody(BaseModel):
+    channel_id: int
+    as_of: datetime | None = None
+    request_id: str | None = Field(default=None, min_length=1, max_length=100)
+
+@app.post(api+'/predictions/ml-channel/run')
+def ml_channel_run(body: MlChannelRunBody, session=Depends(db, scope='function'), user=Depends(require('dispatcher', 'analyst'))):
+    return run_channel_prediction(session, body.channel_id, body.as_of, body.request_id)
 
 @app.post(api+'/predictions/run')
 def prediction_run(body: RunBody, session=Depends(db, scope='function'), user=Depends(require('dispatcher', 'analyst'))):

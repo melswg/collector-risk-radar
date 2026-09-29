@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 import math
 from typing import Any, Mapping, Sequence
 
-from inference import MODEL_FEATURES
+from .inference import MODEL_FEATURES
 
 
 def _number(value: Any) -> float | None:

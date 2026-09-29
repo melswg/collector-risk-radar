@@ -1,15 +1,10 @@
-import importlib.util
+import importlib
 from pathlib import Path
-import sys
 import json
 import pytest
 
 
-spec = importlib.util.spec_from_file_location("ml_inference", Path("ml-заново/inference.py"))
-ml_inference = importlib.util.module_from_spec(spec)
-assert spec.loader is not None
-sys.modules[spec.name] = ml_inference
-spec.loader.exec_module(ml_inference)
+ml_inference = importlib.import_module("ml-заново.inference")
 
 
 def test_customer_rules():
@@ -35,7 +30,7 @@ def test_model_contract():
 
 
 def test_raw_fixture_to_calibrated_probability():
-    from feature_builder import build_model_features
+    build_model_features = importlib.import_module("ml-заново.feature_builder").build_model_features
 
     request = json.loads(Path("tests/fixtures/ml_channel_example.json").read_text())
     features = build_model_features(request)

@@ -1,11 +1,9 @@
-import sys
-from pathlib import Path
+import importlib
 import pytest
 
 
-sys.path.insert(0, str(Path("ml-заново").resolve()))
-from feature_builder import build_model_features
-from inference import MODEL_FEATURES
+build_model_features = importlib.import_module("ml-заново.feature_builder").build_model_features
+MODEL_FEATURES = importlib.import_module("ml-заново.inference").MODEL_FEATURES
 
 
 def test_raw_history_becomes_model_features():
