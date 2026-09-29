@@ -1,4 +1,3 @@
-"""ТОЧКА РАСШИРЕНИЯ ML: заменяется участником, здесь только STUB."""
 import hashlib
 import logging
 from backend.contracts import PredictResponse
