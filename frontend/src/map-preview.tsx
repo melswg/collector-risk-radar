@@ -55,7 +55,7 @@ function MapPreview() {
 function DispatchPreview() {
   const [message, setMessage] = useState('');
   return <div className="shell shell--control-room"><main style={{paddingTop:0}}><div className="content">
-    <Dashboard objects={objects} predictions={predictions.map(p => ({...p,horizon_h:24,model_kind:'stub'}))} events={[]} recommendations={[]} objectName={id => objects.find(o => o.id === id)?.name ?? id} onSelect={p => setMessage(`Выбрано: ${objects.find(o => o.id === p.object_id)?.name}. Показания и запись решения доступны после входа в основной стенд.`)} onTab={() => setMessage('Раздел доступен после входа в основной стенд.')} onDemo={() => {}} canDecide={false} busy={false}/>
+    <Dashboard objects={objects} predictions={predictions.map(p => ({...p,horizon_h:24,model_kind:'stub'}))} events={[]} objectName={id => objects.find(o => o.id === id)?.name ?? id} onSelect={p => setMessage(`Выбрано: ${objects.find(o => o.id === p.object_id)?.name}. Показания и запись решения доступны после входа в основной стенд.`)} onTab={() => setMessage('Раздел доступен после входа в основной стенд.')} canDecide={false}/>
     {message && <p role="status" style={{color:'#d5e4ef'}}>{message}</p>}
   </div></main></div>;
 }
