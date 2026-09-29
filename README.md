@@ -14,11 +14,7 @@
 * [API](api.md)
 * [Локальный запуск](local-run.md)
 * [Настройки](configuration.md)
-* [Docker и запуск стенда](deployment.md)
-* [Как показать проект](demo.md)
 * [Проверки](testing.md)
-* [Что ещё нужно проверить](limitations.md)
-* [Сдача проекта](submission.md)
 * [Документы проекта](sources.md)
 
 [Главная страница проекта](https://github.com/melswg/collector-risk-radar/blob/develop/README.md)
