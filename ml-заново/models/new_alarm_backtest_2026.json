@@ -1,107 +1,107 @@
 {
-  "note": "Реконструкция часовой витрины из годовых архивов, не оригинальная таблица.",
+  "note": "Оценка new_alarm_24h: калибровка на 2025, проверка на 2026.",
   "calibration_year": 2025,
   "test_year": 2026,
-  "hourly_rows": 15854375,
+  "hourly_rows": 15854376,
   "calm_rows": 15345390,
   "valid_raw": {
     "rows": 2079638,
-    "positives": 29564,
-    "positive_rate": 0.014216,
-    "pr_auc": 0.212549,
-    "roc_auc": 0.866858,
-    "raw_brier": 0.012499,
-    "calibrated_brier": 0.012499,
-    "raw_log_loss": 0.058038,
-    "calibrated_log_loss": 0.058038
+    "positives": 29585,
+    "positive_rate": 0.014226,
+    "pr_auc": 0.211812,
+    "roc_auc": 0.868753,
+    "raw_brier": 0.012516,
+    "calibrated_brier": 0.012516,
+    "raw_log_loss": 0.058031,
+    "calibrated_log_loss": 0.058031
   },
   "valid_refit": {
     "rows": 2079638,
-    "positives": 29564,
-    "positive_rate": 0.014216,
-    "pr_auc": 0.202921,
-    "roc_auc": 0.869533,
-    "raw_brier": 0.012499,
-    "calibrated_brier": 0.012318,
-    "raw_log_loss": 0.058038,
-    "calibrated_log_loss": 0.056483
+    "positives": 29585,
+    "positive_rate": 0.014226,
+    "pr_auc": 0.202276,
+    "roc_auc": 0.871448,
+    "raw_brier": 0.012516,
+    "calibrated_brier": 0.012332,
+    "raw_log_loss": 0.058031,
+    "calibrated_log_loss": 0.0564
   },
   "valid_shipped_calibrator": {
     "rows": 2079638,
-    "positives": 29564,
-    "positive_rate": 0.014216,
-    "pr_auc": 0.20285,
-    "roc_auc": 0.869527,
-    "raw_brier": 0.012499,
-    "calibrated_brier": 0.012319,
-    "raw_log_loss": 0.058038,
-    "calibrated_log_loss": 0.056491
+    "positives": 29585,
+    "positive_rate": 0.014226,
+    "pr_auc": 0.202276,
+    "roc_auc": 0.871448,
+    "raw_brier": 0.012516,
+    "calibrated_brier": 0.012332,
+    "raw_log_loss": 0.058031,
+    "calibrated_log_loss": 0.0564
   },
   "test_raw": {
     "rows": 1145342,
     "positives": 33318,
     "positive_rate": 0.02909,
-    "pr_auc": 0.285276,
-    "roc_auc": 0.861612,
-    "raw_brier": 0.024179,
-    "calibrated_brier": 0.024179,
-    "raw_log_loss": 0.102243,
-    "calibrated_log_loss": 0.102243
+    "pr_auc": 0.284353,
+    "roc_auc": 0.862077,
+    "raw_brier": 0.02421,
+    "calibrated_brier": 0.02421,
+    "raw_log_loss": 0.102497,
+    "calibrated_log_loss": 0.102497
   },
   "test_shipped_calibrator": {
     "rows": 1145342,
     "positives": 33318,
     "positive_rate": 0.02909,
-    "pr_auc": 0.265654,
-    "roc_auc": 0.860598,
-    "raw_brier": 0.024179,
-    "calibrated_brier": 0.024413,
-    "raw_log_loss": 0.102243,
-    "calibrated_log_loss": 0.101184
+    "pr_auc": 0.264916,
+    "roc_auc": 0.861048,
+    "raw_brier": 0.02421,
+    "calibrated_brier": 0.024442,
+    "raw_log_loss": 0.102497,
+    "calibrated_log_loss": 0.101322
   },
   "valid_channel_threshold": {
     "threshold": 0.424613,
-    "flagged": 4620,
-    "flagged_share": 0.002222,
-    "precision": 0.7013,
-    "recall": 0.1096,
-    "f1": 0.1896
+    "flagged": 4578,
+    "flagged_share": 0.002201,
+    "precision": 0.7007,
+    "recall": 0.1084,
+    "f1": 0.1878
   },
   "test_channel_threshold": {
     "threshold": 0.424613,
-    "flagged": 6128,
-    "flagged_share": 0.00535,
-    "precision": 0.6439,
-    "recall": 0.1184,
-    "f1": 0.2001
+    "flagged": 6104,
+    "flagged_share": 0.005329,
+    "precision": 0.6425,
+    "recall": 0.1177,
+    "f1": 0.199
   },
   "valid_object_days": {
     "object_days": 17420,
-    "with_fact": 2813,
-    "fact_rate": 0.161481,
-    "pr_auc": 0.602542,
-    "chosen_threshold": 0.143174,
+    "with_fact": 2810,
+    "fact_rate": 0.161309,
+    "pr_auc": 0.601752,
+    "chosen_threshold": 0.143613,
     "at_chosen": {
-      "threshold": 0.143174,
-      "flagged": 1571,
-      "flagged_share": 0.090184,
-      "precision": 0.7002,
-      "recall": 0.391,
-      "f1": 0.5018
+      "threshold": 0.143613,
+      "flagged": 1560,
+      "flagged_share": 0.089552,
+      "precision": 0.7,
+      "recall": 0.3886,
+      "f1": 0.4998
     }
   },
   "test_object_days": {
     "object_days": 8845,
-    "with_fact": 1758,
-    "fact_rate": 0.198756,
-    "pr_auc": 0.666141,
+    "with_fact": 1753,
+    "fact_rate": 0.198191,
+    "pr_auc": 0.665537,
     "at_chosen": {
-      "threshold": 0.143174,
-      "flagged": 1137,
-      "flagged_share": 0.128547,
-      "precision": 0.723,
-      "recall": 0.4676,
-      "f1": 0.5679
+      "threshold": 0.143613,
+      "flagged": 1126,
+      "flagged_share": 0.127304,
+      "precision": 0.7229,
+      "recall": 0.4643,
+      "f1": 0.5655
     }
   }
 }

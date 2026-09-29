@@ -95,6 +95,9 @@ def object_days(scored: pl.DataFrame) -> pl.DataFrame:
             pl.col('target_24h').max().alias('fact_ch'),
         ])
         .filter(pl.col('obj') != 'unknown')
+        # Ранг по вероятности с разрывом ничьих по каналу, иначе выбор топ-5
+        # зависит от порядка строк и метрики объект-дней слегка плавают.
+        .sort(['obj', 'day', 'p_ch', 'ch'], descending=[False, False, True, False])
         .with_columns(pl.col('p_ch').rank(method='ordinal', descending=True).over(['obj', 'day']).alias('rk'))
     )
     return (
@@ -112,6 +115,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--tables', type=Path, default=ROOT / 'model_tables')
     parser.add_argument('--out', type=Path, default=MODELS / 'new_alarm_backtest_2026.json')
+    parser.add_argument('--note', default='Оценка new_alarm_24h: калибровка на 2025, проверка на 2026.')
     args = parser.parse_args()
 
     hourly = load_tables(args.tables)
@@ -123,7 +127,7 @@ def main() -> None:
     shipped = joblib.load(MODELS / 'new_alarm_channel_isotonic.joblib')
 
     result: dict = {
-        'note': 'Реконструкция часовой витрины из годовых архивов, не оригинальная таблица.',
+        'note': args.note,
         'calibration_year': CALIBRATION_YEAR,
         'test_year': TEST_YEAR,
         'hourly_rows': int(hourly.height),
