@@ -1,0 +1,13 @@
+{
+  "target": "new_alarm_24h",
+  "calibration_year": 2025,
+  "channel": {
+    "rows": 2079638,
+    "raw_brier": 0.012516,
+    "calibrated_brier": 0.012332,
+    "raw_log_loss": 0.058031,
+    "calibrated_log_loss": 0.0564
+  },
+  "object_days": 17481,
+  "note": "Calibration changes probability scale, not the target semantics."
+}

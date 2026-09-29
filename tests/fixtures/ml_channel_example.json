@@ -1,0 +1,19 @@
+{
+  "as_of": "2026-08-01T12:30:00Z",
+  "object_id": "synthetic-object-1",
+  "channel": {
+    "id": 901,
+    "sensor_type": "Газовый датчик",
+    "engineering_system": "газ",
+    "object_kind": "объект",
+    "parent": "комплекс",
+    "synthetic": true
+  },
+  "history": [
+    {"timestamp": "2026-08-01T10:05:00Z", "alarm": true, "value": "0.06"},
+    {"timestamp": "2026-08-01T10:50:00Z", "alarm": true, "value": "0.07"},
+    {"timestamp": "2026-08-01T11:05:00Z", "alarm": false, "value": "0.03"},
+    {"timestamp": "2026-08-01T11:45:00Z", "alarm": false, "value": "0.05"},
+    {"timestamp": "2026-08-01T12:10:00Z", "alarm": false, "value": "0.04"}
+  ]
+}

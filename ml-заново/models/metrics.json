@@ -1,0 +1,132 @@
+{
+  "version": 3,
+  "question": "канал сейчас спокоен; будет ли новая тревога журнала в следующие 24 часа",
+  "target": "тревожное=true строго после текущего часа и не дальше 24 часов",
+  "not_features": [
+    "ид_объект",
+    "ид_канала_данных",
+    "справочник_состояний",
+    "график ППР",
+    "график ТО"
+  ],
+  "train_years": [
+    2019,
+    2020,
+    2022,
+    2023,
+    2024
+  ],
+  "early_stopping": "2024-10..2024-12",
+  "excluded_from_train": [
+    2021
+  ],
+  "history_excludes_year": 2021,
+  "negative_keep_fraction": 0.15,
+  "scale_pos_weight": 0.15,
+  "valid_year": 2025,
+  "test_year": 2026,
+  "cat_features": [
+    "sensor",
+    "sys",
+    "objkind",
+    "parent"
+  ],
+  "num_features": [
+    "n_events",
+    "num_mean",
+    "num_max",
+    "methane",
+    "methane_delta",
+    "has_1970",
+    "hour_of_day",
+    "dow",
+    "month",
+    "is_weekend",
+    "h_since_prev",
+    "hours_since_alarm",
+    "alarms_24h",
+    "alarms_72h",
+    "alarms_168h"
+  ],
+  "trees": 181,
+  "threshold_object_day": 0.11853435802114472,
+  "threshold_scope": "Офлайн object-day на сырой шкале; нельзя применять к калиброванному онлайн-прогнозу канала",
+  "inference_calibration": {
+    "artifact": "new_alarm_channel_isotonic.joblib",
+    "fitted_year": 2025,
+    "metrics_file": "new_alarm_calibration_metrics.json"
+  },
+  "threshold_rule": "максимальный recall при Precision >= 0.70",
+  "object_day_2025": {
+    "pr_auc": 0.6429,
+    "precision": 0.7002,
+    "recall": 0.4458,
+    "n": 17420,
+    "positives": 3138
+  },
+  "object_day_2026": {
+    "pr_auc": 0.7057,
+    "precision": 0.7255,
+    "recall": 0.526,
+    "n": 8845,
+    "positives": 1939
+  },
+  "object_day_2026_budget_10": {
+    "per_day": 10,
+    "precision": 0.6306,
+    "recall": 0.5854,
+    "alerts": 1800
+  },
+  "channel_2026": {
+    "pr_auc": 0.2853,
+    "precision": 0.2946,
+    "recall": 0.3486,
+    "n": 1145342,
+    "positives": 33318,
+    "threshold_note": "порог подобран на объект-днях 2025, не на канале",
+    "baseline_recent_alarm_pr_auc": 0.2287,
+    "quiet_48h_pr_auc": 0.1297
+  },
+  "object_day_2025_baseline": {
+    "pr_auc": 0.6196,
+    "precision": 0.7001,
+    "recall": 0.3317,
+    "n": 17420,
+    "positives": 3138
+  },
+  "object_day_2026_baseline": {
+    "pr_auc": 0.678,
+    "precision": 0.738,
+    "recall": 0.3662,
+    "n": 8845,
+    "positives": 1939
+  },
+  "importance": {
+    "hours_since_alarm": 30.84,
+    "month": 9.43,
+    "dow": 9.2,
+    "sys": 8.89,
+    "parent": 7.12,
+    "methane_delta": 7.06,
+    "alarms_168h": 4.49,
+    "methane": 3.56,
+    "sensor": 3.3,
+    "alarms_24h": 3.12,
+    "alarms_72h": 3.01,
+    "n_events": 2.7,
+    "objkind": 2.1,
+    "is_weekend": 2.08,
+    "h_since_prev": 1.59,
+    "hour_of_day": 0.66,
+    "num_mean": 0.42,
+    "num_max": 0.41,
+    "has_1970": 0.04
+  },
+  "limitations": [
+    "журнала ОДС с подтверждённым пожаром или ложным выездом нет",
+    "погоды и координат нет",
+    "канал, который тревожит в текущем часе, в эту оценку не входит",
+    "онлайн-вероятность канала калибрована isotonic на 2025; старые offline-метрики и порог относятся к сырой шкале",
+    "порог 2026 не подгонялся"
+  ]
+}
